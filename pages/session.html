@@ -392,6 +392,16 @@
   // minutes, so the embed there is a short check-in only.
   var API_DOMAIN = 'meet.jit.si';
 
+  // ── The session ──────────────────────────────────────────────────────
+  // This is the single source of truth for the session's date and room.
+  // The prep page reads the same values (see pages/prep.html). Change
+  // them here and on the prep page together.
+  var SESSION = {
+    element: 'Air',
+    date: '2026-10-28',
+    room: 'council-air-2026-10-28',
+  };
+
   // ── One thing to change ──────────────────────────────────────────────
   // Point this at your own Jitsi server and the Council Console will use
   // it instead of the public one: no five-minute embed limit, no ninety-five
@@ -437,8 +447,12 @@
   }
 
   var params = new URLSearchParams(window.location.search);
-  var roomBase = params.get('room') || 'council-of-the-root';
-  var ROOM = roomBase + '-' + todayStamp();
+  // The room name has to match the one the prep page hands out, or the
+  // invite link and the console open different rooms. The prep page uses
+  // 'council-<element>-<session date>'. Read the same values from the
+  // shared session config rather than deriving them twice.
+  var roomBase = params.get('room') || SESSION.room;
+  var ROOM = params.get('session') ? params.get('session') : roomBase;
 
   function roomUrl() {
     return 'https://' + API_DOMAIN + '/' + ROOM;
