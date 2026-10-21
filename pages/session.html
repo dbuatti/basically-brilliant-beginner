@@ -19,7 +19,8 @@
       background: var(--color-bg-elevated);
       flex-wrap: wrap;
     }
-    .console__brand { display: flex; align-items: center; gap: var(--space-3); }
+    .console__brand { display: flex; align-items: center; gap: var(--space-3); transition: opacity var(--transition-base); }
+    .console__brand:hover { opacity: 0.72; }
     .console__title { font-family: var(--font-heading); font-size: var(--font-size-xl); }
     .console__element { font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent); font-weight: 600; }
     .console__actions { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
@@ -71,7 +72,7 @@
   <div class="console">
     <!-- Top bar -->
     <div class="console__bar">
-      <div class="console__brand">
+      <a href="/" class="console__brand" title="Back to the home page" aria-label="Back to the home page">
         <svg class="nav__logo-icon" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="1.5" aria-hidden="true">
           <circle cx="12" cy="12" r="10"/>
           <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -80,12 +81,16 @@
           <div class="console__title">Council Console</div>
           <div class="console__element" id="elementLabel">Council of the Root</div>
         </div>
-      </div>
+      </a>
       <div class="console__actions">
         <button class="btn btn--ghost" id="recToggle" type="button">
           <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
           Local Recording
         </button>
+        <a href="/" class="btn btn--ghost">
+          <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+          Home
+        </a>
         <a href="/pages/council.html" class="btn btn--ghost">Session Notes</a>
         <a href="/join" class="btn btn--secondary" target="_blank" rel="noopener">Open Full Window</a>
       </div>
