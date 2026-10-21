@@ -39,6 +39,10 @@ that account also hosts several other active projects (`scales.os`,
 **Netlify is the primary** and GitHub Actions deploys to it on every push. Vercel
 is kept as a mirror and catches up whenever quota allows.
 
+> **The Vercel git integration for this project is now disconnected**, so pushing to
+> GitHub will not consume any Vercel deployments. The Vercel mirror is refreshed
+> manually with `vercel --prod` when the account has quota to spare.
+
 ---
 
 ## Pages
