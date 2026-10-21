@@ -19,19 +19,23 @@ jobs:
         run: npm install -g netlify-cli
 
       - name: Deploy preview
+        id: deploy
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: netlify deploy --dir=. --message "PR ${{ github.event.number }}: ${{ github.head_ref }}"
+        run: |
+          netlify deploy --dir=. --message "PR ${{ github.event.number }}: ${{ github.head_ref }}" 2>&1 | tee /tmp/deploy.log
+          URL=$(grep -oE 'https://[a-zA-Z0-9-]+\.netlify\.app' /tmp/deploy.log | tail -1)
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
 
       - name: Comment the preview URL
+        if: steps.deploy.outputs.url != ''
         uses: actions/github-script@v7
         with:
           script: |
-            const url = '${{ steps.deploy.outputs.deploy-url }}';
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Preview for this PR: ${url}`
+              body: `Preview for this PR: ${'${{ steps.deploy.outputs.url }}'}\n\n_Deprecated preview — the unique deploy URL above works for this push only._`
             });
