@@ -85,6 +85,31 @@ landing-page/
 
 ---
 
+## The Council Console
+
+`/pages/session` — the pre-session dashboard and meeting surface.
+
+- **Focus** hides the chrome so the video fills the window; **Fullscreen** uses
+  the browser's own fullscreen API. Escape leaves focus mode.
+- **Three recording routes**, shown side by side with their live state:
+  1. *Jitsi's own* — server-side, records everyone. ⋮ → Start recording → Dropbox
+  2. *The page's button* — browser-side, records your own stream
+  3. *Local audio* — your Mac's audio, outside the browser, cleanest track
+- **Transcribe latest** runs MacWhisper over the newest recording.
+- **SELF_HOSTED_URL** at the top of the script: point it at your own Jitsi and
+  the embed runs the full session with no time limit.
+
+## The local bridge
+
+A small service on `127.0.0.1:8765` that lets the page drive your Mac's
+recording and MacWhisper.
+
+- Source: `../Shared/Resources/council_bridge.py`
+- Installed: `~/Library/Application Support/CharmingDivinations/council_bridge.py`
+- Runs as a launchd service, so it survives reboots
+- Endpoints: `GET /status`, `POST /record`, `POST /transcribe`
+- Hammerspoon's ⌘⌥⌃M still works as a hotkey for the same thing
+
 ## The recording stack
 
 See `../Shared/Resources/` for the full set.
