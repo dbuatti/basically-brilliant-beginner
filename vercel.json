@@ -6,6 +6,23 @@
   "installCommand": "exit 0",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/join",
+      "destination": "https://meet.jit.si/council-of-the-root",
+      "permanent": false
+    },
+    {
+      "source": "/join/:element",
+      "destination": "https://meet.jit.si/council-of-the-root-:element",
+      "permanent": false
+    },
+    {
+      "source": "/room",
+      "destination": "https://meet.jit.si/council-of-the-root",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

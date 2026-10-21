@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Listen &amp; Watch - Recommended YouTube channels, podcasts and courses for the Charming Divinations journey.">
+  <title>Listen &amp; Watch | Basically Brilliant Beginner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .page-hero { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: var(--header-height); position: relative; overflow: hidden; }
+    .page-hero__bg { position: absolute; inset: 0; z-index: -1; }
+    .page-hero__orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; }
+    .page-hero__orb--1 { width: 300px; height: 300px; background: var(--color-accent); top: -50px; right: -50px; }
+    .page-hero__orb--2 { width: 200px; height: 200px; background: var(--color-air); bottom: 0; left: -50px; }
+
+    .media-section { margin-bottom: var(--space-16); }
+    .media-section__header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); }
+    .media-section__icon { width: 30px; height: 30px; color: var(--color-accent); flex-shrink: 0; }
+    .media-section__title { font-size: var(--font-size-2xl); }
+    .media-section__desc { font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--space-5); max-width: 700px; }
+
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+
+    .media-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      transition: all var(--transition-base);
+      display: flex;
+      gap: var(--space-4);
+      align-items: flex-start;
+    }
+    .media-card:hover { border-color: var(--color-accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+    .media-card__thumb {
+      width: 92px; height: 62px; border-radius: var(--radius-md); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--color-surface-hover), var(--color-bg));
+      border: 1px solid var(--color-border);
+      font-size: 1.5rem;
+    }
+    .media-card__content { flex: 1; min-width: 0; }
+    .media-card__title { font-family: var(--font-body); font-size: var(--font-size-base); font-weight: 600; margin-bottom: var(--space-1); }
+    .media-card__channel { font-size: var(--font-size-xs); color: var(--color-accent); font-weight: 500; margin-bottom: var(--space-2); }
+    .media-card__desc { font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.6; margin-bottom: var(--space-3); }
+    .media-card__meta { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+    .media-tag { font-size: var(--font-size-xs); padding: 2px var(--space-2); border-radius: var(--radius-full); background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-text-subtle); }
+    .media-tag--element { color: var(--element-color, var(--color-accent)); border-color: var(--element-color, var(--color-accent)); background: color-mix(in srgb, var(--element-color, var(--color-accent)) 10%, transparent); }
+    .media-link { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--font-size-xs); color: var(--color-accent); font-weight: 500; }
+    .media-link:hover { text-decoration: underline; }
+    .media-link svg { width: 12px; height: 12px; }
+
+    .empty-state {
+      border: 1px dashed var(--color-border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--space-8);
+      text-align: center;
+      background: rgba(212, 165, 116, 0.03);
+    }
+    .empty-state__icon { width: 44px; height: 44px; margin: 0 auto var(--space-3); color: var(--color-text-subtle); }
+    .empty-state__title { font-size: var(--font-size-lg); margin-bottom: var(--space-2); color: var(--color-text-muted); }
+    .empty-state__text { font-size: var(--font-size-sm); color: var(--color-text-subtle); max-width: 480px; margin: 0 auto var(--space-4); line-height: 1.6; }
+
+    .contribute-box {
+      background: var(--color-surface);
+      border: 1px solid rgba(212, 165, 116, 0.3);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      text-align: center;
+    }
+    .contribute-box__title { font-size: var(--font-size-xl); color: var(--color-accent); margin-bottom: var(--space-3); }
+    .contribute-box__text { font-size: var(--font-size-sm); color: var(--color-text-muted); max-width: 560px; margin: 0 auto var(--space-4); line-height: 1.7; }
+    .contribute-box__code { display: inline-block; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-5); font-family: ui-monospace, Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-accent); text-align: left; margin-bottom: var(--space-4); }
+
+    .playlist-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: var(--space-4);
+    }
+    .playlist-card__header { padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+    .playlist-card__title { font-size: var(--font-size-lg); flex: 1; min-width: 200px; }
+    .playlist-card__note { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+    .playlist-card__body { padding: var(--space-6); }
+    .playlist-item { display: flex; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+    .playlist-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .playlist-item__num { width: 24px; height: 24px; border-radius: 50%; background: var(--color-bg); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xs); color: var(--color-text-subtle); flex-shrink: 0; }
+    .playlist-item__content { flex: 1; }
+    .playlist-item__title { font-weight: 500; margin-bottom: var(--space-1); }
+    .playlist-item__desc { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+  </style>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav__container">
+      <a href="../" class="nav__logo" aria-label="Basically Brilliant Beginner Home">
+        <svg class="nav__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+        <span class="nav__logo-text">Charming Divinations</span>
+      </a>
+      <div class="nav__links">
+        <a href="../pages/music.html" class="nav__link">Music Hub</a>
+        <a href="../pages/insight-timer.html" class="nav__link">Insight Timer</a>
+        <a href="../pages/media.html" class="nav__link nav__link--active">Listen &amp; Watch</a>
+        <a href="../pages/resources.html" class="nav__link">Resources</a>
+        <a href="../pages/council.html" class="nav__link">Council Sessions</a>
+        <a href="/join" class="nav__link nav__link--cta">Join Council</a>
+      </div>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle menu">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-hero__bg" aria-hidden="true">
+      <div class="page-hero__orb page-hero__orb--1"></div>
+      <div class="page-hero__orb page-hero__orb--2"></div>
+    </div>
+    <div class="container">
+      <p class="hero__badge">Charming Divinations</p>
+      <h1 class="hero__title" style="font-size: var(--font-size-4xl); max-width: 700px; margin: 0 auto var(--space-4);">
+        Listen &amp; <span class="hero__title--accent">Watch</span>
+      </h1>
+      <p class="hero__subtitle" style="max-width: 620px; margin: 0 auto;">
+        Recommended channels, podcasts and recordings for the journey — 
+        curated by the Council, gathered as we go.
+      </p>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <!-- Water -->
+      <section class="media-section" aria-labelledby="water-media">
+        <div class="media-section__header">
+          <svg class="media-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+          <h2 id="water-media" class="media-section__title">Water Element</h2>
+        </div>
+        <p class="media-section__desc">Flow, emotion, intuition, healing. Material for the Water module and the two-glass ritual.</p>
+        <div class="media-grid" id="grid-water">
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <h3 class="empty-state__title">No picks here yet</h3>
+            <p class="empty-state__text">Send Daniele any YouTube videos, podcast episodes or music you'd like added here for the Water element.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Air -->
+      <section class="media-section" aria-labelledby="air-media">
+        <div class="media-section__header">
+          <svg class="media-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 14 13H2"/></svg>
+          <h2 id="air-media" class="media-section__title">Air Element</h2>
+        </div>
+        <p class="media-section__desc">Breath, clarity, protection, voice. Material for the Air module and grounding practices.</p>
+        <div class="media-grid" id="grid-air">
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 14 13H2"/></svg>
+            <h3 class="empty-state__title">No picks here yet</h3>
+            <p class="empty-state__text">Send Daniele any YouTube videos, podcast episodes or music you'd like added here for the Air element.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fire -->
+      <section class="media-section" aria-labelledby="fire-media">
+        <div class="media-section__header">
+          <svg class="media-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.5 14.5A2.5 2.5 0 0 1 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 1 2.5 2.5z"/></svg>
+          <h2 id="fire-media" class="media-section__title">Fire Element</h2>
+        </div>
+        <p class="media-section__desc">Transformation, passion, action, will. Material for the Fire module and crystal &amp; candle work.</p>
+        <div class="media-grid" id="grid-fire">
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.5 14.5A2.5 2.5 0 0 1 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 1 2.5 2.5z"/></svg>
+            <h3 class="empty-state__title">No picks here yet</h3>
+            <p class="empty-state__text">Send Daniele any YouTube videos, podcast episodes or music you'd like added here for the Fire element.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Earth -->
+      <section class="media-section" aria-labelledby="earth-media">
+        <div class="media-section__header">
+          <svg class="media-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 12h-10M17 17h-10"/></svg>
+          <h2 id="earth-media" class="media-section__title">Earth Element</h2>
+        </div>
+        <p class="media-section__desc">Grounding, scrying, tarot, divination. Material for the Earth module and reading practices.</p>
+        <div class="media-grid" id="grid-earth">
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 12h-10M17 17h-10"/></svg>
+            <h3 class="empty-state__title">No picks here yet</h3>
+            <p class="empty-state__text">Send Daniele any YouTube videos, podcast episodes or music you'd like added here for the Earth element.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spirit -->
+      <section class="media-section" aria-labelledby="spirit-media">
+        <div class="media-section__header">
+          <svg class="media-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <h2 id="spirit-media" class="media-section__title">Spirit Element</h2>
+        </div>
+        <p class="media-section__desc">Guides, ancestors, the beyond. Material for the Spirit module and meeting your guides.</p>
+        <div class="media-grid" id="grid-spirit">
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            <h3 class="empty-state__title">No picks here yet</h3>
+            <p class="empty-state__text">Send Daniele any YouTube videos, podcast episodes or music you'd like added here for the Spirit element.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- General Practice -->
+      <section class="media-section" aria-labelledby="general-media">
+        <div class="media-section__header">
+          <svg class="media-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/></svg>
+          <h2 id="general-media" class="media-section__title">General Practice &amp; Background</h2>
+        </div>
+        <p class="media-section__desc">Foundational material that supports every module — meditation technique, ritual, the history behind the practices.</p>
+        <div class="media-grid" id="grid-general">
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/></svg>
+            <h3 class="empty-state__title">No picks here yet</h3>
+            <p class="empty-state__text">Send Daniele any YouTube videos, podcast episodes or music you'd like added here as general practice material.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How to contribute -->
+      <section class="media-section" aria-labelledby="contribute">
+        <div class="contribute-box">
+          <h2 id="contribute" class="contribute-box__title">How to Add Something</h2>
+          <p class="contribute-box__text">
+            Send Daniele a link and a one-line note about why it belongs. 
+            That's all — it gets added to the right element and deployed.
+          </p>
+          <div class="contribute-box__code">
+            https://youtube.com/watch?v=... &nbsp;—&nbsp; "Great grounding practice for Air"
+          </div>
+          <p class="contribute-box__text" style="margin-bottom: 0;">
+            Works for YouTube videos, podcast episodes (Apple / Spotify / Overcast links), 
+            Insight Timer meditations, music tracks, and articles worth reading aloud.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="../" class="footer__logo">
+            <svg class="footer__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>Charming Divinations</span>
+          </a>
+          <p class="footer__tagline">Elemental wisdom for the modern seeker</p>
+        </div>
+        <nav class="footer__nav" aria-label="Footer navigation">
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Council</h4>
+            <ul>
+              <li><a href="../pages/council.html">Session Notes</a></li>
+              <li><a href="/join">Join the Council</a></li>
+              <li><a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener">Book Session</a></li>
+            </ul>
+          </div>
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Hubs</h4>
+            <ul>
+              <li><a href="../pages/music.html">Music Hub</a></li>
+              <li><a href="../pages/insight-timer.html">Insight Timer</a></li>
+              <li><a href="../pages/media.html">Listen &amp; Watch</a></li>
+              <li><a href="../pages/resources.html">Resources</a></li>
+            </ul>
+          </div>
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Connect</h4>
+            <ul>
+              <li><a href="https://events.humanitix.com/pianobyheart" target="_blank" rel="noopener">Piano by Heart</a></li>
+              <li><a href="mailto:daniele@buatti.com">Email Daniele</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Charming Divinations. Created with intention.</p>
+        <p class="footer__tech">Deployed on Vercel · Source on GitHub</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
