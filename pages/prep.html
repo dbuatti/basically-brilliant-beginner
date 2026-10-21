@@ -65,6 +65,8 @@
   .sheet__what { font-size: .88rem; color: var(--text-soft); }
   .sheet__what b { color: var(--text); font-weight: 600; display: block; }
   .sheet__row--key { background: rgba(212,175,106,.07); margin: 0 calc(var(--s5) * -1); padding-left: var(--s5); padding-right: var(--s5); }
+  .sheet__part { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); font-weight: 600; padding: var(--s4) 0 var(--s2); border-top: 1px solid var(--line); margin-top: var(--s4); }
+  .sheet__part:first-child { border-top: none; margin-top: 0; padding-top: 0; }
   .sheet__row--key .sheet__time { color: var(--gold-light); }
 
   /* Checklist */
@@ -197,49 +199,22 @@
         <!-- Run sheet -->
         <div class="card2">
           <span class="tag">Run sheet</span>
-          <h2 class="card2__title">Ninety minutes, with five in hand</h2>
-          <p class="card2__body" style="margin-bottom:var(--s4);">
-            The public server caps a meeting at ninety-five minutes and counts from the moment
-            the first person joins. The session below is <strong>85 minutes</strong> so that
-            early arrivals and a little overrun still land inside it.
+          <h2 class="card2__title" id="sheetTitle">Ninety minutes, with five in hand</h2>
+          <p class="card2__body" style="margin-bottom:var(--s4);" id="sheetIntro">
+            The public server caps a meeting at ninety-five minutes and counts from the
+            moment the first person joins. The session below is <strong>85 minutes</strong>
+            so that early arrivals and a little overrun still land inside it.
           </p>
-          <div class="sheet">
-            <div class="sheet__row">
-              <div class="sheet__time">00:00</div>
-              <div class="sheet__what"><b>Arrival</b> Settle in, headphones on, glass of water and a dark bowl to hand.</div>
-            </div>
-            <div class="sheet__row sheet__row--key">
-              <div class="sheet__time">00:05</div>
-              <div class="sheet__what"><b>Opening blessing &amp; crystal bowl</b> Archangel Michael, the guides, the grandmothers of the four directions. Then the bowl, and breath to let go of what was carried in.</div>
-            </div>
-            <div class="sheet__row">
-              <div class="sheet__time">00:12</div>
-              <div class="sheet__what"><b>Grounding breath</b> Feet on the floor, breath to the belly, six slow cycles. Arriving in the body before the mind starts working.</div>
-            </div>
-            <div class="sheet__row sheet__row--key">
-              <div class="sheet__time">00:18</div>
-              <div class="sheet__what"><b>Teaching · Air</b> Breath, movement, mental clarity. Air as the element of the mind — and the counterweight to Water's flow. Why protection belongs before power.</div>
-            </div>
-            <div class="sheet__row">
-              <div class="sheet__time">00:31</div>
-              <div class="sheet__what"><b>Practice · Grounding &amp; shielding</b> A simple practice: feel the ground, feel the breath, then draw a boundary. Something repeatable, at a kitchen table.</div>
-            </div>
-            <div class="sheet__row sheet__row--key">
-              <div class="sheet__time">00:42</div>
-              <div class="sheet__what"><b>Guided meditation</b> Following the breath as it actually moves, with the Air theme. Eleven minutes, and room to find your own rhythm.</div>
-            </div>
-            <div class="sheet__row">
-              <div class="sheet__time">00:53</div>
-              <div class="sheet__what"><b>Sharing circle</b> What surfaced. Unscripted, and the part Linda never prepares.</div>
-            </div>
-            <div class="sheet__row sheet__row--key">
-              <div class="sheet__time">01:15</div>
-              <div class="sheet__what"><b>Closing &amp; next steps</b> What to carry into the week, and a word on where Fire begins.</div>
+          <div id="partsWarning" style="display:none;">
+            <div class="warn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+              <span id="partsWarningText"></span>
             </div>
           </div>
+          <div class="sheet" id="sheet"></div>
+          <div id="partLinks"></div>
         </div>
 
-        <!-- Teaching notes -->
         <div class="card2">
           <span class="tag">For Linda</span>
           <h2 class="card2__title">Holding Air</h2>
@@ -365,17 +340,145 @@
     date: '2026-10-28',
     time: '19:30',
     durationMin: 90,
-    startUtcOffset: '600', // Melbourne is UTC+10 (AEDT) on 28 Oct 2026
+    startUtcOffset: '600' // Melbourne is UTC+10 (AEDT) on 28 Oct 2026
   };
 
-  // ── Room name: element + date, so every session gets a fresh room ────
-  // The public server blocks a room name for a while after it hits its
-  // ninety-five minute cap, so the name carries the date.
-  var room = 'council-' + SESSION.element.toLowerCase() + '-' + SESSION.date;
-  var roomUrl = 'https://meet.jit.si/' + room;
+  // ── The run sheet, as data ────────────────────────────────────────────
+  // The page works out how many rooms this needs. The public server stops a
+  // meeting at 95 minutes, and the room name is then blocked for hours — so a
+  // longer session is split across fresh rooms at a natural break, never
+  // mid-segment.
+  var SEGMENTS = [
+    { mins: 5,  name: 'Arrival',
+      text: 'Settle in, headphones on, glass of water and a dark bowl to hand.' },
+    { mins: 7,  name: 'Opening blessing & crystal bowl',
+      text: 'Archangel Michael, the guides, the grandmothers of the four directions. Then the bowl, and breath to let go of what was carried in.' },
+    { mins: 6,  name: 'Grounding breath',
+      text: 'Feet on the floor, breath to the belly, six slow cycles. Arriving in the body before the mind starts working.' },
+    { mins: 13, name: 'Teaching · Air',
+      text: "Breath, movement, mental clarity. Air as the element of the mind — and the counterweight to Water's flow. Why protection belongs before power." },
+    { mins: 11, name: 'Practice · Grounding & shielding',
+      text: 'A simple practice: feel the ground, feel the breath, then draw a boundary. Something repeatable, at a kitchen table.' },
+    { mins: 11, name: 'Guided meditation',
+      text: 'Following the breath as it actually moves, with the Air theme. Eleven minutes, and room to find your own rhythm.' },
+    { mins: 22, name: 'Sharing circle',
+      text: 'What surfaced. Unscripted, and the part Linda never prepares.' },
+    { mins: 10, name: 'Closing & next steps',
+      text: 'What to carry into the week, and a word on where Fire begins.' }
+  ];
+
+  var ROOM_CAP = 85;   // content minutes that safely fit inside the 95-minute cap
+
+  // Split the segments into parts of at most ROOM_CAP minutes, never mid-segment.
+  function planParts() {
+    var parts = [], current = { mins: 0, segs: [] };
+    SEGMENTS.forEach(function (seg) {
+      if (current.mins + seg.mins > ROOM_CAP && current.segs.length) {
+        parts.push(current);
+        current = { mins: 0, segs: [] };
+      }
+      current.segs.push(seg);
+      current.mins += seg.mins;
+    });
+    if (current.segs.length) parts.push(current);
+    return parts;
+  }
+
+  var parts = planParts();
+  var totalContent = parts.reduce(function (n, p) { return n + p.mins; }, 0);
+
+  // ── Room names: element + date + part ────────────────────────────────
+  // The public server blocks a room name for a while after it hits its time
+  // limit, so every session — and every part — gets a fresh name.
+  function roomName(index) {
+    var base = 'council-' + SESSION.element.toLowerCase() + '-' + SESSION.date;
+    if (index === 0) return base;
+    return base + '-' + String.fromCharCode(97 + index);   // -b, -c, ...
+  }
+  function roomUrlFor(index) {
+    return 'https://meet.jit.si/' + roomName(index);
+  }
+
+  var room = roomName(0);
+  var roomUrl = roomUrlFor(0);
 
   document.getElementById('roomCode').textContent = roomUrl;
   document.getElementById('joinBtn').href = roomUrl;
+
+  // ── Draw the run sheet ───────────────────────────────────────────────
+  function fmt(mins) {
+    var h = Math.floor(mins / 60), m = mins % 60;
+    return (h ? String(h) + 'h' : '') + (h && m ? ' ' : '') + (m ? String(m) + 'm' : '');
+  }
+
+  function drawSheet() {
+    var sheet = document.getElementById('sheet');
+    var links = document.getElementById('partLinks');
+    sheet.innerHTML = '';
+    links.innerHTML = '';
+
+    var clock = 0;
+    parts.forEach(function (part, pi) {
+      if (parts.length > 1) {
+        var h = document.createElement('p');
+        h.className = 'sheet__part';
+        h.innerHTML = '<b>Part ' + (pi + 1) + ' of ' + parts.length + '</b> — ' + part.mins + ' minutes';
+        sheet.appendChild(h);
+      }
+      part.segs.forEach(function (seg) {
+        var row = document.createElement('div');
+        row.className = 'sheet__row' + (seg.key ? ' sheet__row--key' : '');
+        var t = document.createElement('div');
+        t.className = 'sheet__time';
+        var hh = String(Math.floor(clock / 60)).padStart(2, '0');
+        var mm = String(clock % 60).padStart(2, '0');
+        t.textContent = hh + ':' + mm;
+        var w = document.createElement('div');
+        w.className = 'sheet__what';
+        w.innerHTML = '<b>' + seg.name + '</b>' + seg.text;
+        row.appendChild(t); row.appendChild(w);
+        sheet.appendChild(row);
+        clock += seg.mins;
+      });
+    });
+
+    // Extra links for the later parts
+    if (parts.length > 1) {
+      var box = document.createElement('div');
+      box.className = 'card2';
+      box.style.marginTop = 'var(--s5)';
+      box.innerHTML = '<h3 class="card__title" style="margin-bottom:var(--s3)">If the room runs out</h3>' +
+        '<p class="card__text" style="margin-bottom:var(--s4)">The public server stops a room at ninety-five minutes and then locks the name. ' +
+        'When that happens, move to the next room — the circle picks up where it left off.</p>';
+      parts.forEach(function (part, pi) {
+        if (pi === 0) return;
+        var a = document.createElement('a');
+        a.className = 'btn btn--ghost btn--sm';
+        a.style.marginRight = 'var(--s2)';
+        a.style.marginBottom = 'var(--s2)';
+        a.href = roomUrlFor(pi);
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = 'Part ' + (pi + 1) + ' room →';
+        box.appendChild(a);
+      });
+      links.appendChild(box);
+    }
+
+    // Warn if the content doesn't fill the session
+    var warn = document.getElementById('partsWarning');
+    var warnText = document.getElementById('partsWarningText');
+    if (SESSION.durationMin > totalContent + 10) {
+      warnText.innerHTML = '<strong>The run sheet is ' + totalContent + ' minutes but the session is set to ' +
+        SESSION.durationMin + '.</strong> Either trim the session length or add more to the run sheet — ' +
+        'the split into ' + parts.length + ' room' + (parts.length > 1 ? 's' : '') + ' follows the content automatically.';
+      warn.style.display = 'block';
+    }
+    document.getElementById('sheetTitle').textContent = parts.length > 1
+      ? totalContent + ' minutes, across ' + parts.length + ' rooms'
+      : 'Ninety minutes, with five in hand';
+  }
+  drawSheet();
 
   // ── Countdown ────────────────────────────────────────────────────────
   // Build a local-time date from the session details.
@@ -447,24 +550,38 @@
       'VERSION:2.0',
       'PRODID:-//Charming Divinations//Council of the Root//EN',
       'CALSCALE:GREGORIAN',
-      'METHOD:PUBLISH',
-      'BEGIN:VEVENT',
-      'UID:council-' + SESSION.element.toLowerCase() + '-' + SESSION.date + '@charmingdivinations.com',
-      'DTSTAMP:' + icsDate(new Date()),
-      'DTSTART:' + icsDate(start),
-      'DTEND:' + icsDate(end),
-      'SUMMARY:' + SESSION.title,
-      'DESCRIPTION:' + description.replace(/,/g, '\\,'),
-      'LOCATION:' + roomUrl,
-      'URL:' + roomUrl,
-      'BEGIN:VALARM',
-      'TRIGGER:-PT30M',
-      'ACTION:DISPLAY',
-      'DESCRIPTION:The Council of the Root begins in 30 minutes',
-      'END:VALARM',
-      'END:VEVENT',
-      'END:VCALENDAR',
+      'METHOD:PUBLISH'
     ];
+
+    // One event per part, so a long session lands in the calendar correctly.
+    var clock = 0;
+    parts.forEach(function (part, pi) {
+      var pStart = new Date(start.getTime() + clock * 60000);
+      var pEnd = new Date(pStart.getTime() + part.mins * 60000);
+      clock += part.mins;
+      var pRoom = roomUrlFor(pi);
+      var pSummary = SESSION.title + (parts.length > 1 ? ' (Part ' + (pi + 1) + ' of ' + parts.length + ')' : '');
+      var pDesc = description.replace(roomUrl, pRoom);
+      lines.push(
+        'BEGIN:VEVENT',
+        'UID:council-' + SESSION.element.toLowerCase() + '-' + SESSION.date + '-' + String.fromCharCode(97 + pi) + '@charmingdivinations.com',
+        'DTSTAMP:' + icsDate(new Date()),
+        'DTSTART:' + icsDate(pStart),
+        'DTEND:' + icsDate(pEnd),
+        'SUMMARY:' + pSummary,
+        'DESCRIPTION:' + pDesc.replace(/,/g, '\\,'),
+        'LOCATION:' + pRoom,
+        'URL:' + pRoom,
+        'BEGIN:VALARM',
+        'TRIGGER:-PT30M',
+        'ACTION:DISPLAY',
+        'DESCRIPTION:The Council of the Root begins in 30 minutes',
+        'END:VALARM',
+        'END:VEVENT'
+      );
+    });
+
+    lines.push('END:VCALENDAR');
 
     var blob = new Blob([lines.join('\\r\\n')], { type: 'text/calendar;charset=utf-8' });
     var url = URL.createObjectURL(blob);
