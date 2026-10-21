@@ -123,6 +123,13 @@
   .recItem__text { font-size: .76rem; color: var(--text-soft); line-height: 1.55; }
   .recItem__text strong { color: var(--gold-light); font-weight: 600; }
 
+  .recHelp { margin-top: .6rem; padding: .6rem .7rem; border-radius: 6px; background: rgba(217,107,95,.1); border: 1px solid rgba(217,107,95,.28); }
+  .recHelp__title { font-size: .72rem; font-weight: 600; color: #E89A91; margin-bottom: .3rem; }
+  .recHelp__text { font-size: .72rem; color: var(--text-muted); line-height: 1.55; }
+  .recHelp__text strong { color: var(--text-soft); }
+  .recHelp__btn { margin-top: .5rem; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--gold); border: 1px solid var(--line); border-radius: 999px; padding: .3rem .7rem; display: inline-flex; align-items: center; }
+  .recHelp__btn:hover { background: var(--gold-dim); }
+
   /* Recording control strip inside the stage */
   .recbar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 15; display: flex; align-items: center; gap: .55rem; padding: .7rem 1rem; background: rgba(8,11,24,.97); border-top: 1px solid var(--line); flex-wrap: wrap; }
   .recbar .btn--ghost { color: var(--gold-light); border-color: rgba(212,175,106,.35); background: rgba(212,175,106,.07); }
@@ -321,6 +328,16 @@
               Records your Mac's audio separately, outside the browser, straight from the
               meeting tab. Cleanest track of the three, and it runs for the whole session.
             </p>
+            <div class="recHelp" id="bridgeHelp" style="display:none;">
+              <p class="recHelp__title">Your browser is blocking local access</p>
+              <p class="recHelp__text">
+                Chrome asks before a website can talk to this Mac. Look for the icon
+                beside the address bar, choose <strong>Allow</strong> for local network
+                access, then press Retry. Or skip it entirely and press
+                <strong>⌘⌥⌃M</strong> — the recording works the same way.
+              </p>
+              <button class="recHelp__btn" id="bridgeRetry" type="button">Retry</button>
+            </div>
           </div>
         </div>
         <p class="note">
@@ -747,13 +764,31 @@
         if (localRecBtn) {
           localRecBtn.textContent = d.recording ? '\u25a0 Stop Local Audio' : '\u25cf Local Audio';
         }
+        hideBridgeHelp();
       } else {
         bridgeUp = false;
+        // The bridge may be down, or the browser may be blocking access to
+        // this machine. Those need different answers, so tell them apart.
         setLocalState('off', '\u2318\u2325\u2313M');
         if (localRecBtn) localRecBtn.textContent = '\u25cf Local Audio';
+        showBridgeHelp();
       }
       return d;
     });
+  }
+
+  // The help note under the Local audio row.
+  function showBridgeHelp() {
+    var help = document.getElementById('bridgeHelp');
+    if (!help) return;
+    help.style.display = 'block';
+    var retry = document.getElementById('bridgeRetry');
+    if (retry) retry.style.display = 'inline-flex';
+  }
+
+  function hideBridgeHelp() {
+    var help = document.getElementById('bridgeHelp');
+    if (help) help.style.display = 'none';
   }
 
   if (localRecBtn) {
@@ -767,6 +802,17 @@
                 'Press \u2318\u2325\u2313M to toggle the recording instead.\n' +
                 'Or use the \u27ef\u8ef8 menu \u2192 \ud83c\udf99\ufe0f Council \u2192 Toggle Recording.');
         }
+      });
+    });
+  }
+
+  var bridgeRetry = document.getElementById('bridgeRetry');
+  if (bridgeRetry) {
+    bridgeRetry.addEventListener('click', function () {
+      bridgeRetry.textContent = 'Checking…';
+      refreshBridge().then(function (d) {
+        bridgeRetry.textContent = (d && d.ok) ? 'Connected' : 'Still blocked';
+        if (d && d.ok) setTimeout(function () { bridgeRetry.style.display = 'none'; }, 1500);
       });
     });
   }
