@@ -2,10 +2,21 @@
 
 Static site for **The Basically Brilliant Beginner** / **Council of the Root**.
 
+## 🌍 Live Site
+**https://basically-brilliant-beginner.vercel.app**
+
+| Page | URL |
+|------|-----|
+| Landing | https://basically-brilliant-beginner.vercel.app/ |
+| Music Hub | https://basically-brilliant-beginner.vercel.app/pages/music |
+| Insight Timer | https://basically-brilliant-beginner.vercel.app/pages/insight-timer |
+| Resources | https://basically-brilliant-beginner.vercel.app/pages/resources |
+| Council Sessions | https://basically-brilliant-beginner.vercel.app/pages/council |
+
 ## Stack
 - Pure HTML / CSS / vanilla JS
 - No framework, no build step
-- Deployed to Vercel via GitHub
+- Deployed to Vercel via GitHub (auto-deploy on push to `main`)
 
 ## Structure
 ```
@@ -41,45 +52,28 @@ Then open http://localhost:8080
 
 ## Deploy to Vercel
 
-### Option 1: GitHub Integration (Recommended)
+**Already deployed.** GitHub → Vercel auto-deploy is live on `main`.
 
-1. **Create the repo**
-   ```bash
-   cd landing-page
-   git init
-   git add .
-   git commit -m "Initial commit - Basically Brilliant Beginner landing page"
-   git branch -M main
-   git remote add origin https://github.com/YOUR-USERNAME/basically-brilliant-beginner.git
-   git push -u origin main
-   ```
-
-2. **Create on GitHub**
-   - Go to https://github.com/new
-   - Name: `basically-brilliant-beginner`
-   - Public or Private (private works fine with Vercel)
-   - Push the code from step 1
-
-3. **Import to Vercel**
-   - Go to https://vercel.com/new
-   - Import the GitHub repo
-   - Framework preset: **Other**
-   - Build command: leave empty (or `echo 'no build'`)
-   - Output directory: leave empty (root)
-   - Click **Deploy**
-
-4. **Done!** Vercel gives you a URL like `basically-brilliant-beginner.vercel.app`
-
-### Option 2: Vercel CLI
-
+### Making Changes
 ```bash
-npm i -g vercel
 cd landing-page
-vercel          # preview
-vercel --prod   # production
+# edit files
+git add -A
+git commit -m "Update council notes"
+git push origin main
+# Vercel auto-deploys within ~60 seconds
 ```
 
-The CLI will prompt you to link a GitHub repo for auto-deploys.
+### Manual Deploy (if needed)
+```bash
+vercel --prod
+```
+
+### Project Details
+- **Vercel Project:** `basically-brilliant-beginner` (team: `daniele-buattis-projects`)
+- **GitHub Repo:** https://github.com/dbuatti/basically-brilliant-beginner
+- **Dashboard:** https://vercel.com/daniele-buattis-projects/basically-brilliant-beginner
+- **Deployment Protection:** Disabled (public access)
 
 ## Custom Domain
 
