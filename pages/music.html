@@ -192,11 +192,26 @@
           <article class="music-card">
             <div class="music-card__header">
               <span class="music-card__element" style="background: rgba(168, 208, 230, 0.2); color: var(--color-air);">Air</span>
-              <span class="music-card__status status--ideas">Ideas Phase</span>
+              <span class="music-card__status status--ideas">Needed by 28 Oct</span>
             </div>
             <div class="music-card__body">
               <h3 class="music-card__title">Air — Breath & Clarity</h3>
               <p class="music-card__desc">Aeolian harp textures. Breath samples. High, clear tones. Wind chimes. Mental spaciousness.</p>
+
+              <div class="music-card__brief">
+                <p class="music-card__briefTitle">The brief for the Air session · 28 Oct</p>
+                <ul class="music-card__briefList">
+                  <li><b>Opening</b> — something that lifts. Air rising, not rushing. A held chord with air in it, around 90 seconds, that can sit under the blessing without crowding it.</li>
+                  <li><b>Breathwork</b> — a 4–7–8 or 4–6 rhythm track, gentle, no percussion. Runs under six slow cycles while people settle. About 6 minutes, loopable.</li>
+                  <li><b>Meditation</b> — 11 minutes, the main piece. The breath as it actually moves: not instructing, just accompanying. Sustained tone, a slow pulse underneath, nothing that pulls attention to itself.</li>
+                  <li><b>Closing</b> — around 90 seconds, resolving. The same chord as the opening, but settled.</li>
+                </ul>
+                <p class="music-card__briefNote">
+                  It plays quietly under the speaking. The meditation bed is the only piece
+                  that has to be genuinely good — that is the one people will remember.
+                </p>
+              </div>
+
               <div class="music-card__tracks">
                 <div class="track">
                   <button class="track__play" aria-label="Play Air Concept" onclick="this.querySelector('svg').style.display='none'; this.textContent='⏸'; setTimeout(()=>{this.textContent=''; this.innerHTML='<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"6\" y=\"4\" width=\"4\" height=\"16\"/><rect x=\"14\" y=\"4\" width=\"4\" height=\"16\"/></svg>';}, 3000)">
@@ -220,8 +235,8 @@
                 </div>
               </div>
               <div class="music-card__actions">
-                <a href="#" class="btn btn--secondary" style="flex: 1;">Add Ideas</a>
-                <a href="#" class="btn btn--ghost">Reference Tracks</a>
+                <a href="/pages/prep.html" class="btn btn--secondary" style="flex: 1;">Session brief</a>
+                <a href="#" class="btn btn--ghost">Add Ideas</a>
               </div>
             </div>
           </article>
