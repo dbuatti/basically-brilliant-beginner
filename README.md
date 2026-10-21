@@ -31,6 +31,22 @@ Or manually:
 netlify deploy --prod --dir=.
 ```
 
+### The Netlify badge
+
+Removed on both sites. Netlify injects it via a script at
+`/.netlify/scripts/hud`, and the site setting that controls it is
+`built_with_badge_enabled`:
+
+```bash
+curl -X PATCH "https://api.netlify.com/api/v1/sites/<site_id>" \
+  -H "Authorization: Bearer $NETLIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"built_with_badge_enabled": false}'
+```
+
+It takes effect immediately — no redeploy needed. A custom domain would also
+remove it.
+
 ### Why two hosts
 Vercel's Hobby tier caps deployments at **100 per day for the whole account**, and
 that account also hosts several other active projects (`scales.os`,
