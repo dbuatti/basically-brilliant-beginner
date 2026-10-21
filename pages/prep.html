@@ -88,7 +88,8 @@
   .btn--plain:hover { color: var(--gold); border-color: var(--line); }
 
   .roomline { display: flex; align-items: center; gap: var(--s3); padding: var(--s4); background: var(--navy-2); border: 1px solid var(--line); border-radius: var(--r-lg); margin-bottom: var(--s4); flex-wrap: wrap; }
-  .roomline__code { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--gold); background: var(--surface); padding: .35rem .6rem; border-radius: 5px; word-break: break-all; }
+  .roomline__url { flex: 1 1 240px; min-width: 0; }
+  .roomline__code { font-family: ui-monospace, Menlo, monospace; font-size: .74rem; color: var(--gold); background: var(--surface); padding: .35rem .6rem; border-radius: 5px; word-break: break-word; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .warn { display: flex; gap: .7rem; padding: .8rem 1rem; border-radius: var(--r-md); background: rgba(217,107,95,.1); border: 1px solid rgba(217,107,95,.3); font-size: .82rem; color: var(--text-soft); margin-bottom: var(--s4); }
   .warn svg { width: 17px; height: 17px; color: #D96B5F; flex-shrink: 0; margin-top: 3px; }
@@ -139,7 +140,7 @@
         <div class="card2">
           <span class="tag">Your room</span>
           <div class="roomline">
-            <div style="flex:1;min-width:220px;">
+            <div class="roomline__url">
               <div class="roomline__code" id="roomCode">—</div>
             </div>
             <a class="btn btn--gold" id="joinBtn" href="#" target="_blank" rel="noopener">
