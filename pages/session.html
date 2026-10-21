@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Council Console - join the Council of the Root live session.">
+  <title>Council Console | Charming Divinations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .console { min-height: 100vh; display: flex; flex-direction: column; background: var(--color-bg); }
+
+    .console__bar {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+      padding: var(--space-4) var(--space-6);
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg-elevated);
+      flex-wrap: wrap;
+    }
+    .console__brand { display: flex; align-items: center; gap: var(--space-3); }
+    .console__title { font-family: var(--font-heading); font-size: var(--font-size-xl); }
+    .console__element { font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent); font-weight: 600; }
+    .console__actions { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+
+    .console__body { flex: 1; position: relative; display: flex; min-height: 0; }
+
+    .console__stage { flex: 1; position: relative; background: #000; min-height: 60vh; }
+    .console__frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+    .console__overlay {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(160deg, rgba(15,14,13,0.97), rgba(35,32,29,0.97));
+      padding: var(--space-6);
+      transition: opacity var(--transition-base), visibility var(--transition-base);
+    }
+    .console__overlay--hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .console__panel { max-width: 640px; width: 100%; text-align: center; }
+    .console__panel-icon { width: 56px; height: 56px; margin: 0 auto var(--space-4); color: var(--color-accent); }
+    .console__panel-title { font-size: var(--font-size-3xl); margin-bottom: var(--space-3); }
+    .console__panel-text { font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--space-6); line-height: 1.7; }
+
+    .prep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); text-align: left; margin-bottom: var(--space-6); }
+    .prep-item { display: flex; gap: var(--space-3); padding: var(--space-3); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .prep-item__icon { width: 20px; height: 20px; color: var(--color-accent); flex-shrink: 0; margin-top: 2px; }
+    .prep-item__text { font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.5; }
+
+    .console__join { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; }
+
+    .console__sidebar {
+      width: 320px; border-left: 1px solid var(--color-border);
+      background: var(--color-bg-elevated); padding: var(--space-5);
+      overflow-y: auto; flex-shrink: 0;
+    }
+    @media (max-width: 1000px) { .console__sidebar { display: none; } }
+
+    .side-block { margin-bottom: var(--space-6); }
+    .side-block__title { font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent); margin-bottom: var(--space-3); }
+    .side-list { display: flex; flex-direction: column; gap: var(--space-2); }
+    .side-item { font-size: var(--font-size-sm); color: var(--color-text-muted); display: flex; gap: var(--space-2); align-items: flex-start; }
+    .side-item__bullet { color: var(--color-accent); flex-shrink: 0; }
+    .side-link { display: block; font-size: var(--font-size-sm); color: var(--color-text-muted); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); transition: color var(--transition-fast); }
+    .side-link:hover { color: var(--color-accent); }
+    .side-note { font-size: var(--font-size-xs); color: var(--color-text-subtle); line-height: 1.6; margin-top: var(--space-3); padding: var(--space-3); background: var(--color-surface); border-radius: var(--radius-sm); border-left: 2px solid var(--color-accent); }
+  </style>
+</head>
+<body>
+  <div class="console">
+    <!-- Top bar -->
+    <div class="console__bar">
+      <div class="console__brand">
+        <svg class="nav__logo-icon" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+        <div>
+          <div class="console__title">Council Console</div>
+          <div class="console__element" id="elementLabel">Council of the Root</div>
+        </div>
+      </div>
+      <div class="console__actions">
+        <button class="btn btn--ghost" id="recToggle" type="button">
+          <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Local Recording
+        </button>
+        <a href="/pages/council.html" class="btn btn--ghost">Session Notes</a>
+        <a href="/join" class="btn btn--secondary" target="_blank" rel="noopener">Open Full Window</a>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="console__body">
+      <div class="console__stage">
+        <iframe
+          id="jitsiFrame"
+          class="console__frame"
+          src="about:blank"
+          allow="camera; microphone; fullscreen; display-capture; autoplay; encrypted-media; clipboard-write"
+          allowfullscreen>
+        </iframe>
+
+        <!-- Pre-join overlay -->
+        <div class="console__overlay" id="overlay">
+          <div class="console__panel">
+            <svg class="console__panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 14 13H2"/>
+            </svg>
+            <h1 class="console__panel-title">Ready to Gather?</h1>
+            <p class="console__panel-text">
+              The Council of the Root meets here. Take a moment to set your space, 
+              then step in. The room opens straight into the ritual.
+            </p>
+
+            <div class="prep-grid">
+              <div class="prep-item">
+                <svg class="prep-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19v-6M8 13v-2a4 4 0 0 1 8 0v2"/></svg>
+                <div class="prep-item__text"><strong>Headphones on</strong><br>so the ritual is undisturbed</div>
+              </div>
+              <div class="prep-item">
+                <svg class="prep-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                <div class="prep-item__text"><strong>Glass of water</strong><br>&amp; a dark bowl for scrying</div>
+              </div>
+              <div class="prep-item">
+                <svg class="prep-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                <div class="prep-item__text"><strong>Candle &amp; incense</strong><br>if you have them to hand</div>
+              </div>
+              <div class="prep-item">
+                <svg class="prep-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <div class="prep-item__text"><strong>90 minutes</strong><br>leave a little space around it</div>
+              </div>
+            </div>
+
+            <div class="console__join">
+              <button class="btn btn--primary" id="joinBtn" type="button">
+                <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                Enter the Council
+              </button>
+              <a href="/join" class="btn btn--secondary" target="_blank" rel="noopener">Open in Jitsi instead</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="console__sidebar">
+        <div class="side-block">
+          <h2 class="side-block__title">Session Flow</h2>
+          <div class="side-list">
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Arrival &amp; opening blessing</span></div>
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Crystal bowl &amp; breathwork</span></div>
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Element teaching</span></div>
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Ritual practice</span></div>
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Guided meditation</span></div>
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Sharing circle</span></div>
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Closing &amp; next steps</span></div>
+          </div>
+        </div>
+
+        <div class="side-block">
+          <h2 class="side-block__title">Recording</h2>
+          <div class="side-list">
+            <div class="side-item"><span class="side-item__bullet">▸</span><span>Jitsi records server-side to Dropbox</span></div>
+            <div class="side-item"><span class="side-item__bullet">▸</span><span>One person clicks ⋮ → Start recording</span></div>
+            <div class="side-item"><span class="side-item__bullet">▸</span><span>Authenticate Dropbox the first time only</span></div>
+          </div>
+          <p class="side-note">
+            The <strong>Local Recording</strong> button (top right) records separate high-quality audio 
+            on this Mac via Hammerspoon. Use both — Jitsi for video, local for clean audio.
+          </p>
+        </div>
+
+        <div class="side-block">
+          <h2 class="side-block__title">Links</h2>
+          <a href="/pages/council.html" class="side-link">Session Notes &amp; Action Items</a>
+          <a href="/pages/music.html" class="side-link">Music Hub</a>
+          <a href="/pages/media.html" class="side-link">Listen &amp; Watch</a>
+          <a href="/pages/resources.html" class="side-link">Technical Resources</a>
+          <a href="/pages/insight-timer.html" class="side-link">Insight Timer Setup</a>
+        </div>
+
+        <div class="side-block">
+          <h2 class="side-block__title">Room Names</h2>
+          <div class="side-list">
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Main: <code style="font-size: 11px; color: var(--color-accent);">council-of-the-root</code></span></div>
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Water: <code style="font-size: 11px; color: var(--color-accent);">council-of-the-root-water</code></span></div>
+            <div class="side-item"><span class="side-item__bullet">•</span><span>Air: <code style="font-size: 11px; color: var(--color-accent);">council-of-the-root-air</code></span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var ROOM = 'council-of-the-root';
+      var frame = document.getElementById('jitsiFrame');
+      var overlay = document.getElementById('overlay');
+      var joinBtn = document.getElementById('joinBtn');
+      var recToggle = document.getElementById('recToggle');
+
+      // Build the embedded Jitsi URL with the config overrides that make
+      // embedding behave: no prejoin page, no deep links to the app.
+      function buildUrl(room) {
+        var config = {
+          prejoinPageEnabled: false,
+          disableDeepLinking: true,
+          startWithAudioMuted: true,
+          startWithVideoMuted: true,
+          hideConferenceSubject: true,
+          disable1On1Mode: true,
+          toolbarButtons: [
+            'microphone', 'camera', 'desktop', 'chat', 'raisehand',
+            'participants-pane', 'tileview', 'fullscreen', 'help', 'settings'
+          ],
+          interfaceConfig: {
+            SHOW_JITSI_WATERMARK: false,
+            SHOW_WATERMARK_FOR_GUESTS: false,
+            TOOLBAR_ALWAYS_SHOW: true,
+            ENABLE_FEEDBACK_TOGGLE: false,
+            AUTO_PIN_LATEST_SCREEN_SHARE: 'remote-only'
+          }
+        };
+        return 'https://meet.jit.si/' + room +
+          '#config.' + encodeURIComponent(JSON.stringify(config));
+      }
+
+      joinBtn.addEventListener('click', function () {
+        frame.src = buildUrl(ROOM);
+        overlay.classList.add('console__overlay--hidden');
+      });
+
+      // Local recording toggle (Hammerspoon hotkey also works: ⌘⌥⌃M)
+      recToggle.addEventListener('click', function () {
+        if (window.recordToggle) {
+          window.recordToggle();
+        } else {
+          fetch('/api/record-toggle').catch(function () {});
+          alert('Local recording runs through Hammerspoon.\nPress ⌘⌥⌃M to toggle it.');
+        }
+      });
+
+      // Allow ?room=water to load a specific room
+      var params = new URLSearchParams(window.location.search);
+      var roomParam = params.get('room');
+      if (roomParam) {
+        ROOM = 'council-of-the-root-' + roomParam.replace(/[^a-z0-9-]/gi, '');
+        document.getElementById('elementLabel').textContent =
+          roomParam.charAt(0).toUpperCase() + roomParam.slice(1) + ' Element';
+        frame.src = buildUrl(ROOM);
+        overlay.classList.add('console__overlay--hidden');
+      }
+    })();
+  </script>
+</body>
+</html>
