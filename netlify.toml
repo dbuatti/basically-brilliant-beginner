@@ -2,7 +2,15 @@
   publish = "."
   command = ""
 
-# Clean URLs — /pages/session serves pages/session.html
+# Netlify Function — issues the Jitsi JWT for the Council Console
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/jitsi-token"
+  to = "/.netlify/functions/jitsi-token"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
