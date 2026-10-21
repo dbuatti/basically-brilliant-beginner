@@ -32,3 +32,7 @@
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "SAMEORIGIN"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    # Only the features Chrome recognises. Listing unsupported ones
+    # (attribution-reporting, private-aggregation, join-ad-interest-group,
+    # run-ad-auction) makes the console noisy for no benefit.
+    Permissions-Policy = "camera=(self), microphone=(self), display-capture=(self), geolocation=()"
