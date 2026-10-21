@@ -107,7 +107,21 @@
   .block__item b { color: var(--gold); font-weight: 400; }
   .block__link { display: block; font-size: .82rem; color: var(--text-soft); padding: .3rem 0; border-bottom: 1px solid var(--line-soft); }
   .block__link:hover { color: var(--gold); }
-  .note { font-size: .74rem; color: var(--text-faint); line-height: 1.6; margin-top: .6rem; padding: .7rem; background: var(--surface); border-radius: 6px; border-left: 2px solid var(--gold); }
+  .note { font-size: .74rem; color: var(--text-faint); line-height: 1.6; margin-top: .8rem; padding: .7rem; background: var(--surface); border-radius: 6px; border-left: 2px solid var(--gold); }
+
+  /* Recording routes */
+  .recList { display: flex; flex-direction: column; gap: .6rem; }
+  .recItem { padding: .7rem .8rem; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 8px; }
+  .recItem--live { border-color: rgba(212,175,106,.5); background: rgba(212,175,106,.09); }
+  .recItem__head { display: flex; align-items: center; gap: .45rem; margin-bottom: .35rem; }
+  .recItem__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-faint); flex-shrink: 0; }
+  .recItem__dot--local { background: var(--text-faint); }
+  .recItem__dot--ready { background: var(--ok); }
+  .recItem__dot--live { background: var(--danger); animation: pulse 1.4s ease-in-out infinite; }
+  .recItem__name { font-size: .82rem; font-weight: 600; color: var(--text); }
+  .recItem__tag { margin-left: auto; font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); }
+  .recItem__text { font-size: .76rem; color: var(--text-soft); line-height: 1.55; }
+  .recItem__text strong { color: var(--gold-light); font-weight: 600; }
 
   /* Recording control strip inside the stage */
   .recbar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 15; display: flex; align-items: center; gap: .55rem; padding: .7rem 1rem; background: rgba(8,11,24,.97); border-top: 1px solid var(--line); flex-wrap: wrap; }
@@ -244,7 +258,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
           <span id="recBtnLabel">Start Recording</span>
         </button>
-        <button class="btn btn--ghost btn--sm" id="localRecBtn" type="button">Local Audio (⌘⌥⌃M)</button>
+        <button class="btn btn--ghost btn--sm" id="localRecBtn" type="button">Local Audio</button>
         <button class="btn btn--ghost btn--sm" id="muteBtn" type="button" disabled>Mute</button>
         <button class="btn btn--ghost btn--sm" id="shareBtn" type="button" disabled>Share Screen</button>
         <a href="#" class="btn btn--ghost btn--sm" id="recFullLink" target="_blank" rel="noopener">Record in Full Window</a>
@@ -268,14 +282,46 @@
 
       <div class="block">
         <h2 class="block__title">Recording — Three Ways</h2>
-        <ul class="block__list">
-          <li class="block__item"><b>▸</b><span><strong style="color:var(--text)">Jitsi built-in</strong> — records everyone, server-side. Start it in a full browser tab: ⋮ → Start recording → Dropbox.</span></li>
-          <li class="block__item"><b>▸</b><span><strong style="color:var(--text)">This page's button</strong> — starts a local browser recording of your own stream.</span></li>
-          <li class="block__item"><b>▸</b><span><strong style="color:var(--text)">Hammerspoon</strong> — separate high-quality audio of your Mac, outside the browser.</span></li>
-        </ul>
+        <div class="recList">
+          <div class="recItem" id="recItemJitsi">
+            <div class="recItem__head">
+              <span class="recItem__dot"></span>
+              <span class="recItem__name">Jitsi built-in</span>
+              <span class="recItem__tag" id="recTagJitsi">server-side</span>
+            </div>
+            <p class="recItem__text">
+              Records <strong>everyone</strong>, mixed on the server. In a full browser tab:
+              <strong>⋮ → Start recording → Dropbox</strong>. Dropbox asks you to connect once.
+            </p>
+          </div>
+
+          <div class="recItem" id="recItemBrowser">
+            <div class="recItem__head">
+              <span class="recItem__dot"></span>
+              <span class="recItem__name">This page's button</span>
+              <span class="recItem__tag" id="recTagBrowser">browser-side</span>
+            </div>
+            <p class="recItem__text">
+              Starts a recording of your own stream in the browser and downloads it when you
+              stop. Works on the embed, so it only captures the first five minutes there.
+            </p>
+          </div>
+
+          <div class="recItem" id="recItemLocal">
+            <div class="recItem__head">
+              <span class="recItem__dot recItem__dot--local"></span>
+              <span class="recItem__name">Local audio</span>
+              <span class="recItem__tag" id="recTagLocal">checking…</span>
+            </div>
+            <p class="recItem__text">
+              Records your Mac's audio separately, outside the browser, straight from the
+              meeting tab. Cleanest track of the three, and it runs for the whole session.
+            </p>
+          </div>
+        </div>
         <p class="note">
           Only <strong>moderators</strong> can record. On the public Jitsi server the person who
-          opens the room first becomes moderator — and has to sign in once with a Google account.
+          opens the room first becomes moderator — and signs in once with a Google account.
           Everyone else just types a name and joins.
         </p>
       </div>
@@ -283,9 +329,13 @@
       <div class="block">
         <h2 class="block__title">Transcription</h2>
         <ul class="block__list">
-          <li class="block__item"><b>▸</b><span>Drop the recording into MacWhisper for a transcript + subtitles</span></li>
+          <li class="block__item"><b>▸</b><span>Press <strong style="color:var(--text)">Transcribe</strong> to run MacWhisper on the latest recording</span></li>
           <li class="block__item"><b>▸</b><span>Or turn on live captions in Jitsi (CC button)</span></li>
         </ul>
+        <button class="btn btn--ghost btn--sm" id="transcribeBtn" type="button" style="margin-top:.6rem; width:100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M12 18V9M9 12l3-3 3 3"/></svg>
+          Transcribe latest
+        </button>
       </div>
 
       <div class="block">
@@ -317,6 +367,17 @@
   // meet.jit.si has disableIframeAPI: true and cuts embedded calls at 5
   // minutes, so the embed there is a short check-in only.
   var API_DOMAIN = 'meet.jit.si';
+
+  // ── One thing to change ──────────────────────────────────────────────
+  // Point this at your own Jitsi server and the Council Console will use
+  // it instead of the public one: no five-minute embed limit, no ninety-five
+  // minute cap, and recording handled by Jibri on your own machine.
+  // Leave it empty ('') to use the public server.
+  //
+  //   e.g. 'https://meet.charmingdivinations.com'
+  //
+  var SELF_HOSTED_URL = '';
+
   var api = null;
   var isRecording = false;
   var joined = false;
@@ -339,6 +400,7 @@
   var muteBtn = document.getElementById('muteBtn');
   var shareBtn = document.getElementById('shareBtn');
   var localRecBtn = document.getElementById('localRecBtn');
+  var transcribeBtn = document.getElementById('transcribeBtn');
 
   // ── Room naming ────────────────────────────────────────────────────────
   // The public Jitsi server blocks a room name for a while after it hits its
@@ -373,9 +435,16 @@
     startJoin();
   });
 
-  // Try JaaS first (full iframe API, no time limit). If the token function
-  // isn't configured, fall back to the public server.
+  // Try, in order:
+  //   1. a self-hosted Jitsi (SELF_HOSTED_URL in the page config)
+  //   2. JaaS (via the Netlify token function)
+  //   3. the public server, which caps embeds at 5 minutes
   function startJoin() {
+    var selfHosted = (SELF_HOSTED_URL || '').replace(/\/$/, '');
+    if (selfHosted) {
+      probeSelfHosted(selfHosted);
+      return;
+    }
     fetch('/.netlify/functions/jitsi-token?room=' + encodeURIComponent(ROOM) + '&name=' + encodeURIComponent('Council'))
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
@@ -442,12 +511,47 @@
     wireApiEvents();
   }
 
+  // A self-hosted Jitsi on our own server: the iframe API works, there is no
+  // time limit, and Jibri records to our own disk.
+  function probeSelfHosted(base) {
+    var w = document.getElementById('embedWarnText');
+    var ok = function () {
+      API_DOMAIN = base;
+      if (w) {
+        w.innerHTML = '<strong>Our own server.</strong> No time limit, recording ' +
+          'handled here, and the whole session runs inside this page.';
+      }
+      joinWithApi(null, ROOM);
+    };
+    var fail = function () {
+      if (w) {
+        w.innerHTML = '<strong>This embedded view stops after 5 minutes</strong> — the ' +
+          'public Jitsi server disables embedding beyond a short demo. For the full ' +
+          'ninety minutes, use <strong>Open Full Window</strong> (top right), where you ' +
+          'can record from the \u22ee menu.';
+      }
+      fetch('/.netlify/functions/jitsi-token?room=' + encodeURIComponent(ROOM))
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (data && data.configured && data.jwt) { joinWithApi(data.jwt, data.roomName); }
+          else { joinPublic(); }
+        })
+        .catch(function () { joinPublic(); });
+    };
+    // A short HEAD tells us whether our own server is up without joining it.
+    fetch(base + '/', { method: 'GET', mode: 'no-cors' })
+      .then(ok)
+      .catch(function () {
+        // no-cors hides the response but a failure means it is not there
+        fail();
+      });
+  }
+
   // JaaS path — the iframe API is fully supported here, so we can skip the
   // prejoin, set ourselves moderator, and drive recording from the page.
   function joinWithApi(jwt, roomName) {
-    api = new JitsiMeetExternalAPI(API_DOMAIN, {
+    var opts = {
       roomName: roomName,
-      jwt: jwt,
       parentNode: host,
       width: '100%',
       height: '100%',
@@ -469,8 +573,9 @@
           'participants-pane', 'tileview', 'fullscreen', 'settings', 'help'
         ]
       }
-    });
-
+    };
+    if (jwt) opts.jwt = jwt;
+    api = new JitsiMeetExternalAPI(API_DOMAIN, opts);
     wireApiEvents();
   }
 
@@ -493,6 +598,8 @@
       recLabel.textContent = on ? 'Stop' : 'Record';
       recDot.className = 'recbar__dot' + (on ? ' recbar__dot--live' : ' recbar__dot--ok');
       recStatus.textContent = on ? 'Recording' : 'Ready to record';
+      if (typeof setBrowserState === 'function') setBrowserState(on);
+      if (typeof setBrowserState === 'function') setBrowserState(on);
     });
 
     api.addEventListener('participantRoleChanged', function (event) {
@@ -591,16 +698,92 @@
     api.executeCommand('toggleShareScreen');
   });
 
-  // ── Local (Hammerspoon) audio capture ─────────────────────────────────
-  // The server can't reach the Hammerspoon API, so this posts to a tiny
-  // local helper if one is running, and otherwise tells the user the hotkey.
-  function toggleLocalRecording() {
-    if (window.__councilLocalRecord) { window.__councilLocalRecord(); return; }
-    alert('Local audio recording runs in Hammerspoon on this Mac.\n\n' +
-          'Press ⌘⌥⌃M to start, and again to stop.\n' +
-          'Or use the 🚀 menu → 🎙️ Council → Toggle Recording.');
+  // ── Local bridge (Mac audio capture + transcription) ────────────────
+  // A small service on 127.0.0.1:8765 exposes the local recording and
+  // MacWhisper transcription to the page. Optional — if it isn't running
+  // we fall back to the Hammerspoon hotkey.
+  var BRIDGE = 'http://127.0.0.1:8765';
+  var bridgeUp = false;
+
+  var recTagLocal = document.getElementById('recTagLocal');
+  var recItemLocal = document.getElementById('recItemLocal');
+  var recItemBrowser = document.getElementById('recItemBrowser');
+  var recTagBrowser = document.getElementById('recTagBrowser');
+
+  function bridgeCall(path, method) {
+    return fetch(BRIDGE + path, { method: method || 'GET' })
+      .then(function (r) { return r.json(); })
+      .catch(function () { return { ok: false, offline: true }; });
   }
-  window.toggleLocalRecording = toggleLocalRecording;
+
+  function setLocalState(state, label) {
+    if (!recTagLocal) return;
+    recTagLocal.textContent = label;
+    var dot = recItemLocal && recItemLocal.querySelector('.recItem__dot');
+    if (dot) {
+      dot.className = 'recItem__dot recItem__dot--local' +
+        (state === 'live' ? ' recItem__dot--live' :
+         state === 'ready' ? ' recItem__dot--ready' : '');
+    }
+    if (recItemLocal) recItemLocal.classList.toggle('recItem--live', state === 'live');
+  }
+
+  function setBrowserState(on) {
+    if (!recTagBrowser) return;
+    recTagBrowser.textContent = on ? 'recording' : 'browser-side';
+    if (recItemBrowser) recItemBrowser.classList.toggle('recItem--live', on);
+  }
+
+  function refreshBridge() {
+    return bridgeCall('/status').then(function (d) {
+      if (d && d.ok) {
+        bridgeUp = true;
+        setLocalState(d.recording ? 'live' : 'ready', d.recording ? 'recording' : 'ready');
+        if (localRecBtn) {
+          localRecBtn.textContent = d.recording ? '\u25a0 Stop Local Audio' : '\u25cf Local Audio';
+        }
+      } else {
+        bridgeUp = false;
+        setLocalState('off', '\u2318\u2325\u2313M');
+        if (localRecBtn) localRecBtn.textContent = '\u25cf Local Audio';
+      }
+      return d;
+    });
+  }
+
+  if (localRecBtn) {
+    localRecBtn.addEventListener('click', function () {
+      bridgeCall('/record', 'POST').then(function (d) {
+        if (d && d.ok) {
+          setLocalState(d.recording ? 'live' : 'ready', d.recording ? 'recording' : 'ready');
+          localRecBtn.textContent = d.recording ? '\u25a0 Stop Local Audio' : '\u25cf Local Audio';
+        } else {
+          alert('The local bridge is not running.\n\n' +
+                'Press \u2318\u2325\u2313M to toggle the recording instead.\n' +
+                'Or use the \u27ef\u8ef8 menu \u2192 \ud83c\udf99\ufe0f Council \u2192 Toggle Recording.');
+        }
+      });
+    });
+  }
+
+  if (transcribeBtn) {
+    transcribeBtn.addEventListener('click', function () {
+      bridgeCall('/transcribe', 'POST').then(function (d) {
+        if (d && d.ok) {
+          transcribeBtn.textContent = 'Transcribing\u2026';
+          setTimeout(function () { transcribeBtn.textContent = 'Transcribe latest'; }, 4000);
+        } else {
+          alert('Could not start the transcription.\n\n' +
+                (d && d.error ? d.error + '\n\n' : '') +
+                'Open the recording in MacWhisper directly, or use\n' +
+                'the \u27ef\u8ef8 menu \u2192 \ud83c\udf99\ufe0f Council \u2192 Transcribe Latest Recording.');
+        }
+      });
+    });
+  }
+
+  refreshBridge();
+  setInterval(refreshBridge, 8000);
 })();
 </script>
 </body>
