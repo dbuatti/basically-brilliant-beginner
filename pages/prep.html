@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next Session · Air | Council of the Root</title>
+<meta name="description" content="Everything for the next Council of the Root session — invitation, run-sheet, teaching notes and the tech check.">
+<meta name="theme-color" content="#0B1020">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<script>document.documentElement.className+=" js"</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<style>
+  /* Self-contained: this page does not share the console's variables. */
+  :root {
+    --navy: #0B1020; --navy-2: #111832; --navy-3: #18203e;
+    --gold: #D4AF6A; --gold-light: #E8C98E; --gold-dim: rgba(212,175,106,.14);
+    --blush: #F3C6D6; --purple: #6B2D6B; --teal: #2E7D8F;
+    --text: #F2EEE8; --text-soft: #C6C0D4; --text-muted: #8F8AA6; --text-faint: #67627E;
+    --line: rgba(212,175,106,.18); --line-soft: rgba(255,255,255,.08);
+    --border-strong: rgba(212,175,106,.32);
+    --surface: rgba(255,255,255,.035); --surface-2: rgba(255,255,255,.06);
+    --danger: #D96B5F; --ok: #6FA97C;
+    --s1: .25rem; --s2: .5rem; --s3: .75rem; --s4: 1rem; --s5: 1.5rem;
+    --s6: 2rem; --s7: 2.5rem; --s8: 3rem; --s9: 4rem; --s10: 5rem; --s11: 6rem;
+    --header-h: 78px;
+    --r-sm: 4px; --r-md: 8px; --r-lg: 14px; --r-xl: 22px; --r-full: 999px;
+    --ease: 220ms cubic-bezier(.4,0,.2,1);
+    --display: 'Playfair Display', Georgia, serif;
+    --body: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body { background: var(--navy); color: var(--text); font-family: var(--body); }
+  .eyebrow { font-size: .68rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+  .nebula {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(ellipse 50% 45% at 82% 8%, rgba(107,45,107,.38), transparent 62%),
+      radial-gradient(ellipse 45% 40% at 8% 82%, rgba(46,125,143,.26), transparent 60%);
+  }
+  .container { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 1.5rem; }
+
+  .prep { padding: calc(var(--header-h) + var(--s7)) 0 var(--s10); position: relative; }
+  .prep__grid { display: grid; grid-template-columns: 1.25fr .85fr; gap: var(--s7); align-items: start; }
+  @media (max-width: 940px) { .prep__grid { grid-template-columns: 1fr; } }
+
+  .countdown { display: flex; gap: var(--s3); margin: var(--s5) 0 var(--s6); flex-wrap: wrap; }
+  .cd__box { background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--r-lg); padding: var(--s4) var(--s5); text-align: center; min-width: 84px; }
+  .cd__num { font-family: var(--display); font-size: 2.2rem; color: var(--gold); line-height: 1; }
+  .cd__label { font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: var(--text-faint); margin-top: .35rem; }
+
+  .card2 { background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--r-lg); padding: var(--s5); margin-bottom: var(--s4); }
+  .card2__title { font-size: 1.25rem; margin-bottom: var(--s3); }
+  .card2__body { font-size: .88rem; color: var(--text-soft); line-height: 1.7; }
+  .card2__body strong { color: var(--text); font-weight: 600; }
+  .card2__body em { color: var(--gold-light); }
+
+  /* Run sheet */
+  .sheet { display: flex; flex-direction: column; }
+  .sheet__row { display: grid; grid-template-columns: 92px 1fr; gap: var(--s4); padding: var(--s3) 0; border-bottom: 1px solid var(--line-soft); align-items: baseline; }
+  .sheet__row:last-child { border-bottom: none; }
+  .sheet__time { font-family: var(--display); font-size: 1rem; color: var(--gold); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sheet__what { font-size: .88rem; color: var(--text-soft); }
+  .sheet__what b { color: var(--text); font-weight: 600; display: block; }
+  .sheet__row--key { background: rgba(212,175,106,.07); margin: 0 calc(var(--s5) * -1); padding-left: var(--s5); padding-right: var(--s5); }
+  .sheet__row--key .sheet__time { color: var(--gold-light); }
+
+  /* Checklist */
+  .check { display: flex; flex-direction: column; gap: .6rem; }
+  .check__item { display: flex; gap: .7rem; align-items: flex-start; font-size: .86rem; color: var(--text-soft); cursor: pointer; }
+  .check__box { width: 18px; height: 18px; border-radius: 5px; border: 1px solid var(--border-strong, var(--line)); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all var(--ease); }
+  .check__box svg { width: 12px; height: 12px; color: var(--navy); opacity: 0; }
+  .check__item--done .check__box { background: var(--gold); border-color: var(--gold); }
+  .check__item--done .check__box svg { opacity: 1; }
+  .check__item--done .check__text { color: var(--text-faint); text-decoration: line-through; }
+
+  /* Actions */
+  .actions { display: flex; gap: var(--s3); flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .75rem 1.4rem; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; transition: all var(--ease); border: none; cursor: pointer; font-family: var(--body, 'Montserrat', sans-serif); }
+  .btn svg { width: 15px; height: 15px; }
+  .btn--gold { background: var(--gold); color: var(--navy); }
+  .btn--gold:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn--outline { background: transparent; color: var(--gold); border: 1px solid var(--line); }
+  .btn--outline:hover { background: rgba(212,175,106,.1); }
+  .btn--plain { background: var(--surface); color: var(--text-soft); border: 1px solid var(--line-soft); }
+  .btn--plain:hover { color: var(--gold); border-color: var(--line); }
+
+  .roomline { display: flex; align-items: center; gap: var(--s3); padding: var(--s4); background: var(--navy-2); border: 1px solid var(--line); border-radius: var(--r-lg); margin-bottom: var(--s4); flex-wrap: wrap; }
+  .roomline__code { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--gold); background: var(--surface); padding: .35rem .6rem; border-radius: 5px; word-break: break-all; }
+
+  .warn { display: flex; gap: .7rem; padding: .8rem 1rem; border-radius: var(--r-md); background: rgba(217,107,95,.1); border: 1px solid rgba(217,107,95,.3); font-size: .82rem; color: var(--text-soft); margin-bottom: var(--s4); }
+  .warn svg { width: 17px; height: 17px; color: #D96B5F; flex-shrink: 0; margin-top: 3px; }
+  .warn strong { color: var(--text); }
+
+  .notes { font-size: .8rem; color: var(--text-muted); margin-top: var(--s3); }
+  .tag { display: inline-block; font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: rgba(168,208,230,.15); color: #9BBFD1; border: 1px solid rgba(168,208,230,.3); margin-bottom: var(--s3); }
+</style>
+</head>
+<body>
+
+<nav class="nav" style="background:rgba(11,16,32,.92);border-bottom:1px solid var(--line);position:fixed;top:0;left:0;right:0;height:var(--header-h);z-index:1000;backdrop-filter:blur(16px);">
+  <div style="display:flex;align-items:center;justify-content:space-between;height:100%;max-width:1180px;margin:0 auto;padding:0 var(--pad);">
+    <a href="/" style="display:flex;align-items:center;gap:.7rem;">
+      <img src="/assets/logo-mark.png" alt="" width="32" height="33" style="height:32px;width:auto;">
+      <span style="font-family:var(--display);font-size:1.05rem;color:var(--gold-light);">Council of the Root</span>
+    </a>
+    <div style="display:flex;gap:1.4rem;align-items:center;">
+      <a href="/pages/council.html" style="font-size:.78rem;color:var(--text-soft);">Session notes</a>
+      <a href="/pages/session" style="font-size:.78rem;color:var(--text-soft);">Console</a>
+      <a href="/" class="btn btn--gold" style="padding:.5rem 1rem;font-size:.7rem;">Home</a>
+    </div>
+  </div>
+</nav>
+
+<div class="prep">
+  <div class="nebula" aria-hidden="true" style="position:absolute;inset:0;z-index:-1;"></div>
+  <div class="container">
+    <p class="eyebrow">Next session · Council of the Root</p>
+    <h1 style="font-size:clamp(2.2rem,4.5vw,3.2rem);margin:var(--s3) 0 var(--s2);color:var(--gold-light);">
+      The Breath of Protection
+    </h1>
+    <p style="color:var(--text-soft);font-size:1.02rem;max-width:40rem;">
+      Session two — the element of Air. Breath, movement, and mental clarity.
+      Wednesday 28 October, 7:30 PM.
+    </p>
+
+    <div class="countdown" id="countdown" aria-live="polite">
+      <div class="cd__box"><div class="cd__num" id="cd-days">—</div><div class="cd__label">days</div></div>
+      <div class="cd__box"><div class="cd__num" id="cd-hrs">—</div><div class="cd__label">hours</div></div>
+      <div class="cd__box"><div class="cd__num" id="cd-min">—</div><div class="cd__label">minutes</div></div>
+    </div>
+
+    <div class="prep__grid">
+      <!-- LEFT -->
+      <div>
+        <!-- The room -->
+        <div class="card2">
+          <span class="tag">Your room</span>
+          <div class="roomline">
+            <div style="flex:1;min-width:220px;">
+              <div class="roomline__code" id="roomCode">—</div>
+            </div>
+            <a class="btn btn--gold" id="joinBtn" href="#" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Join
+            </a>
+            <a class="btn btn--outline" id="copyBtn" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy link
+            </a>
+          </div>
+          <div class="actions" style="margin-top:var(--s3);">
+            <button class="btn btn--plain" id="icsBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Add to calendar
+            </button>
+            <a class="btn btn--plain" href="/pages/session" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8"/></svg>
+              Open the console
+            </a>
+          </div>
+          <p class="notes" id="icsNote">Downloads a calendar event with the room link in the description.</p>
+        </div>
+
+        <!-- Run sheet -->
+        <div class="card2">
+          <span class="tag">Run sheet</span>
+          <h2 class="card2__title">Ninety minutes, with five in hand</h2>
+          <p class="card2__body" style="margin-bottom:var(--s4);">
+            The public server caps a meeting at ninety-five minutes and counts from the moment
+            the first person joins. The session below is <strong>85 minutes</strong> so that
+            early arrivals and a little overrun still land inside it.
+          </p>
+          <div class="sheet">
+            <div class="sheet__row">
+              <div class="sheet__time">00:00</div>
+              <div class="sheet__what"><b>Arrival</b> Settle in, headphones on, glass of water and a dark bowl to hand.</div>
+            </div>
+            <div class="sheet__row sheet__row--key">
+              <div class="sheet__time">00:05</div>
+              <div class="sheet__what"><b>Opening blessing &amp; crystal bowl</b> Archangel Michael, the guides, the grandmothers of the four directions. Then the bowl, and breath to let go of what was carried in.</div>
+            </div>
+            <div class="sheet__row">
+              <div class="sheet__time">00:12</div>
+              <div class="sheet__what"><b>Grounding breath</b> Feet on the floor, breath to the belly, six slow cycles. Arriving in the body before the mind starts working.</div>
+            </div>
+            <div class="sheet__row sheet__row--key">
+              <div class="sheet__time">00:18</div>
+              <div class="sheet__what"><b>Teaching · Air</b> Breath, movement, mental clarity. Air as the element of the mind — and the counterweight to Water's flow. Why protection belongs before power.</div>
+            </div>
+            <div class="sheet__row">
+              <div class="sheet__time">00:31</div>
+              <div class="sheet__what"><b>Practice · Grounding &amp; shielding</b> A simple practice: feel the ground, feel the breath, then draw a boundary. Something repeatable, at a kitchen table.</div>
+            </div>
+            <div class="sheet__row sheet__row--key">
+              <div class="sheet__time">00:42</div>
+              <div class="sheet__what"><b>Guided meditation</b> Following the breath as it actually moves, with the Air theme. Eleven minutes, and room to find your own rhythm.</div>
+            </div>
+            <div class="sheet__row">
+              <div class="sheet__time">00:53</div>
+              <div class="sheet__what"><b>Sharing circle</b> What surfaced. Unscripted, and the part Linda never prepares.</div>
+            </div>
+            <div class="sheet__row sheet__row--key">
+              <div class="sheet__time">01:15</div>
+              <div class="sheet__what"><b>Closing &amp; next steps</b> What to carry into the week, and a word on where Fire begins.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teaching notes -->
+        <div class="card2">
+          <span class="tag">For Linda</span>
+          <h2 class="card2__title">Holding Air</h2>
+          <p class="card2__body">
+            Air follows Water, and the two are companions. Water is flow, change, what moves.
+            Air is the mind that <em>holds</em> the change — breath, movement, mental clarity.
+          </p>
+          <p class="card2__body" style="margin-top:var(--s3)">
+            Water taught that you do not fight the current. Air teaches that you also need
+            somewhere to stand while the current moves. That is what protection is for:
+            not a wall against the world, but a boundary you can feel.
+          </p>
+          <p class="card2__body" style="margin-top:var(--s3)">
+            This is the module where <strong>protection</strong> belongs — grounding,
+            shielding, clearing. It is deliberately second, and deliberately before
+            transformation, because people need to feel safe before they can be asked
+            to do anything difficult. Air is the element of the mind, so it is the
+            right place to talk about what the mind does when it is not protected:
+            it overworks, it plans, it rehearses.
+          </p>
+          <p class="card2__body" style="margin-top:var(--s3)">
+            The practice should be simple enough to do at a kitchen table and specific
+            enough to be worth doing. Grounding first — feel the ground, feel the breath.
+            Then shielding: a boundary drawn with the breath, felt in the body, and
+            named. Then clearing: what goes when that boundary is asked to hold less.
+          </p>
+          <p class="card2__body" style="margin-top:var(--s3)">
+            The meditation follows the breath as it actually moves rather than
+            instructing anyone to do anything with it. Air is the element of
+            movement without force — which is also what a prayer is.
+          </p>
+          <div class="warn" style="margin-top:var(--s5);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span><strong>These are working notes, not your words.</strong> Treat them as
+            scaffolding for the teaching you will actually give. Nothing here has been
+            written in your voice.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <div class="card2">
+          <span class="tag">Before Wednesday</span>
+          <h2 class="card2__title">Test the recording once</h2>
+          <p class="card2__body">
+            Do this <strong>before</strong> the session, not during it. Open the room, start
+            Jitsi's own recording, and let it run for a minute. The first time, Jitsi asks
+            you to connect Dropbox — that is the bit that catches people out.
+          </p>
+          <div class="actions" style="margin-top:var(--s4);">
+            <a class="btn btn--outline" id="testRoom" href="#" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Open the room to test
+            </a>
+            <button class="btn btn--plain" id="testLocal" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+              Test local audio (10s)
+            </button>
+          </div>
+          <p class="notes" id="testNote">Local audio records straight from this Mac — no setup, and it always works.</p>
+        </div>
+
+        <div class="card2">
+          <span class="tag">On the night</span>
+          <h2 class="card2__title">Set yourself up</h2>
+          <div class="check" id="checklist">
+            <label class="check__item"><span class="check__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span><span class="check__text">Headphones on</span></label>
+            <label class="check__item"><span class="check__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span><span class="check__text">Glass of water</span></label>
+            <label class="check__item"><span class="check__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span><span class="check__text">A dark bowl, for scrying</span></label>
+            <label class="check__item"><span class="check__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span><span class="check__text">Candle and incense</span></label>
+            <label class="check__item"><span class="check__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span><span class="check__text">Mic and camera tested</span></label>
+            <label class="check__item"><span class="check__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span><span class="check__text">Recording started (⋮ → Start recording → Dropbox)</span></label>
+            <label class="check__item"><span class="check__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span><span class="check__text">Local audio running (● Local Audio on the console)</span></label>
+          </div>
+        </div>
+
+        <div class="card2">
+          <span class="tag">Recording</span>
+          <h2 class="card2__title">Three ways to capture it</h2>
+          <p class="card2__body">
+            <strong>Jitsi's own</strong> — records everyone, on the server. In the meeting:
+            ⋮ → Start recording → Dropbox. Only a moderator can do this.
+          </p>
+          <p class="card2__body" style="margin-top:var(--s3)">
+            <strong>Local audio</strong> — your Mac's sound, outside the browser. The
+            <em>● Local Audio</em> button on the console, or ⌘⌥⌃M. The cleanest single
+            track, and it runs for the whole session.
+          </p>
+          <p class="card2__body" style="margin-top:var(--s3)">
+            <strong>Transcribe</strong> — MacWhisper, on this Mac, once the session is
+            done. The console has a <em>Transcribe latest</em> button.
+          </p>
+        </div>
+
+        <div class="card2">
+          <span class="tag">Afterwards</span>
+          <h2 class="card2__title">Closing the loop</h2>
+          <p class="card2__body">
+            The recording lands in <code style="color:var(--gold)">~/Meet Recordings/</code>.
+            The transcript sits beside it as <code style="color:var(--gold)">.txt</code> and
+            <code style="color:var(--gold)">.srt</code>.
+          </p>
+          <p class="card2__body" style="margin-top:var(--s3)">
+            Session notes and action items go to
+            <a href="/pages/council.html" style="color:var(--gold);text-decoration:underline;">the Council page</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Session details ──────────────────────────────────────────────────
+  // Change these to move the session.
+  var SESSION = {
+    title: 'Council of the Root — The Breath of Protection',
+    element: 'Air',
+    date: '2026-10-28',
+    time: '19:30',
+    durationMin: 90,
+    startUtcOffset: '600', // Melbourne is UTC+10 (AEDT) on 28 Oct 2026
+  };
+
+  // ── Room name: element + date, so every session gets a fresh room ────
+  // The public server blocks a room name for a while after it hits its
+  // ninety-five minute cap, so the name carries the date.
+  var room = 'council-' + SESSION.element.toLowerCase() + '-' + SESSION.date;
+  var roomUrl = 'https://meet.jit.si/' + room;
+
+  document.getElementById('roomCode').textContent = roomUrl;
+  document.getElementById('joinBtn').href = roomUrl;
+
+  // ── Countdown ────────────────────────────────────────────────────────
+  // Build a local-time date from the session details.
+  function sessionStart() {
+    var p = SESSION.date.split('-');
+    var t = SESSION.time.split(':');
+    return new Date(+p[0], +p[1] - 1, +p[2], +t[0], +t[1], 0, 0);
+  }
+
+  function tick() {
+    var diff = sessionStart() - new Date();
+    var past = diff <= 0;
+    var d = Math.floor(Math.abs(diff) / 86400000);
+    var h = Math.floor((Math.abs(diff) % 86400000) / 3600000);
+    var m = Math.floor((Math.abs(diff) % 3600000) / 60000);
+    document.getElementById('cd-days').textContent = past ? 'now' : d;
+    document.getElementById('cd-hrs').textContent = past ? '—' : h;
+    document.getElementById('cd-min').textContent = past ? '—' : m;
+  }
+  tick();
+  setInterval(tick, 30000);
+
+  // ── Copy the link ────────────────────────────────────────────────────
+  var copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', function () {
+    var done = function () {
+      copyBtn.textContent = 'Copied';
+      setTimeout(function () { copyBtn.textContent = 'Copy link'; }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(roomUrl).then(done, function () {
+        window.prompt('Copy this link:', roomUrl);
+      });
+    } else {
+      window.prompt('Copy this link:', roomUrl);
+    }
+  });
+
+  // ── Calendar invite ──────────────────────────────────────────────────
+  // Builds an .ics in the browser and downloads it — no server needed.
+  document.getElementById('icsBtn').addEventListener('click', function () {
+    var start = sessionStart();
+    var end = new Date(start.getTime() + SESSION.durationMin * 60000);
+
+    var fmt = function (d) {
+      return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + 'T' +
+             pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds());
+    };
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    var icsDate = function (d) {
+      return d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate()) + 'T' +
+             pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + pad(d.getUTCSeconds()) + 'Z';
+    };
+
+    var description = [
+      'Council of the Root — ' + SESSION.element + ' element.',
+      '',
+      'Join: ' + roomUrl,
+      '',
+      'Bring: headphones, a glass of water, a dark bowl, a candle.',
+      '',
+      'Recording: the person opening the room becomes moderator — ' +
+      'use the ⋮ menu → Start recording → Dropbox.',
+      'Local audio: press the ● Local Audio button in the console.',
+    ].join('\\n');
+
+    var lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Charming Divinations//Council of the Root//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      'UID:council-' + SESSION.element.toLowerCase() + '-' + SESSION.date + '@charmingdivinations.com',
+      'DTSTAMP:' + icsDate(new Date()),
+      'DTSTART:' + icsDate(start),
+      'DTEND:' + icsDate(end),
+      'SUMMARY:' + SESSION.title,
+      'DESCRIPTION:' + description.replace(/,/g, '\\,'),
+      'LOCATION:' + roomUrl,
+      'URL:' + roomUrl,
+      'BEGIN:VALARM',
+      'TRIGGER:-PT30M',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:The Council of the Root begins in 30 minutes',
+      'END:VALARM',
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ];
+
+    var blob = new Blob([lines.join('\\r\\n')], { type: 'text/calendar;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'council-of-the-root-' + SESSION.element.toLowerCase() + '-' + SESSION.date + '.ics';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+
+    document.getElementById('icsNote').textContent =
+      'Downloaded. Open it to add the session to your calendar.';
+  });
+
+  // ── Pre-flight tests ─────────────────────────────────────────────────
+  document.getElementById('testRoom').href = roomUrl;
+
+  document.getElementById('testLocal').addEventListener('click', function () {
+    var note = document.getElementById('testNote');
+    fetch('http://127.0.0.1:8765/record', { method: 'POST' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.ok) {
+          note.textContent = 'The local bridge is not running. Press ⌘⌥⌃M instead.';
+          note.style.color = '#D96B5F';
+          return;
+        }
+        note.textContent = 'Recording for ten seconds…';
+        setTimeout(function () {
+          fetch('http://127.0.0.1:8765/record', { method: 'POST' })
+            .then(function () {
+              note.textContent = 'Done. The recording is in ~/Meet Recordings/ — play it to check.';
+              note.style.color = '#6FA97C';
+            });
+        }, 10000);
+      })
+      .catch(function () {
+        note.textContent = 'The local bridge is not running. Press ⌘⌥⌃M instead.';
+        note.style.color = '#D96B5F';
+      });
+  });
+
+  // ── Checklist ────────────────────────────────────────────────────────
+  var items = document.querySelectorAll('#checklist .check__item');
+  var KEY = 'council-prep-' + SESSION.date;
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { state = {}; }
+
+  items.forEach(function (item, i) {
+    var id = 'c' + i;
+    if (state[id]) item.classList.add('check__item--done');
+    item.addEventListener('change', function () {
+      if (item.classList.contains('check__item--done')) { state[id] = 1; }
+      else { delete state[id]; }
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    });
+    item.addEventListener('click', function (e) {
+      if (e.target.tagName !== 'INPUT') { e.preventDefault(); item.classList.toggle('check__item--done'); }
+      if (item.classList.contains('check__item--done')) { state[id] = 1; } else { delete state[id]; }
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>
