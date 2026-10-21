@@ -1,0 +1,37 @@
+name: Deploy Preview
+
+# Gives every pull request its own URL, so a change can be reviewed before merge.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy preview
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: netlify deploy --dir=. --message "PR ${{ github.event.number }}: ${{ github.head_ref }}"
+
+      - name: Comment the preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = '${{ steps.deploy.outputs.deploy-url }}';
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Preview for this PR: ${url}`
+            });
