@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Council of the Root session notes, action items, and elemental progression.">
+  <title>Council Sessions | Basically Brilliant Beginner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .page-hero { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: var(--header-height); position: relative; overflow: hidden; }
+    .page-hero__bg { position: absolute; inset: 0; z-index: -1; }
+    .page-hero__orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; }
+    .page-hero__orb--1 { width: 300px; height: 300px; background: var(--color-water); top: -50px; right: -50px; }
+    .page-hero__orb--2 { width: 200px; height: 200px; background: var(--color-fire); bottom: 0; left: -50px; }
+
+    .session-block { margin-bottom: var(--space-16); scroll-margin-top: calc(var(--header-height) + var(--space-6)); }
+    .session-block__header { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-6); flex-wrap: wrap; }
+    .session-block__element { padding: var(--space-2) var(--space-4); font-size: var(--font-size-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; border-radius: var(--radius-full); }
+    .session-block__number { font-family: var(--font-heading); font-size: var(--font-size-4xl); color: var(--color-border-light); line-height: 1; }
+    .session-block__title { font-size: var(--font-size-3xl); flex: 1; min-width: 250px; }
+    .session-block__date { font-size: var(--font-size-sm); color: var(--color-text-subtle); }
+
+    .session-grid { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); align-items: start; }
+    @media (max-width: 900px) { .session-grid { grid-template-columns: 1fr; } }
+
+    .session-panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); margin-bottom: var(--space-4); }
+    .session-panel__title { font-size: var(--font-size-lg); margin-bottom: var(--space-4); color: var(--color-accent); display: flex; align-items: center; gap: var(--space-2); }
+    .session-panel__title svg { width: 18px; height: 18px; }
+
+    .teach-list { display: flex; flex-direction: column; gap: var(--space-3); }
+    .teach-item { display: flex; gap: var(--space-3); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); }
+    .teach-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .teach-item__label { font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-accent); min-width: 110px; flex-shrink: 0; padding-top: 2px; }
+    .teach-item__text { font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.7; }
+    .teach-item__text strong { color: var(--color-text); font-weight: 500; }
+
+    .vision-list { display: flex; flex-direction: column; gap: var(--space-3); }
+    .vision-item { padding: var(--space-4); background: var(--color-bg); border: 1px solid var(--color-border); border-left: 3px solid var(--element-color, var(--color-accent)); border-radius: var(--radius-md); }
+    .vision-item__who { font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--element-color, var(--color-accent)); margin-bottom: var(--space-2); }
+    .vision-item__text { font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.7; }
+
+    .action-table { width: 100%; border-collapse: collapse; }
+    .action-table th { text-align: left; font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-accent); padding-bottom: var(--space-2); border-bottom: 1px solid var(--color-border); }
+    .action-table td { padding: var(--space-3) var(--space-2); font-size: var(--font-size-sm); color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); vertical-align: top; }
+    .action-table tr:last-child td { border-bottom: none; }
+    .action-table td:first-child { color: var(--color-text); }
+    .action-owner { font-weight: 500; color: var(--color-text); }
+    .action-status { display: inline-block; padding: 2px var(--space-2); font-size: var(--font-size-xs); border-radius: var(--radius-full); background: rgba(212,165,116,0.2); color: var(--color-accent); border: 1px solid rgba(212,165,116,0.3); }
+
+    .progression { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-3); margin-top: var(--space-4); }
+    @media (max-width: 768px) { .progression { grid-template-columns: repeat(2, 1fr); } }
+    .prog-step { text-align: center; padding: var(--space-4) var(--space-3); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); transition: all var(--transition-base); }
+    .prog-step:hover { border-color: var(--element-color); transform: translateY(-2px); }
+    .prog-step--done { border-color: rgba(107,168,122,0.4); background: rgba(107,168,122,0.05); }
+    .prog-step--next { border-color: var(--color-accent); box-shadow: var(--shadow-glow); }
+    .prog-step__icon { width: 32px; height: 32px; margin: 0 auto var(--space-2); color: var(--element-color, var(--color-text-subtle)); }
+    .prog-step__name { font-weight: 600; font-size: var(--font-size-sm); margin-bottom: var(--space-1); }
+    .prog-step__module { font-size: var(--font-size-xs); color: var(--color-text-subtle); }
+    .prog-step__check { font-size: var(--font-size-lg); margin-top: var(--space-2); }
+
+    .quote-block { border-left: 3px solid var(--color-accent); padding: var(--space-4) var(--space-5); background: var(--color-bg); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-top: var(--space-4); }
+    .quote-block__text { font-family: var(--font-heading); font-size: var(--font-size-lg); font-style: italic; color: var(--color-text); line-height: 1.5; }
+    .quote-block__attrib { font-size: var(--font-size-sm); color: var(--color-text-subtle); margin-top: var(--space-2); }
+
+    .session-links { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4); }
+  </style>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav__container">
+      <a href="../" class="nav__logo" aria-label="Basically Brilliant Beginner Home">
+        <svg class="nav__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+        <span class="nav__logo-text">Basically Brilliant Beginner</span>
+      </a>
+      <div class="nav__links">
+        <a href="../pages/music.html" class="nav__link">Music Hub</a>
+        <a href="../pages/insight-timer.html" class="nav__link">Insight Timer</a>
+        <a href="../pages/resources.html" class="nav__link">Resources</a>
+        <a href="../pages/council.html" class="nav__link nav__link--active">Council Sessions</a>
+        <a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener" class="nav__link nav__link--cta">Book Session</a>
+      </div>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle menu">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-hero__bg" aria-hidden="true">
+      <div class="page-hero__orb page-hero__orb--1"></div>
+      <div class="page-hero__orb page-hero__orb--2"></div>
+    </div>
+    <div class="container">
+      <p class="hero__badge">Live Ritual Circles</p>
+      <h1 class="hero__title" style="font-size: var(--font-size-4xl); max-width: 700px; margin: 0 auto var(--space-4);">
+        Council of the <span class="hero__title--accent">Root</span>
+      </h1>
+      <p class="hero__subtitle" style="max-width: 600px; margin: 0 auto;">
+        Session notes, elemental progression, and the living record of 
+        the Basically Brilliant Beginner being built.
+      </p>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <!-- Progression -->
+      <section aria-labelledby="prog-heading" style="margin-bottom: var(--space-16);">
+        <div class="section__header">
+          <h2 id="prog-heading" class="section__title">Elemental Progression</h2>
+          <p class="section__subtitle">One element per session, building toward Spirit</p>
+        </div>
+        <div class="progression">
+          <div class="prog-step prog-step--done" style="--element-color: var(--color-water);">
+            <svg class="prog-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <div class="prog-step__name">Water</div>
+            <div class="prog-step__module">Module 1</div>
+            <div class="prog-step__check">✅</div>
+          </div>
+          <div class="prog-step prog-step--next" style="--element-color: var(--color-air);">
+            <svg class="prog-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 14 13H2"/></svg>
+            <div class="prog-step__name">Air</div>
+            <div class="prog-step__module">Module 2</div>
+            <div class="prog-step__check">🔜</div>
+          </div>
+          <div class="prog-step" style="--element-color: var(--color-fire);">
+            <svg class="prog-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.5 14.5A2.5 2.5 0 0 1 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 1 2.5 2.5z"/></svg>
+            <div class="prog-step__name">Fire</div>
+            <div class="prog-step__module">Module 3</div>
+            <div class="prog-step__check">⏳</div>
+          </div>
+          <div class="prog-step" style="--element-color: var(--color-earth);">
+            <svg class="prog-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 12h-10M17 17h-10"/></svg>
+            <div class="prog-step__name">Earth</div>
+            <div class="prog-step__module">Module 4</div>
+            <div class="prog-step__check">⏳</div>
+          </div>
+          <div class="prog-step" style="--element-color: var(--color-spirit);">
+            <svg class="prog-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            <div class="prog-step__name">Spirit</div>
+            <div class="prog-step__module">Module 5</div>
+            <div class="prog-step__check">⏳</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Session 1 -->
+      <section id="session-1" class="session-block" aria-labelledby="s1-heading">
+        <div class="session-block__header">
+          <span class="session-block__number">01</span>
+          <span class="session-block__element" style="background: rgba(74,159,212,0.2); color: var(--color-water);">Water</span>
+          <h2 id="s1-heading" class="session-block__title">The Waters of Change</h2>
+          <span class="session-block__date">21 October 2026</span>
+        </div>
+
+        <div class="session-grid">
+          <div>
+            <div class="session-panel">
+              <h3 class="session-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+                Teaching
+              </h3>
+              <div class="teach-list">
+                <div class="teach-item">
+                  <span class="teach-item__label">Water as Foundational</span>
+                  <span class="teach-item__text">Birth, hydration, kinesiology relevance. Water as the element of <strong>movement, change, and adaptation</strong> to global shifts — without focusing on lack.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Direct Connection</span>
+                  <span class="teach-item__text">Critique of widespread spiritual misinformation. Individuals should <strong>connect directly with the divine</strong> rather than relying on intermediaries like priests or gurus.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Nile Analogy</span>
+                  <span class="teach-item__text">Destructive-seeming events can <strong>nourish positive progress</strong>. People must learn to endure hardships such as reduced consumer consumption.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Sedna Myth</span>
+                  <span class="teach-item__text">The dangers of fighting life's currents — analogous to <strong>swimming against a rip current</strong>. Relinquish control, go with the flow.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Newton's Second Law</span>
+                  <span class="teach-item__text">Bradley: per angelic guidance, once intention and trajectory are set, <strong>individuals cannot control subsequent outcomes</strong>.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="session-panel">
+              <h3 class="session-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                The Two-Glass Ritual
+              </h3>
+              <div class="teach-list">
+                <div class="teach-item">
+                  <span class="teach-item__label">Setup</span>
+                  <span class="teach-item__text">All water in the <strong>left glass</strong>. A second empty glass alongside.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Practice</span>
+                  <span class="teach-item__text">Pour a little each day following the <strong>lunar cycle</strong> — from dark moon to full moon — while affirming positive change.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Synchronicity</span>
+                  <span class="teach-item__text">Both Daniele and Bradley noted an <strong>unexplained abundance of water usage</strong> and watering activities around their households during the discussion.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="session-panel">
+              <h3 class="session-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Guided Meditation
+              </h3>
+              <div class="teach-list">
+                <div class="teach-item">
+                  <span class="teach-item__label">Protection</span>
+                  <span class="teach-item__text">Pure white light of divine energy flowing from crown down through the body, creating a <strong>protected egg-shaped aura</strong>.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Descent</span>
+                  <span class="teach-item__text">Walk down withered wooden stairs onto a private sand dune beach. Step into calm water, float on back.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Discovery</span>
+                  <span class="teach-item__text">Discover the ability to <strong>breathe underwater</strong> and explore a hidden cove. Return up the stairs to the room.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="session-panel">
+              <h3 class="session-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Visions Shared
+              </h3>
+              <div class="vision-list" style="--element-color: var(--color-water);">
+                <div class="vision-item">
+                  <div class="vision-item__who">Bradley</div>
+                  <div class="vision-item__text">Looking up at the sun from underwater, encountering mermaids who indicated he belongs in a <strong>fire kingdom</strong>.</div>
+                </div>
+                <div class="vision-item">
+                  <div class="vision-item__who">Jack</div>
+                  <div class="vision-item__text">Underwater at Rottnest Island near a WWII sunken ship, finding a <strong>post-Victoria King George V coin</strong>.</div>
+                </div>
+                <div class="vision-item">
+                  <div class="vision-item__who">Daniele</div>
+                  <div class="vision-item__text">Initial anxiety about losing the ability to breathe — a fear of water — then a <strong>coral city and dolphins</strong>.</div>
+                </div>
+                <div class="vision-item">
+                  <div class="vision-item__who">Bowl Visualization</div>
+                  <div class="vision-item__text">Recurring image of a bowl: special magical water to be poured on oneself, symbolizing <strong>receiving and filling up</strong>, alongside a helpful white light. Linda confirmed a physical bowl of water was present for scrying.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="session-panel">
+              <h3 class="session-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                Action Items
+              </h3>
+              <table class="action-table">
+                <thead>
+                  <tr><th>Task</th><th>Owner</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Compose class music</td><td><span class="action-owner">Daniele</span></td></tr>
+                  <tr><td>Draft Water blurb</td><td><span class="action-owner">Linda</span></td></tr>
+                  <tr><td>Plan next meeting — Air element</td><td><span class="action-owner">All</span></td></tr>
+                  <tr><td>Initiate FaceTime for next session</td><td><span class="action-owner">Bradley</span></td></tr>
+                  <tr><td>Develop music with Linda</td><td><span class="action-owner">Daniele + Bradley</span></td></tr>
+                  <tr><td>Conduct training in Byron</td><td><span class="action-owner">Linda</span></td></tr>
+                  <tr><td>Use/provide sunscreen</td><td><span class="action-owner">Linda</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote-block">
+          <p class="quote-block__text">"Give people a taste of what is and let them choose their own path. My main goal is to read for people and genuinely help them — not to act like a predictive figure like Nostradamus."</p>
+          <p class="quote-block__attrib">— Linda Webster, on her approach to readings</p>
+        </div>
+
+        <div class="quote-block">
+          <p class="quote-block__text">"Participants receive what their higher selves intend. Don't take on any teachings that feel uncomfortable."</p>
+          <p class="quote-block__attrib">— Linda Webster, closing the session</p>
+        </div>
+
+        <div class="session-links">
+          <a href="https://meet.jit.si/council-of-the-root-water" target="_blank" rel="noopener" class="btn btn--primary">Rejoin Jitsi Room</a>
+          <a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener" class="btn btn--secondary">Book Air Session</a>
+        </div>
+      </section>
+
+      <!-- Session 2 -->
+      <section id="session-2" class="session-block" aria-labelledby="s2-heading">
+        <div class="session-block__header">
+          <span class="session-block__number">02</span>
+          <span class="session-block__element" style="background: rgba(168,208,230,0.2); color: var(--color-air);">Air</span>
+          <h2 id="s2-heading" class="session-block__title">The Breath of Protection</h2>
+          <span class="session-block__date">28 October 2026 · Next</span>
+        </div>
+
+        <div class="session-grid">
+          <div>
+            <div class="session-panel">
+              <h3 class="session-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 14 13H2"/></svg>
+                Planned Focus
+              </h3>
+              <div class="teach-list">
+                <div class="teach-item">
+                  <span class="teach-item__label">Teaching</span>
+                  <span class="teach-item__text">Air element — breath, movement, mental clarity. Linda's teaching to follow the natural flow of the ritual.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Practice</span>
+                  <span class="teach-item__text">Grounding and shielding practices. Breathwork for clarity and protection.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Meditation</span>
+                  <span class="teach-item__text">Guided meditation with the Air theme music composed by Daniele and Bradley.</span>
+                </div>
+                <div class="teach-item">
+                  <span class="teach-item__label">Sharing</span>
+                  <span class="teach-item__text">Open sharing circle — visions, experiences, integration.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="session-panel">
+              <h3 class="session-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </h3>
+              <table class="action-table">
+                <thead>
+                  <tr><th>Prep</th><th>Owner</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Initiate FaceTime / Jitsi room</td><td><span class="action-owner">Bradley</span></td></tr>
+                  <tr><td>Research Air element content</td><td><span class="action-owner">All</span></td></tr>
+                  <tr><td>Compose Air theme music</td><td><span class="action-owner">Daniele + Bradley</span></td></tr>
+                  <tr><td>Record Air element voice memos</td><td><span class="action-owner">Linda</span></td></tr>
+                  <tr><td>Test recording setup</td><td><span class="action-owner">Daniele</span></td></tr>
+                  <tr><td>Sunscreen for session</td><td><span class="action-owner">Linda</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="session-links">
+          <a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener" class="btn btn--primary">Book &amp; Join</a>
+          <a href="../pages/music.html" class="btn btn--secondary">Air Music Hub</a>
+        </div>
+      </section>
+
+      <!-- Linda's Update -->
+      <section aria-labelledby="update-heading" style="margin-top: var(--space-16);">
+        <div class="section__header">
+          <h2 id="update-heading" class="section__title">Important Notes</h2>
+        </div>
+        <div class="session-grid">
+          <div class="session-panel">
+            <h3 class="session-panel__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Linda's Surgery
+            </h3>
+            <p style="font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.7;">
+              Linda announced a scheduled <strong style="color: var(--color-text);">tumor removal in two weeks from Monday</strong> (~4 November 2026). 
+              Her voice may change similarly to after a previous thyroidectomy. This is a key planning consideration — 
+              prioritize voice memo recording and session planning before then.
+            </p>
+          </div>
+          <div class="session-panel">
+            <h3 class="session-panel__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+              Platform Shift
+            </h3>
+            <p style="font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.7;">
+              The session ran out of time on the free Google Meet tier. The group transitioned to FaceTime to continue. 
+              For future sessions we're moving to <strong style="color: var(--color-text);">Jitsi Meet</strong> — no time limits, 
+              records directly to Dropbox, and no account needed.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="../" class="footer__logo">
+            <svg class="footer__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>Basically Brilliant Beginner</span>
+          </a>
+        </div>
+        <nav class="footer__nav" aria-label="Footer navigation">
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Council</h4>
+            <ul>
+              <li><a href="https://meet.jit.si/council-of-the-root" target="_blank" rel="noopener">Jitsi Room</a></li>
+              <li><a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener">Book Session</a></li>
+            </ul>
+          </div>
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Hubs</h4>
+            <ul>
+              <li><a href="../pages/music.html">Music Hub</a></li>
+              <li><a href="../pages/insight-timer.html">Insight Timer</a></li>
+              <li><a href="../pages/resources.html">Resources</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Basically Brilliant Beginner. Created with intention.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "basically-brilliant-beginner",
+  "version": "1.0.0",
+  "description": "Landing page for The Basically Brilliant Beginner - Council of the Root elemental wisdom courses",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 8080",
+    "start": "python3 -m http.server 8080",
+    "build": "echo 'Static site - no build required'",
+    "preview": "echo 'Use vercel dev for preview'"
+  },
+  "keywords": [
+    "council-of-the-root",
+    "basically-brilliant-beginner",
+    "elemental",
+    "meditation",
+    "spiritual"
+  ],
+  "author": "Daniele Buatti",
+  "license": "UNLICENSED"
+}

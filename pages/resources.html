@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Resources Library - Recording setup, Jitsi, Cal.com, MacWhisper transcription, Dropbox structure, and session templates.">
+  <title>Resources | Basically Brilliant Beginner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .page-hero { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: var(--header-height); position: relative; overflow: hidden; }
+    .page-hero__bg { position: absolute; inset: 0; z-index: -1; }
+    .page-hero__orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; }
+    .page-hero__orb--1 { width: 300px; height: 300px; background: var(--color-accent); top: -50px; right: -50px; }
+    .page-hero__orb--2 { width: 200px; height: 200px; background: var(--color-earth); bottom: 0; left: -50px; }
+
+    .res-category { margin-bottom: var(--space-16); }
+    .res-category__header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); }
+    .res-category__icon { width: 32px; height: 32px; color: var(--color-accent); flex-shrink: 0; }
+    .res-category__title { font-size: var(--font-size-2xl); }
+    .res-category__count { margin-left: auto; font-size: var(--font-size-sm); color: var(--color-text-subtle); }
+
+    .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+    .res-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); display: flex; gap: var(--space-4); transition: all var(--transition-base); }
+    .res-card:hover { border-color: var(--color-accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .res-card__icon { width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--color-bg); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-accent); flex-shrink: 0; }
+    .res-card__icon svg { width: 20px; height: 20px; }
+    .res-card__content { flex: 1; min-width: 0; }
+    .res-card__title { font-family: var(--font-body); font-size: var(--font-size-base); font-weight: 600; margin-bottom: var(--space-1); }
+    .res-card__desc { font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.6; }
+    .res-card__meta { margin-top: var(--space-3); display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+    .res-tag { font-size: var(--font-size-xs); padding: 2px var(--space-2); border-radius: var(--radius-full); background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-text-subtle); }
+    .res-tag--terminal { color: var(--color-success); border-color: rgba(107,168,122,0.3); background: rgba(107,168,122,0.1); }
+    .res-tag--new { color: var(--color-accent); border-color: rgba(212,165,116,0.3); background: rgba(212,165,116,0.1); }
+
+    .code-block { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); overflow-x: auto; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.6; margin-top: var(--space-3); }
+    .code-block code { color: var(--color-accent-light); }
+    .copy-btn { position: absolute; top: var(--space-2); right: var(--space-2); padding: var(--space-1) var(--space-3); font-size: var(--font-size-xs); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-text-muted); transition: all var(--transition-fast); }
+    .copy-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+    .code-wrap { position: relative; }
+
+    .platform-table { width: 100%; border-collapse: collapse; margin-top: var(--space-6); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+    .platform-table th { background: var(--color-bg-elevated); padding: var(--space-3) var(--space-4); text-align: left; font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent); border-bottom: 1px solid var(--color-border); }
+    .platform-table td { padding: var(--space-3) var(--space-4); font-size: var(--font-size-sm); color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); }
+    .platform-table tr:last-child td { border-bottom: none; }
+    .platform-table td:first-child { color: var(--color-text); font-weight: 500; }
+    .platform-table .yes { color: var(--color-success); }
+    .platform-table .no { color: var(--color-text-subtle); }
+    .platform-table .best { color: var(--color-accent); font-weight: 600; }
+    .table-wrap { overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav__container">
+      <a href="../" class="nav__logo" aria-label="Basically Brilliant Beginner Home">
+        <svg class="nav__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+        <span class="nav__logo-text">Basically Brilliant Beginner</span>
+      </a>
+      <div class="nav__links">
+        <a href="../pages/music.html" class="nav__link">Music Hub</a>
+        <a href="../pages/insight-timer.html" class="nav__link">Insight Timer</a>
+        <a href="../pages/resources.html" class="nav__link nav__link--active">Resources</a>
+        <a href="../pages/council.html" class="nav__link">Council Sessions</a>
+        <a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener" class="nav__link nav__link--cta">Book Session</a>
+      </div>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle menu">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-hero__bg" aria-hidden="true">
+      <div class="page-hero__orb page-hero__orb--1"></div>
+      <div class="page-hero__orb page-hero__orb--2"></div>
+    </div>
+    <div class="container">
+      <p class="hero__badge">Everything in One Place</p>
+      <h1 class="hero__title" style="font-size: var(--font-size-4xl); max-width: 700px; margin: 0 auto var(--space-4);">
+        Resources <span class="hero__title--accent">Library</span>
+      </h1>
+      <p class="hero__subtitle" style="max-width: 600px; margin: 0 auto;">
+        Technical setups, templates, and guides for producing the Council sessions 
+        and building the course.
+      </p>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <!-- Recording & Audio -->
+      <section id="recording" class="res-category" aria-labelledby="rec-heading">
+        <div class="res-category__header">
+          <svg class="res-category__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19v-6M8 13v-2a4 4 0 0 1 8 0v2"/><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4"/></svg>
+          <h2 id="rec-heading" class="res-category__title">Recording & Audio</h2>
+          <span class="res-category__count">5 resources</span>
+        </div>
+        <div class="res-grid">
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">install_recording_tools.sh</h3>
+              <p class="res-card__desc">One-shot installer: BlackHole, ffmpeg, SwitchAudioSource, Hammerspoon, audio devices, command shortcuts.</p>
+              <div class="res-card__meta">
+                <span class="res-tag res-tag--terminal">Terminal</span>
+                <span class="res-tag res-tag--new">Start Here</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">record_meeting.sh</h3>
+              <p class="res-card__desc">Interactive recorder: start/stop, device detection, list, play, test audio, one-click MacWhisper transcription.</p>
+              <div class="res-card__meta">
+                <span class="res-tag res-tag--terminal">CLI</span>
+                <span class="res-tag">ffmpeg</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">setup_audio_devices.sh</h3>
+              <p class="res-card__desc">Creates the Multi-Output Device that routes system audio to both your ears and the recorder.</p>
+              <div class="res-card__meta">
+                <span class="res-tag res-tag--terminal">Terminal</span>
+                <span class="res-tag">BlackHole</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">meeting_recorder.lua</h3>
+              <p class="res-card__desc">Hammerspoon config: menu bar indicator, Ctrl+Opt+Cmd+R hotkey, auto device detection, one-key transcribe.</p>
+              <div class="res-card__meta">
+                <span class="res-tag">Hammerspoon</span>
+                <span class="res-tag res-tag--new">Hotkey</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">AUDIO_RECORDING_SETUP.md</h3>
+              <p class="res-card__desc">Full written guide: audio routing diagram, device troubleshooting, FaceTime workarounds, volume calibration.</p>
+              <div class="res-card__meta">
+                <span class="res-tag">Guide</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Video & Scheduling -->
+      <section class="res-category" aria-labelledby="video-heading">
+        <div class="res-category__header">
+          <svg class="res-category__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M16 10l4-2v8l-4-2"/></svg>
+          <h2 id="video-heading" class="res-category__title">Video & Scheduling</h2>
+          <span class="res-category__count">4 resources</span>
+        </div>
+        <div class="res-grid">
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">Jitsi Meet</h3>
+              <p class="res-card__desc">Primary meeting platform. No account, no time limits, records to Dropbox, E2EE available.</p>
+              <div class="res-card__meta">
+                <span class="res-tag">Free</span>
+                <span class="res-tag res-tag--new">Recommended</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v4M10 16h4"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">Cal.com</h3>
+              <p class="res-card__desc">Scheduling for student sessions. Booking pages, timezone handling, Jitsi integration, reminders.</p>
+              <div class="res-card__meta">
+                <span class="res-tag">Free</span>
+                <span class="res-tag">Self-hostable</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">jitsi_setup.md</h3>
+              <p class="res-card__desc">Complete Jitsi + Cal.com guide: deployment, event type config, recording to Dropbox, session workflow.</p>
+              <div class="res-card__meta">
+                <span class="res-tag">Guide</span>
+                <span class="res-tag res-tag--new">Read First</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">FaceTime (Fallback)</h3>
+              <p class="res-card__desc">Apple-to-Apple option. Note: doesn't allow system audio capture — use iPhone + QuickTime instead.</p>
+              <div class="res-card__meta">
+                <span class="res-tag">Apple</span>
+                <span class="res-tag">Limitations</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Transcription & Admin -->
+      <section class="res-category" aria-labelledby="transcribe-heading">
+        <div class="res-category__header">
+          <svg class="res-category__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4"/></svg>
+          <h2 id="transcribe-heading" class="res-category__title">Transcription & Admin</h2>
+          <span class="res-category__count">4 resources</span>
+        </div>
+        <div class="res-grid">
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">MacWhisper Workflow</h3>
+              <p class="res-card__desc">Local transcription. Drag audio to app, choose Large-v3 model, export TXT + SRT. Fully offline, private.</p>
+              <div class="res-card__meta">
+                <span class="res-tag res-tag--new">Installed</span>
+                <span class="res-tag">Local</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">Dropbox Folder Structure</h3>
+              <p class="res-card__desc">Person-focused with Shared area. Linda, Daniele, Bradley each have folders; Shared holds meetings, outline, resources.</p>
+              <div class="res-card__meta">
+                <span class="res-tag">Organisation</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">ACTION_ITEMS.md</h3>
+              <p class="res-card__desc">Live checklist with owners, due dates, blockers, and milestones through launch.</p>
+              <div class="res-card__meta">
+                <span class="res-tag">Live Doc</span>
+              </div>
+            </div>
+          </article>
+          <article class="res-card">
+            <div class="res-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+            <div class="res-card__content">
+              <h3 class="res-card__title">SESSION_TEMPLATE.md</h3>
+              <p class="res-card__desc">90-minute rhythm, handout template, voice memo → handout pipeline, module checklist.</p>
+              <div class="res-card__meta">
+                <span class="res-tag">Template</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Quick Commands -->
+      <section class="res-category" aria-labelledby="cmd-heading">
+        <div class="res-category__header">
+          <svg class="res-category__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          <h2 id="cmd-heading" class="res-category__title">Quick Commands</h2>
+          <span class="res-category__count">Copy & paste</span>
+        </div>
+
+        <div class="res-grid">
+          <article class="res-card" style="flex-direction: column;">
+            <div class="res-card__content">
+              <h3 class="res-card__title">One-time setup</h3>
+              <p class="res-card__desc">Installs everything and configures audio routing.</p>
+              <div class="code-wrap">
+                <button class="copy-btn" onclick="copyToClipboard('bash ~/\"Wellness, Meditation and Kinesiology\"/\"Basically Brilliant Beginner\"/Shared/Resources/install_recording_tools.sh', this)">Copy</button>
+                <div class="code-block"><code>bash install_recording_tools.sh</code></div>
+              </div>
+            </div>
+          </article>
+          <article class="res-card" style="flex-direction: column;">
+            <div class="res-card__content">
+              <h3 class="res-card__title">Start / stop recording</h3>
+              <p class="res-card__desc">Interactive menu with all options.</p>
+              <div class="code-wrap">
+                <button class="copy-btn" onclick="copyToClipboard('record-meeting', this)">Copy</button>
+                <div class="code-block"><code>record-meeting</code></div>
+              </div>
+            </div>
+          </article>
+          <article class="res-card" style="flex-direction: column;">
+            <div class="res-card__content">
+              <h3 class="res-card__title">Transcribe latest</h3>
+              <p class="res-card__desc">MacWhisper on the most recent recording.</p>
+              <div class="code-wrap">
+                <button class="copy-btn" onclick="copyToClipboard('record-meeting transcribe', this)">Copy</button>
+                <div class="code-block"><code>record-meeting transcribe</code></div>
+              </div>
+            </div>
+          </article>
+          <article class="res-card" style="flex-direction: column;">
+            <div class="res-card__content">
+              <h3 class="res-card__title">Hammerspoon hotkey</h3>
+              <p class="res-card__desc">Toggle recording from anywhere. Transcribe with Ctrl+Opt+Cmd+T.</p>
+              <div class="code-wrap">
+                <button class="copy-btn" onclick="copyToClipboard('⌃⌥⌘R', this)">Copy</button>
+                <div class="code-block"><code>⌃⌥⌘R</code></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Platform Comparison -->
+      <section class="res-category" aria-labelledby="compare-heading">
+        <div class="res-category__header">
+          <svg class="res-category__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+          <h2 id="compare-heading" class="res-category__title">Platform Comparison</h2>
+        </div>
+        <div class="table-wrap">
+          <table class="platform-table">
+            <thead>
+              <tr>
+                <th>Platform</th>
+                <th>System Audio</th>
+                <th>Recording</th>
+                <th>Time Limit</th>
+                <th>Cost</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Jitsi Meet</td>
+                <td class="yes">✓ with BlackHole</td>
+                <td class="yes">Built-in → Dropbox</td>
+                <td class="yes">None</td>
+                <td>Free</td>
+                <td class="best">Primary</td>
+              </tr>
+              <tr>
+                <td>Cal.com + Jitsi</td>
+                <td class="yes">✓</td>
+                <td class="yes">Via Jitsi</td>
+                <td class="yes">None</td>
+                <td>Free</td>
+                <td class="best">For student bookings</td>
+              </tr>
+              <tr>
+                <td>Google Meet</td>
+                <td class="yes">✓ with BlackHole</td>
+                <td class="yes">Built-in (paid)</td>
+                <td>60 min (free)</td>
+                <td>Free / $7.99</td>
+                <td>Fallback</td>
+              </tr>
+              <tr>
+                <td>Zoom</td>
+                <td class="yes">✓</td>
+                <td class="yes">Built-in</td>
+                <td>40 min (free)</td>
+                <td>Free / $13.99</td>
+                <td>Backup</td>
+              </tr>
+              <tr>
+                <td>FaceTime</td>
+                <td class="no">✕ needs workaround</td>
+                <td class="no">Screen record</td>
+                <td class="yes">None</td>
+                <td>Free</td>
+                <td>Apple-only fallback</td>
+              </tr>
+              <tr>
+                <td>Whereby</td>
+                <td class="yes">✓</td>
+                <td class="yes">Built-in</td>
+                <td class="yes">None</td>
+                <td>Free (1 room)</td>
+                <td>Simple alternative</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="../" class="footer__logo">
+            <svg class="footer__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>Basically Brilliant Beginner</span>
+          </a>
+        </div>
+        <nav class="footer__nav" aria-label="Footer navigation">
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Council</h4>
+            <ul>
+              <li><a href="../pages/council.html">Session Notes</a></li>
+              <li><a href="https://meet.jit.si/council-of-the-root" target="_blank" rel="noopener">Jitsi Room</a></li>
+              <li><a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener">Book Session</a></li>
+            </ul>
+          </div>
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Hubs</h4>
+            <ul>
+              <li><a href="../pages/music.html">Music Hub</a></li>
+              <li><a href="../pages/insight-timer.html">Insight Timer</a></li>
+              <li><a href="../pages/resources.html">Resources</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Basically Brilliant Beginner. Created with intention.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

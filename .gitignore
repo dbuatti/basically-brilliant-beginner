@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vercel
+.vercel
+.vercel.json.local
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local env
+.env
+.env.local
+.env.*.local
+
+# Audio recordings (keep out of repo)
+*.m4a
+*.mp3
+*.wav
+!assets/**/*.m4a
+
+# Transcripts
+*.srt
+!assets/**/*.srt
+
+# Logs
+*.log
+npm-debug.log*

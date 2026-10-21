@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Insight Timer Setup Guide for Linda Webster — Publish meditations, courses & live events to 30M+ users.">
+  <title>Insight Timer Setup | Basically Brilliant Beginner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .page-hero {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding-top: var(--header-height);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero__bg { position: absolute; inset: 0; z-index: -1; }
+    .page-hero__orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; }
+    .page-hero__orb--1 { width: 300px; height: 300px; background: var(--color-accent); top: -50px; right: -50px; }
+    .page-hero__orb--2 { width: 200px; height: 200px; background: var(--color-air); bottom: 0; left: -50px; }
+    
+    .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--space-6); }
+    
+    .guide-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: all var(--transition-base);
+    }
+    .guide-card:hover { border-color: var(--color-border-light); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    
+    .guide-card__header { padding: var(--space-6); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+    .guide-card__number { width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--color-accent); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: var(--font-size-lg); flex-shrink: 0; }
+    .guide-card__status { padding: var(--space-1) var(--space-3); font-size: var(--font-size-xs); font-weight: 500; border-radius: var(--radius-full); }
+    
+    .guide-card__body { padding: var(--space-6); }
+    .guide-card__title { font-size: var(--font-size-xl); margin-bottom: var(--space-3); }
+    .guide-card__desc { color: var(--color-text-muted); font-size: var(--font-size-sm); margin-bottom: var(--space-4); line-height: 1.7; }
+    
+    .guide-steps { display: flex; flex-direction: column; gap: var(--space-4); }
+    .guide-step { display: flex; gap: var(--space-3); padding: var(--space-3); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .guide-step__num { width: 28px; height: 28px; border-radius: var(--radius-full); background: var(--color-accent); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: var(--font-size-sm); flex-shrink: 0; margin-top: 2px; }
+    .guide-step__content { flex: 1; }
+    .guide-step__title { font-weight: 600; margin-bottom: var(--space-1); }
+    .guide-step__detail { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+    
+    .guide-card__actions { display: flex; gap: var(--space-3); padding: var(--space-6); border-top: 1px solid var(--color-border); flex-wrap: wrap; }
+    
+    .info-panel {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-top: var(--space-8);
+    }
+    .info-panel__title { font-size: var(--font-size-xl); margin-bottom: var(--space-4); color: var(--color-accent); }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); }
+    .info-item { padding: var(--space-4); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .info-item__label { font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent); margin-bottom: var(--space-2); }
+    .info-item__value { font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.6; }
+    
+    .checklist { display: flex; flex-direction: column; gap: var(--space-3); }
+    .checklist-item { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .checklist-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--color-accent); flex-shrink: 0; }
+    .checklist-item__content { flex: 1; }
+    .checklist-item__title { font-weight: 500; margin-bottom: var(--space-1); }
+    .checklist-item__detail { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+    
+    .revenue-card {
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(212, 165, 116, 0.05));
+      border: 1px solid rgba(212, 165, 116, 0.3);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-top: var(--space-8);
+    }
+    .revenue-card__title { font-size: var(--font-size-xl); color: var(--color-accent); margin-bottom: var(--space-4); }
+    .revenue-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-4); }
+    .revenue-stat { text-align: center; padding: var(--space-4); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .revenue-stat__value { font-size: var(--font-size-3xl); font-weight: 600; color: var(--color-accent); font-family: var(--font-heading); }
+    .revenue-stat__label { font-size: var(--font-size-sm); color: var(--color-text-muted); margin-top: var(--space-1); }
+    
+    .status--pending { background: rgba(212, 165, 116, 0.2); color: var(--color-accent); border: 1px solid rgba(212, 165, 116, 0.3); }
+    .status--ready { background: rgba(74, 159, 212, 0.2); color: var(--color-water); border: 1px solid rgba(74, 159, 212, 0.3); }
+    .status--done { background: rgba(107, 168, 122, 0.2); color: var(--color-success); border: 1px solid rgba(107, 168, 122, 0.3); }
+    
+    .tip-box {
+      background: rgba(74, 159, 212, 0.1);
+      border: 1px solid rgba(74, 159, 212, 0.3);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-top: var(--space-4);
+      display: flex; gap: var(--space-3);
+    }
+    .tip-box__icon { width: 24px; height: 24px; color: var(--color-water); flex-shrink: 0; margin-top: 2px; }
+    .tip-box__text { font-size: var(--font-size-sm); color: var(--color-text-muted); line-height: 1.6; }
+    
+    @media (max-width: 768px) {
+      .guide-card__header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav__container">
+      <a href="../" class="nav__logo" aria-label="Basically Brilliant Beginner Home">
+        <svg class="nav__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+        <span class="nav__logo-text">Basically Brilliant Beginner</span>
+      </a>
+      <div class="nav__links">
+        <a href="../pages/music.html" class="nav__link">Music Hub</a>
+        <a href="../pages/insight-timer.html" class="nav__link nav__link--active">Insight Timer</a>
+        <a href="../pages/resources.html" class="nav__link">Resources</a>
+        <a href="../pages/council.html" class="nav__link">Council Sessions</a>
+        <a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener" class="nav__link nav__link--cta">Book Session</a>
+      </div>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle menu">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-hero__bg" aria-hidden="true">
+      <div class="page-hero__orb page-hero__orb--1"></div>
+      <div class="page-hero__orb page-hero__orb--2"></div>
+    </div>
+    <div class="container">
+      <p class="hero__badge">Teacher Platform Setup</p>
+      <h1 class="hero__title" style="font-size: var(--font-size-4xl); max-width: 700px; margin: 0 auto var(--space-4);">
+        Insight Timer for <span class="hero__title--accent">Linda Webster</span>
+      </h1>
+      <p class="hero__subtitle" style="max-width: 600px; margin: 0 auto;">
+        Publish guided meditations, courses & live events to 30M+ meditators worldwide. 
+        Build a global audience while earning from your wisdom.
+      </p>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <!-- Quick Start Checklist -->
+      <section aria-labelledby="checklist-heading">
+        <div class="section__header">
+          <h2 id="checklist-heading" class="section__title">Quick Start Checklist</h2>
+          <p class="section__subtitle">Complete these steps in order</p>
+        </div>
+        
+        <div class="checklist">
+          <label class="checklist-item">
+            <input type="checkbox" id="step-1">
+            <div class="checklist-item__content">
+              <div class="checklist-item__title">Create Teacher Account</div>
+              <div class="checklist-item__detail">Go to <a href="https://insighttimer.com/teachers/join" target="_blank" rel="noopener" style="color: var(--color-accent);">insighttimer.com/teachers/join</a> → Apply as teacher → Wait for approval (usually 24-48h)</div>
+            </div>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" id="step-2">
+            <div class="checklist-item__content">
+              <div class="checklist-item__title">Complete Teacher Profile</div>
+              <div class="checklist-item__detail">Bio (300 chars), photo, credentials, website/social links, specialties: Meditation, Energy Work, Spirituality, Kinesiology</div>
+            </div>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" id="step-3">
+            <div class="checklist-item__content">
+              <div class="checklist-item__title">Set Up Payment (Stripe)</div>
+              <div class="checklist-item__detail">Teacher Dashboard → Earnings → Connect Stripe → Tax info → Payout schedule (monthly, $50 min)</div>
+            </div>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" id="step-4">
+            <div class="checklist-item__content">
+              <div class="checklist-item__title">Record First Meditation</div>
+              <div class="checklist-item__detail">Use your MacBook + BlackHole setup. 10-20 min guided. 48kHz WAV. Include: intro, guidance, silence, closing.</div>
+            </div>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" id="step-5">
+            <div class="checklist-item__content">
+              <div class="checklist-item__title">Upload & Publish</div>
+              <div class="checklist-item__detail">Teacher Dashboard → Add Track → Fill metadata (title, description, tags, category, background music toggle) → Submit for review</div>
+            </div>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" id="step-6">
+            <div class="checklist-item__content">
+              <div class="checklist-item__title">Create First Course</div>
+              <div class="checklist-item__detail">"Basically Brilliant Beginner: Water Foundations" — 5-7 tracks, progressive. Course Dashboard → Create Course → Add tracks → Set price (free or paid)</div>
+            </div>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" id="step-7">
+            <div class="checklist-item__content">
+              <div class="checklist-item__title">Schedule Live Event</div>
+              <div class="checklist-item__detail">Live Events → Schedule → "Council of the Root: Air Element" → Date/time → Description → Public/Private → Promote</div>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Detailed Guides -->
+      <section aria-labelledby="guides-heading" style="margin-top: var(--space-16);">
+        <div class="section__header">
+          <h2 id="guides-heading" class="section__title">Step-by-Step Guides</h2>
+          <p class="section__subtitle">Detailed walkthroughs for each phase</p>
+        </div>
+        
+        <div class="guide-grid">
+          <!-- Guide 1: Teacher Account -->
+          <article class="guide-card">
+            <div class="guide-card__header">
+              <span class="guide-card__number">1</span>
+              <span class="guide-card__status status--pending">Teacher Application</span>
+            </div>
+            <div class="guide-card__body">
+              <h3 class="guide-card__title">Become a Verified Teacher</h3>
+              <p class="guide-card__desc">Insight Timer manually reviews all teacher applications. Quality bar is high but your 30+ years experience will shine.</p>
+              <div class="guide-steps">
+                <div class="guide-step">
+                  <span class="guide-step__num">1</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Fill Application Form</div>
+                    <div class="guide-step__detail">Name, email, website, social links, teaching experience, specialties, sample topics</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">2</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Write Compelling Bio</div>
+                    <div class="guide-step__detail">"Linda Webster — 30+ years intuitive teacher, kinesiologist, elemental wisdom keeper. Guiding seekers through Water, Air, Fire, Earth, Spirit."</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">3</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Choose Specialties</div>
+                    <div class="guide-step__detail">Select: Meditation, Energy Healing, Spirituality, Personal Growth, Sound Healing, Yoga Philosophy</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">4</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Submit & Wait</div>
+                    <div class="guide-step__detail">Review takes 1-3 business days. You'll get email notification. Check spam folder!</div>
+                  </div>
+                </div>
+              </div>
+              <div class="guide-card__actions">
+                <a href="https://insighttimer.com/teachers/join" target="_blank" rel="noopener" class="btn btn--primary">Apply Now</a>
+                <a href="#" class="btn btn--ghost">Bio Templates</a>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Guide 2: Recording -->
+          <article class="guide-card">
+            <div class="guide-card__header">
+              <span class="guide-card__number">2</span>
+              <span class="guide-card__status status--ready">Recording Setup</span>
+            </div>
+            <div class="guide-card__body">
+              <h3 class="guide-card__title">Record Professional Quality</h3>
+              <p class="guide-card__desc">Your Council recording setup (BlackHole + ffmpeg) is perfect. Here's the Insight Timer optimized workflow.</p>
+              <div class="guide-steps">
+                <div class="guide-step">
+                  <span class="guide-step__num">1</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Audio Settings</div>
+                    <div class="guide-step__detail">48kHz / 24-bit WAV → Convert to 44.1kHz / 16-bit MP3 (320kbps) for upload. Insight Timer accepts: MP3, M4A, WAV up to 500MB</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">2</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Structure Template</div>
+                    <div class="guide-step__detail">[30s] Intro & settling → [2-3min] Teaching/guidance → [5-15min] Practice/silence → [30s] Gentle closing → [10s] Fade out</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">3</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Background Music</div>
+                    <div class="guide-step__detail">Use your elemental tracks! Keep music -20dB under voice. Enable "Background Music" toggle on upload so users can adjust mix.</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">4</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Noise Cleanup</div>
+                    <div class="guide-step__detail">MacWhisper transcript → Check for artifacts → Use Audacity (free) for noise reduction if needed → Normalize to -1dB</div>
+                  </div>
+                </div>
+              </div>
+              <div class="guide-card__actions">
+                <a href="../pages/resources.html#recording" class="btn btn--primary">Recording Guide</a>
+                <a href="#" class="btn btn--ghost">Audacity Preset</a>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Guide 3: Course Creation -->
+          <article class="guide-card">
+            <div class="guide-card__header">
+              <span class="guide-card__number">3</span>
+              <span class="guide-card__status status--pending">Course Creation</span>
+            </div>
+            <div class="guide-card__body">
+              <h3 class="guide-card__title">Build "Basically Brilliant Beginner" Course</h3>
+              <p class="guide-card__desc">Courses on Insight Timer are paid (you set price) or free. 70% revenue share to teacher.</p>
+              <div class="guide-steps">
+                <div class="guide-step">
+                  <span class="guide-step__num">1</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Course Structure</div>
+                    <div class="guide-step__detail">Module 1: Water Foundations (5 tracks) → Module 2: Air Protection → Module 3: Fire Energy → Module 4: Earth Divination → Module 5: Spirit Guides</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">2</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Pricing Strategy</div>
+                    <div class="guide-step__detail">Free intro track → $29-49 per module → $149 full course bundle. Or: Free course, paid live events. Test what resonates.</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">3</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Course Assets</div>
+                    <div class="guide-step__detail">Cover art (1400x1400px), trailer video (60-90s), module descriptions, learning outcomes, prerequisites (none!)</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">4</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Launch Sequence</div>
+                    <div class="guide-step__detail">Soft launch to email list → 1 week → Public launch → Promote in Council sessions → Cross-post to Piano by Heart audience</div>
+                  </div>
+                </div>
+              </div>
+              <div class="guide-card__actions">
+                <a href="#" class="btn btn--primary">Course Builder</a>
+                <a href="#" class="btn btn--ghost">Pricing Calculator</a>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Guide 4: Live Events -->
+          <article class="guide-card">
+            <div class="guide-card__header">
+              <span class="guide-card__number">4</span>
+              <span class="guide-card__status status--ready">Live Events</span>
+            </div>
+            <div class="guide-card__body">
+              <h3 class="guide-card__title">Host "Council of the Root" Live</h3>
+              <p class="guide-card__desc">Insight Timer Live lets you stream to thousands. Free or ticketed. Recordings auto-save as tracks.</p>
+              <div class="guide-steps">
+                <div class="guide-step">
+                  <span class="guide-step__num">1</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Event Setup</div>
+                    <div class="guide-step__detail">Live Events → Schedule → Title: "Council of the Root: Air Element" → Date/time (auto-converts timezones) → 90 min duration</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">2</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Streaming Options</div>
+                    <div class="guide-step__detail">Use Insight Timer's built-in RTMP → Stream from OBS (scenes: you, slides, music) → Or use their simple browser broadcaster</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">3</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Monetization</div>
+                    <div class="guide-step__detail">Free (build audience) → $11-22 ticketed → "Supporter" tier ($5/mo) gets all events free. You keep 70%.</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">4</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Post-Event</div>
+                    <div class="guide-step__detail">Recording auto-uploads → Edit title/description → Add to course → Share replay link → Email attendees</div>
+                  </div>
+                </div>
+              </div>
+              <div class="guide-card__actions">
+                <a href="https://insighttimer.com/live" target="_blank" rel="noopener" class="btn btn--primary">Explore Live</a>
+                <a href="#" class="btn btn--ghost">OBS Setup Guide</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Revenue Potential -->
+      <section aria-labelledby="revenue-heading" style="margin-top: var(--space-16);">
+        <div class="revenue-card">
+          <h2 id="revenue-heading" class="revenue-card__title">Revenue Potential for Linda</h2>
+          <div class="revenue-stats">
+            <div class="revenue-stat">
+              <div class="revenue-stat__value">70%</div>
+              <div class="revenue-stat__label">Teacher Revenue Share</div>
+            </div>
+            <div class="revenue-stat">
+              <div class="revenue-stat__value">$0.05-0.10</div>
+              <div class="revenue-stat__label">Per Play (Free Tracks)</div>
+            </div>
+            <div class="revenue-stat">
+              <div class="revenue-stat__value">$29-149</div>
+              <div class="revenue-stat__label">Course Price Range</div>
+            </div>
+            <div class="revenue-stat">
+              <div class="revenue-stat__value">30M+</div>
+              <div class="revenue-stat__label">Global Users</div>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top: var(--space-6);">
+            <svg class="tip-box__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div class="tip-box__text"><strong>Pro tip:</strong> Insight Timer's algorithm favors consistency. Publish 1 track/week for 8 weeks → algorithm boosts visibility. Your Council sessions = perfect content pipeline!</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Info Panel -->
+      <section aria-labelledby="info-heading" style="margin-top: var(--space-16);">
+        <div class="info-panel">
+          <h2 id="info-heading" class="info-panel__title">Essential Information</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-item__label">Review Timeline</div>
+              <div class="info-item__value">Tracks: 24-72 hours. Courses: 3-7 days. Live events: instant once approved teacher.</div>
+            </div>
+            <div class="info-item">
+              <div class="info-item__label">Payouts</div>
+              <div class="info-item__value">Monthly via Stripe. Minimum $50. 30-day hold for new teachers. Tax forms auto-generated (W-9/W-8BEN).</div>
+            </div>
+            <div class="info-item">
+              <div class="info-item__label">Copyright</div>
+              <div class="info-item__value">You retain 100% ownership. Insight Timer gets non-exclusive license to distribute. You can publish elsewhere too.</div>
+            </div>
+            <div class="info-item">
+              <div class="info-item__label">Analytics</div>
+              <div class="info-item__value">Plays, completion rate, listener countries, earnings per track, course enrollment, live event RSVPs.</div>
+            </div>
+            <div class="info-item">
+              <div class="info-item__label">Community Features</div>
+              <div class="info-item__value">Q&A on tracks, discussion groups, reviews, "Follow" button, direct messages (teacher controls).</div>
+            </div>
+            <div class="info-item">
+              <div class="info-item__label">Mobile App</div>
+              <div class="info-item__value">Teacher app (iOS/Android) for stats, replies, quick uploads. Students use main Insight Timer app.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Linda's Content Pipeline -->
+      <section aria-labelledby="pipeline-heading" style="margin-top: var(--space-16);">
+        <div class="section__header">
+          <h2 id="pipeline-heading" class="section__title">Linda's Content Pipeline</h2>
+          <p class="section__subtitle">From Council session → Insight Timer publication</p>
+        </div>
+        
+        <div class="guide-grid">
+          <article class="guide-card">
+            <div class="guide-card__header">
+              <span class="guide-card__number">🎙</span>
+              <span class="guide-card__status status--ready">Record</span>
+            </div>
+            <div class="guide-card__body">
+              <h3 class="guide-card__title">Council Session Recording</h3>
+              <p class="guide-card__desc">Live ritual → guided meditation → sharing. Record with your setup (BlackHole + ffmpeg).</p>
+              <div class="guide-steps">
+                <div class="guide-step">
+                  <span class="guide-step__num">1</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Full Session</div>
+                    <div class="guide-step__detail">Archival recording. 2+ hours. Keep for course material.</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">2</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Extract Meditation</div>
+                    <div class="guide-step__detail">Isolate guided portion (15-20 min). Clean edges. Add fade in/out.</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">3</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Create Variations</div>
+                    <div class="guide-step__detail">Short (5 min), Long (30 min), With music, Without music, Different intentions.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+          <article class="guide-card">
+            <div class="guide-card__header">
+              <span class="guide-card__number">📝</span>
+              <span class="guide-card__status status--pending">Transcribe</span>
+            </div>
+            <div class="guide-card__body">
+              <h3 class="guide-card__title">MacWhisper → Show Notes</h3>
+              <p class="guide-card__desc">Transcribe → Edit → Format for Insight Timer description + course handout.</p>
+              <div class="guide-steps">
+                <div class="guide-step">
+                  <span class="guide-step__num">1</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Auto-Transcribe</div>
+                    <div class="guide-step__detail">Drag audio to MacWhisper → Model: Large-v3 → Language: English → Export TXT + SRT</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">2</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Edit for Description</div>
+                    <div class="guide-step__detail">First 160 chars = SEO snippet. Add timestamps. Include: "Guided by Linda Webster, 30+ years experience"</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">3</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Create Handout</div>
+                    <div class="guide-step__detail">Same transcript → format as PDF handout → Dropbox → Course materials</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+          <article class="guide-card">
+            <div class="guide-card__header">
+              <span class="guide-card__number">🚀</span>
+              <span class="guide-card__status status--pending">Publish</span>
+            </div>
+            <div class="guide-card__body">
+              <h3 class="guide-card__title">Upload & Optimize</h3>
+              <p class="guide-card__desc">Teacher Dashboard → Add Track → Fill all fields for maximum discoverability.</p>
+              <div class="guide-steps">
+                <div class="guide-step">
+                  <span class="guide-step__num">1</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Metadata</div>
+                    <div class="guide-step__detail">Title: "Water Element Meditation: Flow & Change" | Category: Energy Healing | Tags: water, elemental, change, flow, ritual, beginner</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">2</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Cover Art</div>
+                    <div class="guide-step__detail">1400x1400px. Water theme. Include "Basically Brilliant Beginner" branding. Consistent visual language.</div>
+                  </div>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step__num">3</span>
+                  <div class="guide-step__content">
+                    <div class="guide-step__title">Publish & Promote</div>
+                    <div class="guide-step__detail">Submit → Share link in Council group → Post to Piano by Heart list → Schedule social posts</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="../" class="footer__logo">
+            <svg class="footer__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>Basically Brilliant Beginner</span>
+          </a>
+        </div>
+        <nav class="footer__nav" aria-label="Footer navigation">
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Council</h4>
+            <ul>
+              <li><a href="../pages/council.html">Session Notes</a></li>
+              <li><a href="https://meet.jit.si/council-of-the-root" target="_blank" rel="noopener">Jitsi Room</a></li>
+              <li><a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener">Book Session</a></li>
+            </ul>
+          </div>
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Hubs</h4>
+            <ul>
+              <li><a href="../pages/music.html">Music Hub</a></li>
+              <li><a href="../pages/insight-timer.html">Insight Timer</a></li>
+              <li><a href="../pages/resources.html">Resources</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Basically Brilliant Beginner. Created with intention.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

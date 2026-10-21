@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Music Composition Hub - Original music for each element. Collaboration space for Linda, Daniele & Bradley.">
+  <title>Music Hub | Basically Brilliant Beginner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .page-hero {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding-top: var(--header-height);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero__bg { position: absolute; inset: 0; z-index: -1; }
+    .page-hero__orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; }
+    .page-hero__orb--1 { width: 300px; height: 300px; background: var(--color-accent); top: -50px; right: -50px; }
+    .page-hero__orb--2 { width: 200px; height: 200px; background: var(--color-water); bottom: 0; left: -50px; }
+    
+    .music-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--space-6); }
+    
+    .music-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: all var(--transition-base);
+    }
+    .music-card:hover { border-color: var(--color-border-light); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    
+    .music-card__header { padding: var(--space-6); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+    .music-card__element { padding: var(--space-1) var(--space-3); font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; border-radius: var(--radius-full); }
+    .music-card__status { padding: var(--space-1) var(--space-3); font-size: var(--font-size-xs); font-weight: 500; border-radius: var(--radius-full); }
+    
+    .music-card__body { padding: var(--space-6); }
+    .music-card__title { font-size: var(--font-size-xl); margin-bottom: var(--space-2); }
+    .music-card__desc { color: var(--color-text-muted); font-size: var(--font-size-sm); margin-bottom: var(--space-4); line-height: 1.7; }
+    
+    .music-card__tracks { display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-4); }
+    .track { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); transition: all var(--transition-fast); }
+    .track:hover { border-color: var(--color-accent); }
+    .track__play { width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--color-accent); color: var(--color-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all var(--transition-fast); }
+    .track__play:hover { background: var(--color-accent-light); transform: scale(1.05); }
+    .track__play svg { width: 18px; height: 18px; margin-left: 2px; }
+    .track__info { flex: 1; min-width: 0; }
+    .track__name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .track__meta { font-size: var(--font-size-xs); color: var(--color-text-subtle); }
+    .track__duration { font-size: var(--font-size-xs); color: var(--color-text-subtle); font-variant-numeric: tabular-nums; }
+    
+    .music-card__actions { display: flex; gap: var(--space-3); padding: var(--space-6); border-top: 1px solid var(--color-border); flex-wrap: wrap; }
+    
+    .collab-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+    .collab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-top: var(--space-6); }
+    .collab-item { text-align: center; padding: var(--space-4); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .collab-item__icon { width: 40px; height: 40px; margin: 0 auto var(--space-3); color: var(--color-accent); }
+    .collab-item__title { font-weight: 600; margin-bottom: var(--space-1); }
+    .collab-item__desc { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+    
+    .workflow-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-6); margin-top: var(--space-8); }
+    .step { text-align: center; padding: var(--space-6); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); position: relative; }
+    .step::before { content: counter(step); counter-increment: step; position: absolute; top: -16px; left: 50%; transform: translateX(-50%); width: 32px; height: 32px; background: var(--color-accent); color: var(--color-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: var(--font-size-sm); }
+    .workflow-steps { counter-reset: step; }
+    .step__icon { width: 48px; height: 48px; margin: 0 auto var(--space-3); color: var(--color-accent); }
+    .step__title { font-size: var(--font-size-lg); margin-bottom: var(--space-2); }
+    .step__desc { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+    
+    .status--in-progress { background: rgba(212, 165, 116, 0.2); color: var(--color-accent); border: 1px solid rgba(212, 165, 116, 0.3); }
+    .status--ideas { background: rgba(74, 159, 212, 0.2); color: var(--color-water); border: 1px solid rgba(74, 159, 212, 0.3); }
+    .status--planned { background: var(--color-surface-hover); color: var(--color-text-subtle); border: 1px solid var(--color-border); }
+    
+    @media (max-width: 768px) {
+      .music-card__header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav__container">
+      <a href="../" class="nav__logo" aria-label="Basically Brilliant Beginner Home">
+        <svg class="nav__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+        <span class="nav__logo-text">Basically Brilliant Beginner</span>
+      </a>
+      <div class="nav__links">
+        <a href="../pages/music.html" class="nav__link nav__link--active">Music Hub</a>
+        <a href="../pages/insight-timer.html" class="nav__link">Insight Timer</a>
+        <a href="../pages/resources.html" class="nav__link">Resources</a>
+        <a href="../pages/council.html" class="nav__link">Council Sessions</a>
+        <a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener" class="nav__link nav__link--cta">Book Session</a>
+      </div>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle menu">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-hero__bg" aria-hidden="true">
+      <div class="page-hero__orb page-hero__orb--1"></div>
+      <div class="page-hero__orb page-hero__orb--2"></div>
+    </div>
+    <div class="container">
+      <p class="hero__badge">Music Composition Hub</p>
+      <h1 class="hero__title" style="font-size: var(--font-size-4xl); max-width: 700px; margin: 0 auto var(--space-4);">
+        Original Music for the <span class="hero__title--accent">Elements</span>
+      </h1>
+      <p class="hero__subtitle" style="max-width: 600px; margin: 0 auto;">
+        Collaborative compositions for Water, Air, Fire, Earth & Spirit. 
+        Created by Linda, Daniele & Bradley for Council sessions and course materials.
+      </p>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <!-- Elemental Tracks -->
+      <section aria-labelledby="tracks-heading">
+        <div class="section__header">
+          <h2 id="tracks-heading" class="section__title">Elemental Compositions</h2>
+          <p class="section__subtitle">Each element has its own sonic signature</p>
+        </div>
+        
+        <div class="music-grid">
+          <!-- Water -->
+          <article class="music-card">
+            <div class="music-card__header">
+              <span class="music-card__element" style="background: rgba(74, 159, 212, 0.2); color: var(--color-water);">Water</span>
+              <span class="music-card__status status--in-progress">In Progress</span>
+            </div>
+            <div class="music-card__body">
+              <h3 class="music-card__title">Water — Flow & Change</h3>
+              <p class="music-card__desc">Fluid, descending motifs. Crystal bowl samples. The two-glass ritual rhythm. Underwater meditation soundscape.</p>
+              <div class="music-card__tracks">
+                <div class="track">
+                  <button class="track__play" aria-label="Play Water Theme Sketch" onclick="this.querySelector('svg').style.display='none'; this.textContent='⏸'; setTimeout(()=>{this.textContent=''; this.innerHTML='<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"6\" y=\"4\" width=\"4\" height=\"16\"/><rect x=\"14\" y=\"4\" width=\"4\" height=\"16\"/></svg>';}, 3000)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </button>
+                  <div class="track__info">
+                    <div class="track__name">Water Theme — Sketch 1</div>
+                    <div class="track__meta">Piano + Crystal Bowl · Daniele</div>
+                  </div>
+                  <span class="track__duration">2:34</span>
+                </div>
+                <div class="track">
+                  <button class="track__play" aria-label="Play Underwater Meditation Bed" onclick="this.querySelector('svg').style.display='none'; this.textContent='⏸'; setTimeout(()=>{this.textContent=''; this.innerHTML='<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"6\" y=\"4\" width=\"4\" height=\"16\"/><rect x=\"14\" y=\"4\" width=\"4\" height=\"16\"/></svg>';}, 3000)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </button>
+                  <div class="track__info">
+                    <div class="track__name">Underwater Meditation Bed</div>
+                    <div class="track__meta">Ambient · Bradley & Daniele</div>
+                  </div>
+                  <span class="track__duration">12:00</span>
+                </div>
+                <div class="track">
+                  <button class="track__play" aria-label="Play Two-Glass Ritual Rhythm" onclick="this.querySelector('svg').style.display='none'; this.textContent='⏸'; setTimeout(()=>{this.textContent=''; this.innerHTML='<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"6\" y=\"4\" width=\"4\" height=\"16\"/><rect x=\"14\" y=\"4\" width=\"4\" height=\"16\"/></svg>';}, 3000)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </button>
+                  <div class="track__info">
+                    <div class="track__name">Two-Glass Ritual Rhythm</div>
+                    <div class="track__meta">Percussion loop · Daniele</div>
+                  </div>
+                  <span class="track__duration">0:45</span>
+                </div>
+              </div>
+              <div class="music-card__actions">
+                <a href="#" class="btn btn--primary" style="flex: 1;">Open in DAW</a>
+                <a href="#" class="btn btn--ghost">Export Stems</a>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Air -->
+          <article class="music-card">
+            <div class="music-card__header">
+              <span class="music-card__element" style="background: rgba(168, 208, 230, 0.2); color: var(--color-air);">Air</span>
+              <span class="music-card__status status--ideas">Ideas Phase</span>
+            </div>
+            <div class="music-card__body">
+              <h3 class="music-card__title">Air — Breath & Clarity</h3>
+              <p class="music-card__desc">Aeolian harp textures. Breath samples. High, clear tones. Wind chimes. Mental spaciousness.</p>
+              <div class="music-card__tracks">
+                <div class="track">
+                  <button class="track__play" aria-label="Play Air Concept" onclick="this.querySelector('svg').style.display='none'; this.textContent='⏸'; setTimeout(()=>{this.textContent=''; this.innerHTML='<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"6\" y=\"4\" width=\"4\" height=\"16\"/><rect x=\"14\" y=\"4\" width=\"4\" height=\"16\"/></svg>';}, 3000)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </button>
+                  <div class="track__info">
+                    <div class="track__name">Air Concept — Voice Memo</div>
+                    <div class="track__meta">Hummed melody · Linda</div>
+                  </div>
+                  <span class="track__duration">0:32</span>
+                </div>
+                <div class="track">
+                  <button class="track__play" aria-label="Play Breathwork Rhythm" onclick="this.querySelector('svg').style.display='none'; this.textContent='⏸'; setTimeout(()=>{this.textContent=''; this.innerHTML='<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"6\" y=\"4\" width=\"4\" height=\"16\"/><rect x=\"14\" y=\"4\" width=\"4\" height=\"16\"/></svg>';}, 3000)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </button>
+                  <div class="track__info">
+                    <div class="track__name">Breathwork Rhythm Guide</div>
+                    <div class="track__meta">Click track 4-7-8 · Daniele</div>
+                  </div>
+                  <span class="track__duration">5:00</span>
+                </div>
+              </div>
+              <div class="music-card__actions">
+                <a href="#" class="btn btn--secondary" style="flex: 1;">Add Ideas</a>
+                <a href="#" class="btn btn--ghost">Reference Tracks</a>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Fire -->
+          <article class="music-card">
+            <div class="music-card__header">
+              <span class="music-card__element" style="background: rgba(232, 125, 74, 0.2); color: var(--color-fire);">Fire</span>
+              <span class="music-card__status status--planned">Planned</span>
+            </div>
+            <div class="music-card__body">
+              <h3 class="music-card__title">Fire — Transformation</h3>
+              <p class="music-card__desc">Crackling fire samples. Rhythmic intensity. Rising phrases. Drumming. Passion & action energy.</p>
+              <div class="music-card__tracks">
+                <div class="track" style="opacity: 0.6; pointer-events: none;">
+                  <div class="track__play" style="background: var(--color-border);"></div>
+                  <div class="track__info">
+                    <div class="track__name">Fire Theme — Not Started</div>
+                    <div class="track__meta">Awaiting Session 3</div>
+                  </div>
+                  <span class="track__duration">—</span>
+                </div>
+              </div>
+              <div class="music-card__actions">
+                <span class="btn btn--ghost" style="flex: 1; color: var(--color-text-subtle);">After Air Session</span>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Earth -->
+          <article class="music-card">
+            <div class="music-card__header">
+              <span class="music-card__element" style="background: rgba(166, 138, 100, 0.2); color: var(--color-earth);">Earth</span>
+              <span class="music-card__status status--planned">Planned</span>
+            </div>
+            <div class="music-card__body">
+              <h3 class="music-card__title">Earth — Grounded Divination</h3>
+              <p class="music-card__desc">Low drones. Stone/wood percussion. Slow tempo. Scrying bowl resonance. Tarot shuffle rhythm.</p>
+              <div class="music-card__tracks">
+                <div class="track" style="opacity: 0.6; pointer-events: none;">
+                  <div class="track__play" style="background: var(--color-border);"></div>
+                  <div class="track__info">
+                    <div class="track__name">Earth Theme — Not Started</div>
+                    <div class="track__meta">Awaiting Session 4</div>
+                  </div>
+                  <span class="track__duration">—</span>
+                </div>
+              </div>
+              <div class="music-card__actions">
+                <span class="btn btn--ghost" style="flex: 1; color: var(--color-text-subtle);">After Fire Session</span>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Spirit -->
+          <article class="music-card">
+            <div class="music-card__header">
+              <span class="music-card__element" style="background: rgba(201, 184, 150, 0.2); color: var(--color-spirit);">Spirit</span>
+              <span class="music-card__status status--planned">Planned</span>
+            </div>
+            <div class="music-card__body">
+              <h3 class="music-card__title">Spirit — Integration</h3>
+              <p class="music-card__desc">All themes woven together. Harmonic convergence. Guide meeting soundscape. Full circle resolution.</p>
+              <div class="music-card__tracks">
+                <div class="track" style="opacity: 0.6; pointer-events: none;">
+                  <div class="track__play" style="background: var(--color-border);"></div>
+                  <div class="track__info">
+                    <div class="track__name">Spirit Theme — Not Started</div>
+                    <div class="track__meta">Awaiting Session 5</div>
+                  </div>
+                  <span class="track__duration">—</span>
+                </div>
+              </div>
+              <div class="music-card__actions">
+                <span class="btn btn--ghost" style="flex: 1; color: var(--color-text-subtle);">After Earth Session</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Collaboration Workflow -->
+      <section aria-labelledby="workflow-heading" style="margin-top: var(--space-20);">
+        <div class="section__header">
+          <h2 id="workflow-heading" class="section__title">Collaboration Workflow</h2>
+          <p class="section__subtitle">How we create music together across distances</p>
+        </div>
+        
+        <div class="workflow-steps">
+          <article class="step">
+            <div class="step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19v-6M8 13v-2a4 4 0 0 1 8 0v2"/></svg>
+            </div>
+            <h3 class="step__title">1. Linda's Vision</h3>
+            <p class="step__desc">Voice memos with hummed melodies, described feelings, referenced tracks, elemental qualities</p>
+          </article>
+          <article class="step">
+            <div class="step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            <h3 class="step__title">2. Daniele Sketches</h3>
+            <p class="step__desc">Piano/DAW sketches in Logic Pro. Shares stems via Dropbox. Iterates based on feedback.</p>
+          </article>
+          <article class="step">
+            <div class="step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <h3 class="step__title">3. Bradley Adds</h3>
+            <p class="step__desc">Angelic guidance inspired layers. Additional instrumentation. Texture & atmosphere.</p>
+          </article>
+          <article class="step">
+            <div class="step__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <h3 class="step__title">4. Finalize & Deliver</h3>
+            <p class="step__desc">Master for session use. Export stems. Upload to course platform. Archive in Dropbox.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Collaboration Tools -->
+      <section aria-labelledby="tools-heading" style="margin-top: var(--space-20);">
+        <div class="section__header">
+          <h2 id="tools-heading" class="section__title">Tools & Shared Resources</h2>
+          <p class="section__subtitle">Our collaborative toolkit</p>
+        </div>
+        
+        <div class="collab-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+            <h3 style="font-size: var(--font-size-xl);">Music Collaboration Stack</h3>
+          </div>
+          <div class="collab-grid">
+            <div class="collab-item">
+              <div class="collab-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+              <div class="collab-item__title">Dropbox Folder</div>
+              <div class="collab-item__desc">/Basically Brilliant Beginner/Music/ — Stems, sketches, references</div>
+            </div>
+            <div class="collab-item">
+              <div class="collab-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19v-6M8 13v-2a4 4 0 0 1 8 0v2"/></svg></div>
+              <div class="collab-item__title">Voice Memos</div>
+              <div class="collab-item__desc">Linda records ideas → shares via Messages/Email → Daniele imports</div>
+            </div>
+            <div class="collab-item">
+              <div class="collab-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 18a5 5 0 0 0-10 0"/></svg></div>
+              <div class="collab-item__title">Logic Pro / GarageBand</div>
+              <div class="collab-item__desc">Daniele's DAW. Bradley can use GarageBand (free) for contributions.</div>
+            </div>
+            <div class="collab-item">
+              <div class="collab-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+              <div class="collab-item__title">Session Timing</div>
+              <div class="collab-item__desc">Tracks timed for 90-min sessions: opening, meditation, closing</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Musical Notes / Ideas -->
+      <section aria-labelledby="notes-heading" style="margin-top: var(--space-20);">
+        <div class="section__header">
+          <h2 id="notes-heading" class="section__title">Musical Notes & Ideas</h2>
+          <p class="section__subtitle">Living document — add your thoughts</p>
+        </div>
+        
+        <div class="collab-card">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-6);">
+            <div>
+              <h4 style="color: var(--color-accent); margin-bottom: var(--space-3);">Water Element — Keywords</h4>
+              <ul style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <li style="background: rgba(74, 159, 212, 0.1); color: var(--color-water); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(74, 159, 212, 0.2);">Fluid</li>
+                <li style="background: rgba(74, 159, 212, 0.1); color: var(--color-water); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(74, 159, 212, 0.2);">Descending</li>
+                <li style="background: rgba(74, 159, 212, 0.1); color: var(--color-water); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(74, 159, 212, 0.2);">Crystal bowls</li>
+                <li style="background: rgba(74, 159, 212, 0.1); color: var(--color-water); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(74, 159, 212, 0.2);">432 Hz</li>
+                <li style="background: rgba(74, 159, 212, 0.1); color: var(--color-water); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(74, 159, 212, 0.2);">Minor pentatonic</li>
+                <li style="background: rgba(74, 159, 212, 0.1); color: var(--color-water); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(74, 159, 212, 0.2);">Rubato</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="color: var(--color-air); margin-bottom: var(--space-3);">Air Element — Keywords</h4>
+              <ul style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <li style="background: rgba(168, 208, 230, 0.1); color: var(--color-air); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(168, 208, 230, 0.2);">Breathy</li>
+                <li style="background: rgba(168, 208, 230, 0.1); color: var(--color-air); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(168, 208, 230, 0.2);">Aeolian harp</li>
+                <li style="background: rgba(168, 208, 230, 0.1); color: var(--color-air); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(168, 208, 230, 0.2);">High register</li>
+                <li style="background: rgba(168, 208, 230, 0.1); color: var(--color-air); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(168, 208, 230, 0.2);">Sustained</li>
+                <li style="background: rgba(168, 208, 230, 0.1); color: var(--color-air); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(168, 208, 230, 0.2);">Major/Ionian</li>
+                <li style="background: rgba(168, 208, 230, 0.1); color: var(--color-air); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(168, 208, 230, 0.2);">Spacious</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="color: var(--color-fire); margin-bottom: var(--space-3);">Fire Element — Keywords</h4>
+              <ul style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <li style="background: rgba(232, 125, 74, 0.1); color: var(--color-fire); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(232, 125, 74, 0.2);">Rhythmic</li>
+                <li style="background: rgba(232, 125, 74, 0.1); color: var(--color-fire); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(232, 125, 74, 0.2);">Drumming</li>
+                <li style="background: rgba(232, 125, 74, 0.1); color: var(--color-fire); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(232, 125, 74, 0.2);">Rising</li>
+                <li style="background: rgba(232, 125, 74, 0.1); color: var(--color-fire); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(232, 125, 74, 0.2);">Phrygian dominant</li>
+                <li style="background: rgba(232, 125, 74, 0.1); color: var(--color-fire); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(232, 125, 74, 0.2);">Percussive</li>
+                <li style="background: rgba(232, 125, 74, 0.1); color: var(--color-fire); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); font-size: var(--font-size-xs); border: 1px solid rgba(232, 125, 74, 0.2);">Intense</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="../" class="footer__logo">
+            <svg class="footer__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>Basically Brilliant Beginner</span>
+          </a>
+        </div>
+        <nav class="footer__nav" aria-label="Footer navigation">
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Council</h4>
+            <ul>
+              <li><a href="../pages/council.html">Session Notes</a></li>
+              <li><a href="https://meet.jit.si/council-of-the-root" target="_blank" rel="noopener">Jitsi Room</a></li>
+              <li><a href="https://cal.com/danielebuatti/council-session" target="_blank" rel="noopener">Book Session</a></li>
+            </ul>
+          </div>
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Hubs</h4>
+            <ul>
+              <li><a href="../pages/music.html">Music Hub</a></li>
+              <li><a href="../pages/insight-timer.html">Insight Timer</a></li>
+              <li><a href="../pages/resources.html">Resources</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Basically Brilliant Beginner. Created with intention.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
