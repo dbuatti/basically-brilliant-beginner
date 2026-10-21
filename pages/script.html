@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Air Session Script | Council of the Root</title>
+<meta name="description" content="A working script for the Council of the Root — Air session, 28 October 2026.">
+<meta name="theme-color" content="#0B1020">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<script>document.documentElement.className+=" js"</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B1020; --navy-2: #111832; --navy-3: #18203e;
+    --gold: #D4AF6A; --gold-light: #E8C98E; --gold-dim: rgba(212,175,106,.14);
+    --blush: #F3C6D6; --purple: #6B2D6B; --teal: #2E7D8F;
+    --text: #F2EEE8; --text-soft: #C6C0D4; --text-muted: #8F8AA6; --text-faint: #67627E;
+    --line: rgba(212,175,106,.18); --line-soft: rgba(255,255,255,.08);
+    --surface: rgba(255,255,255,.035); --surface-2: rgba(255,255,255,.06);
+    --danger: #D96B5F; --ok: #6FA97C;
+    --s3: .75rem; --s4: 1rem; --s5: 1.5rem; --s6: 2rem; --s7: 2.5rem; --s8: 3rem; --s9: 4rem; --s10: 5rem;
+    --header-h: 72px;
+    --r-sm: 4px; --r-md: 8px; --r-lg: 14px; --r-xl: 22px; --r-full: 999px;
+    --ease: 220ms cubic-bezier(.4,0,.2,1);
+    --display: 'Playfair Display', Georgia, serif;
+    --body: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    --script-size: 1.12rem;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--body); background: var(--navy); color: var(--text); line-height: 1.75; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+  .eyebrow { font-size: .68rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+  .container { width: 100%; max-width: 780px; margin: 0 auto; padding: 0 1.25rem; }
+
+  /* Nav */
+  .nav { position: sticky; top: 0; z-index: 100; background: rgba(11,16,32,.94); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .nav__in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: var(--header-h); max-width: 780px; margin: 0 auto; padding: 0 1.25rem; }
+  .nav__brand { display: flex; align-items: center; gap: .65rem; font-family: var(--display); font-size: 1rem; color: var(--gold-light); }
+  .nav__brand img { height: 28px; width: auto; }
+  .nav__links { display: flex; gap: 1.1rem; align-items: center; }
+  .nav__links a { font-size: .75rem; color: var(--text-soft); }
+  .nav__links a:hover { color: var(--gold); }
+  .nav__size { display: flex; gap: .3rem; }
+  .nav__size button { font-size: .7rem; color: var(--text-muted); border: 1px solid var(--line-soft); border-radius: var(--r-full); padding: .25rem .6rem; }
+  .nav__size button:hover { color: var(--gold); border-color: var(--line); }
+
+  /* Header */
+  .head { padding: var(--s8) 0 var(--s6); }
+  .head h1 { font-family: var(--display); font-size: clamp(2rem, 6vw, 2.8rem); margin: .6rem 0 .5rem; color: var(--gold-light); }
+  .head__lede { color: var(--text-soft); font-size: 1.02rem; }
+
+  .draft { display: flex; gap: .7rem; padding: .85rem 1rem; border-radius: var(--r-md); background: rgba(217,107,95,.1); border: 1px solid rgba(217,107,95,.3); font-size: .84rem; color: var(--text-soft); margin: var(--s5) 0; }
+  .draft svg { width: 18px; height: 18px; color: var(--danger); flex-shrink: 0; margin-top: 3px; }
+  .draft strong { color: var(--text); }
+
+  /* Script blocks */
+  .part { margin-bottom: var(--s7); border: 1px solid var(--line-soft); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); }
+  .part__head { display: flex; align-items: baseline; gap: .9rem; padding: var(--s4) var(--s5); background: var(--navy-2); border-bottom: 1px solid var(--line-soft); flex-wrap: wrap; }
+  .part__time { font-family: var(--display); font-size: 1.1rem; color: var(--gold); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .part__title { font-family: var(--display); font-size: 1.25rem; color: var(--text); flex: 1; min-width: 200px; }
+  .part__len { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint); }
+  .part__body { padding: var(--s5); font-size: var(--script-size); color: var(--text-soft); }
+  .part__body p { margin-bottom: 1em; }
+  .part__body p:last-child { margin-bottom: 0; }
+  .part__body strong { color: var(--text); font-weight: 600; }
+  .part__body em { color: var(--gold-light); font-style: italic; }
+
+  .cue { display: block; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); font-weight: 600; margin: 1.4em 0 .6em; }
+  .cue:first-child { margin-top: 0; }
+
+  .say { color: var(--text); font-family: var(--display); font-size: 1.12em; line-height: 1.7; padding-left: 1rem; border-left: 2px solid var(--gold-dim); margin: 1em 0; }
+  .note { font-size: .84rem; color: var(--text-muted); font-style: italic; margin: 1em 0; }
+  .list { margin: 0 0 1em; display: flex; flex-direction: column; gap: .5em; }
+  .list li { display: flex; gap: .7rem; align-items: flex-start; }
+  .list li::before { content: '▸'; color: var(--gold); flex-shrink: 0; }
+
+  .at { display: inline-block; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); background: var(--gold-dim); border: 1px solid var(--line); border-radius: var(--r-full); padding: .25rem .7rem; margin-bottom: var(--s4); }
+
+  .footer { border-top: 1px solid var(--line-soft); margin-top: var(--s8); padding: var(--s6) 0 var(--s9); }
+  .footer__links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+  .footer__links a { font-size: .82rem; color: var(--text-soft); }
+  .footer__links a:hover { color: var(--gold); }
+
+  /* Print */
+  @media print {
+    :root { --script-size: 11.5pt; }
+    body { background: #fff; color: #111; line-height: 1.5; }
+    .nav, .draft, .no-print { display: none !important; }
+    .part { border-color: #ccc; background: #fff; break-inside: avoid; page-break-inside: avoid; }
+    .part__head { background: #f4f1ec; border-bottom-color: #ddd; }
+    .part__title, .part__body strong, .say { color: #111; }
+    .part__body, .note, .list li { color: #333; }
+    .part__time, .cue, .at { color: #7a5a20; }
+    .cue { color: #2a6470; }
+    .say { border-left-color: #c9a86a; }
+    .head h1 { color: #111; }
+    .head__lede { color: #333; }
+    .container { max-width: 100%; }
+    a { text-decoration: none; }
+  }
+
+  @media (max-width: 620px) {
+    .part__head { padding: var(--s3) var(--s4); }
+    .part__body { padding: var(--s4); }
+    .nav__links a:not(.keep) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav no-print">
+  <div class="nav__in">
+    <a href="/pages/prep.html" class="nav__brand">
+      <img src="/assets/logo-mark.png" alt="" width="28" height="29">
+      <span>Council of the Root</span>
+    </a>
+    <div class="nav__links">
+      <a href="/pages/prep.html" class="keep">Prep</a>
+      <a href="/pages/council.html">Notes</a>
+      <div class="nav__size">
+        <button type="button" id="sizeDown" aria-label="Smaller text">A−</button>
+        <button type="button" id="sizeUp" aria-label="Larger text">A+</button>
+        <button type="button" id="printBtn" aria-label="Print">⎙</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+  <header class="head">
+    <p class="eyebrow">Wednesday 28 October 2026 · 7:30 PM</p>
+    <h1>The Breath of Protection</h1>
+    <p class="head__lede">
+      A working script for the Air session — the teaching, the practice, the meditation
+      and the closing, in the order they run.
+    </p>
+  </header>
+
+  <div class="draft">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+    <span>
+      <strong>A draft in your structure, not your words.</strong> The order follows the
+      shape of the Water session — blessing, bowl, breathwork, teaching, working, meditation,
+      circle, closing. Every line here is scaffolding: rewrite it in your own voice, or
+      replace it outright. Print it, or open it on your phone and read from it.
+    </span>
+  </div>
+
+  <!-- 00:00 ARRIVAL -->
+  <section class="part">
+    <div class="part__head">
+      <span class="part__time">00:00</span>
+      <span class="part__title">Arrival</span>
+      <span class="part__len">5 min</span>
+    </div>
+    <div class="part__body">
+      <p>
+        People arrive as they arrive. Some will be early, some will come in halfway
+        through. Leave the room open and let the settling happen without commentary.
+      </p>
+      <ul class="list">
+        <li>Headphones on, if you have them — it keeps the room clear for everyone else.</li>
+        <li>A glass of water, and a dark bowl for scrying.</li>
+        <li>Cameras off is fine, and probably better for the opening.</li>
+        <li>Someone opens the room and becomes the moderator. They start the recording.</li>
+      </ul>
+      <p class="note">
+        The local audio recording on the moderator's machine is worth starting now rather
+        than later. It runs the whole session and gives a clean track of the room.
+      </p>
+    </div>
+  </section>
+
+  <!-- 00:05 BLESSING -->
+  <section class="part">
+    <div class="part__head">
+      <span class="part__time">00:05</span>
+      <span class="part__title">Opening blessing &amp; crystal bowl</span>
+      <span class="part__len">7 min</span>
+    </div>
+    <div class="part__body">
+      <p class="cue">The blessing</p>
+      <p>
+        In the Water session this was addressed to Archangel Michael, the spiritual
+        guides, the divine energy, and the grandmothers of the four directions, for
+        protection and grounding. The Air session can keep that shape and let the
+        element of the day change its texture.
+      </p>
+      <div class="say">
+        Air is the element we live in between breaths. It moves before thought does.
+        It is the first thing we touch and the last thing we let go of.
+      </div>
+      <p class="note">
+        A draft opening. The Water blessing gave protection and grounding as its
+        outcome. For Air, the equivalent might be <em>clarity</em> — arriving at the
+        mind rather than dismissing it.
+      </p>
+
+      <p class="cue">The bowl</p>
+      <p>
+        The crystal bowl. Then the breath — into the belly, and out, letting go of
+        whatever was carried in. Six cycles, unhurried.
+      </p>
+      <p class="note">
+        The Water session moved the breath to the belly. For Air it might sit higher
+        in the chest — the natural place of the breath is also the place of the
+        element.
+      </p>
+    </div>
+  </section>
+
+  <!-- 00:12 GROUNDING -->
+  <section class="part">
+    <div class="part__head">
+      <span class="part__time">00:12</span>
+      <span class="part__title">Grounding breath</span>
+      <span class="part__len">6 min</span>
+    </div>
+    <div class="part__body">
+      <p>
+        Six slow cycles. Feet on the floor. Breath into the belly. Long enough out
+        that the shoulders drop.
+      </p>
+      <p class="cue">Words to speak</p>
+      <div class="say">
+        Feel your feet on the floor. All of the weight of you, given to the ground
+        that is holding it up. You do not have to hold yourself up. The ground is
+        doing that.
+      </div>
+      <div class="say">
+        Now the breath. Not a breath you are making — a breath that is already
+        happening, that you are simply noticing. In through the nose. Out through
+        the mouth. Let the out-breath be longer than the in-breath.
+      </div>
+      <p class="note">
+        This is the handover from the opening into the teaching. It is not a technique
+        to learn yet — it is the body arriving before the mind starts working.
+      </p>
+    </div>
+  </section>
+
+  <!-- 00:18 TEACHING -->
+  <section class="part">
+    <div class="part__head">
+      <span class="part__time">00:18</span>
+      <span class="part__title">Teaching · Air</span>
+      <span class="part__len">13 min</span>
+    </div>
+    <div class="part__body">
+      <p>
+        Air is the element of the mind. It governs breath, movement, thought, speech —
+        everything that travels. It is also the element of the body that is most
+        easily ignored: you can go days without noticing a single breath, and the
+        mind will go on working the whole time.
+      </p>
+
+      <p class="cue">Three threads, in this order</p>
+      <ul class="list">
+        <li>
+          <span><strong>Air moves before thought does.</strong> The breath changes
+          before you decide anything. Where the breath goes, the mind follows — which
+          is why a practice that works on the breath works on the mind.</span>
+        </li>
+        <li>
+          <span><strong>Water was flow; Air is what holds it.</strong> The Water
+          session said not to fight the current. Air is where you need somewhere to
+          stand while the current moves. That is what protection is for — not a wall
+          against the world, but a boundary you can feel.</span>
+        </li>
+        <li>
+          <span><strong>What an unprotected mind does.</strong> It overworks. It plans.
+          It rehearses conversations that have not happened. Air is the element that
+          notices this happening, which is why protection comes before power in this
+          course.</span>
+        </li>
+      </ul>
+
+      <p class="cue">A story to hold</p>
+      <p>
+        Worth having one piece of myth or image in reserve for Air — the way Sedna
+        carried the Water session. Air has no single obvious figure, which is itself
+        interesting: the element that moves is the hardest one to pin down.
+      </p>
+      <p class="note">
+        This is the part Linda knows and I don't. Put her own story here.
+      </p>
+    </div>
+  </section>
+
+  <!-- 00:31 PRACTICE -->
+  <section class="part">
+    <div class="part__head">
+      <span class="part__time">00:31</span>
+      <span class="part__title">Practice · Grounding &amp; shielding</span>
+      <span class="part__len">11 min</span>
+    </div>
+    <div class="part__body">
+      <p>
+        A practice simple enough to do at a kitchen table and specific enough to be
+        worth doing. Three stages, and people can do it in any order.
+      </p>
+
+      <p class="cue">One · Ground</p>
+      <div class="say">
+        Both feet flat. Feel the weight of you, and where it goes. Say to yourself
+        silently: <em>I am here, and this is what holds me up.</em>
+      </div>
+
+      <p class="cue">Two · Breathe</p>
+      <div class="say">
+        One hand on the belly. Breathe in, and feel it widen. Breathe out, and feel
+        the shoulders fall away from your ears. Three times, slowly.
+      </div>
+
+      <p class="cue">Three · Shield</p>
+      <div class="say">
+        Now draw a boundary with the breath. Breathe in, and feel the breath fill
+        the space around you — not a wall, a shape. Breathe out, and feel the shape
+        hold. It is not a barrier. It is a knowing of where you end.
+      </div>
+      <p class="note">
+        A boundary, not a barrier — that distinction matters and is worth saying out
+        loud. The Air session is the first place protection is taught, and it should
+        not be taught as something that keeps things out.
+      </p>
+
+      <p class="cue">Closing the practice</p>
+      <p>
+        Invite people to notice one thing: whether the boundary felt like a wall, a
+        shape, or something they could not find. All three are useful answers, and
+        none of them are wrong.
+      </p>
+    </div>
+  </section>
+
+  <!-- 00:42 MEDITATION -->
+  <section class="part">
+    <div class="part__head">
+      <span class="part__time">00:42</span>
+      <span class="part__title">Guided meditation</span>
+      <span class="part__len">11 min</span>
+    </div>
+    <div class="part__body">
+      <p>
+        Eleven minutes, with the Air theme underneath. The instruction is to follow
+        the breath as it actually moves — not to change it, and not to control it.
+      </p>
+
+      <p class="cue">Settling · 2 min</p>
+      <div class="say">
+        Let the eyes close, or let the gaze go soft. Let the hands rest. There is
+        nothing to do here, and nothing to get right.
+      </div>
+      <div class="say">
+        Take three breaths, at the pace that is already there. Notice the breath at
+        the top of the inhale, where it turns. Notice the small pause before the
+        out-breath begins. That pause is the turn of the air.
+      </div>
+
+      <p class="cue">The breath itself · 4 min</p>
+      <div class="say">
+        Now follow the breath for a while. Not steering it. Following.
+      </div>
+      <p class="note">
+        Long pause here — around ninety seconds of silence with the theme playing.
+        The silence is the point of this section, not the talking.
+      </p>
+
+      <p class="cue">The mind · 3 min</p>
+      <div class="say">
+        Notice where the mind has gone. It may have gone to tomorrow. It may have
+        gone to something said earlier in the week. Notice it without trying to
+        bring it back. Bringing it back is not the practice.
+      </div>
+      <div class="say">
+        And notice this: the breath was there the whole time. Wherever the mind went,
+        the breath kept moving. Air does not stop because you are thinking.
+      </div>
+
+      <p class="cue">Widening · 2 min</p>
+      <div class="say">
+        Let the attention widen. Out from the breath, into the air around the body —
+        cool on the skin, moving in the room. Out further, into the room itself, and
+        the people in it. You are breathing the same air as everyone else.
+      </div>
+      <div class="say">
+        Let the eyes open, whenever they are ready.
+      </div>
+    </div>
+  </section>
+
+  <!-- 00:53 SHARING -->
+  <section class="part">
+    <div class="part__head">
+      <span class="part__time">00:53</span>
+      <span class="part__title">Sharing circle</span>
+      <span class="part__len">22 min</span>
+    </div>
+    <div class="part__body">
+      <p>
+        What surfaced. Unscripted, and the part Linda never prepares. Leave generous
+        space here — in the Water session it was the longest single stretch.
+      </p>
+      <ul class="list">
+        <li>Invite in the round, so nobody has to fight for a turn.</li>
+        <li>No fixing, no advice unless asked for.</li>
+        <li>One question to keep the circle moving if it stalls: <em>what changed in the body?</em></li>
+        <li>Let silence be an answer. Do not rescue it.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 01:15 CLOSING -->
+  <section class="part">
+    <div class="part__head">
+      <span class="part__time">01:15</span>
+      <span class="part__title">Closing &amp; next steps</span>
+      <span class="part__len">10 min</span>
+    </div>
+    <div class="part__body">
+      <p>
+        Bring it back to the body — one more breath on the belly, feet on the floor.
+        Then the closing.
+      </p>
+      <div class="say">
+        Air goes out of the room and into the world, and it will come back in
+        through the window, through the door, through other people. You do not have
+        to hold it. You only have to notice that it is yours.
+      </div>
+
+      <p class="cue">What to carry into the week</p>
+      <p>
+        One thing. The grounding practice — feet, breath, boundary — is short enough
+        to do every morning, and it is the one worth taking.
+      </p>
+
+      <p class="cue">Next time</p>
+      <p>
+        Fire, and the third module: crystal work, candle magic, and transformation.
+        A word that it is a harder element than Air, and that the circle is where
+        that gets held.
+      </p>
+      <p class="note">
+        Say something about Fire being a step further out of comfort. It is true of
+        the elemental sequence, and it sets up the third session honestly.
+      </p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__links">
+      <a href="/pages/prep.html">← Session prep</a>
+      <a href="/pages/council.html">Session notes</a>
+      <a href="/pages/session">Council console</a>
+      <a href="/pages/music.html">Music hub</a>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  // Text size, for reading the script on a call.
+  var key = 'council-script-size';
+  var root = document.documentElement;
+  var sizes = [1.0, 1.12, 1.28, 1.45, 1.65];
+  var idx = 2;
+  try { idx = parseInt(localStorage.getItem(key), 10); } catch (e) {}
+  if (isNaN(idx)) idx = 2;
+
+  function apply() {
+    root.style.setProperty('--script-size', sizes[idx] + 'rem');
+    try { localStorage.setItem(key, String(idx)); } catch (e) {}
+  }
+  apply();
+
+  var up = document.getElementById('sizeUp');
+  var down = document.getElementById('sizeDown');
+  if (up) up.addEventListener('click', function () {
+    if (idx < sizes.length - 1) { idx++; apply(); }
+  });
+  if (down) down.addEventListener('click', function () {
+    if (idx > 0) { idx--; apply(); }
+  });
+
+  var printBtn = document.getElementById('printBtn');
+  if (printBtn) printBtn.addEventListener('click', function () { window.print(); });
+})();
+</script>
+</body>
+</html>
