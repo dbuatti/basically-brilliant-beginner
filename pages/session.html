@@ -203,9 +203,9 @@
             The Council of the Root meets here. Set your space, then step in.
           </p>
 
-          <div class="warn">
+          <div class="warn" id="embedWarn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-            <span>
+            <span id="embedWarnStatic">
               <strong>This embedded view stops after 5 minutes</strong> — the public Jitsi
               server disables embedding beyond a short demo. For the full ninety minutes,
               use <strong>Open Full Window</strong> (top right), where you can record
@@ -228,7 +228,7 @@
             </div>
             <div class="prep__item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span class="prep__text"><strong>Ninety minutes</strong> with room around it</span>
+              <span class="prep__text" id="prepLength"><strong>Ninety minutes</strong> with room around it</span>
             </div>
           </div>
 
@@ -608,6 +608,13 @@
         w.innerHTML = '<strong>Our own server.</strong> No time limit, recording ' +
           'handled here, and the whole session runs inside this page.';
       }
+      var box = document.getElementById('embedWarn');
+      var note = document.getElementById('embedWarnStatic');
+      var len = document.getElementById('prepLength');
+      if (box) box.style.display = 'none';
+      if (len) {
+        len.innerHTML = '<strong>As long as you need</strong> — no time limit';
+      }
       joinWithApi(null, ROOM);
     };
     var fail = function () {
@@ -675,7 +682,32 @@
     });
   }
 
+  // Jitsi shows a device prejoin inside the frame before the conference
+  // starts, and the console's own overlay sits on top of it. So the
+  // overlay steps aside as soon as the frame is live — the top bar and
+  // the right-hand panel stay, which is where the moderator works.
+  function revealStage() {
+    overlay.classList.add('overlay--hidden');
+  }
+
+  function watchFrame() {
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries += 1;
+      var f = host.querySelector('iframe');
+      if (f) {
+        clearInterval(timer);
+        f.addEventListener('load', revealStage, { once: true });
+        setTimeout(revealStage, 1200);
+      } else if (tries > 60) {
+        clearInterval(timer);
+      }
+    }, 250);
+  }
+
   function wireApiEvents() {
+    watchFrame();
+
     api.addEventListener('videoConferenceJoined', function () {
       joined = true;
       overlay.classList.add('overlay--hidden');
