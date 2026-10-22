@@ -36,44 +36,31 @@ openssl genrsa -out opencode_api_key.pem 2048 2>/dev/null || fail "openssl could
 chmod 600 opencode_api_key.pem
 openssl rsa -in opencode_api_key.pem -pubout -out opencode_api_key_public.pem 2>/dev/null || fail "could not extract the public key"
 
-# ── 2. read tenancy, user, region from the Cloud Shell's own config ───────
-# The Cloud Shell is pre-authenticated and has a ~/.oci/config file.
-# Reading it is more reliable than querying the API, which needs IDs we
-# don't have yet.
-say "Reading your tenancy, user and region from the Cloud Shell config…"
-OCI_CONFIG="$HOME/.oci/config"
-TENANCY=""
-USER_OCID=""
+# ── 2. tenancy, user, region from environment variables ───────────────────
+# The Cloud Shell exposes these directly. OCI_TENANCY and OCI_CS_USER_OCID
+# are set in every Cloud Shell session.
+say "Reading your tenancy, user and region from the Cloud Shell environment…"
+TENANCY="${OCI_TENANCY:-}"
+USER_OCID="${OCI_CS_USER_OCID:-}"
 REGION=""
 
-if [ -f "$OCI_CONFIG" ]; then
-  TENANCY=$(grep -E '^tenancy=' "$OCI_CONFIG" | head -1 | cut -d= -f2- | tr -d '[:space:]')
-  USER_OCID=$(grep -E '^user=' "$OCI_CONFIG" | head -1 | cut -d= -f2- | tr -d '[:space:]')
-  REGION=$(grep -E '^region=' "$OCI_CONFIG" | head -1 | cut -d= -f2- | tr -d '[:space:]')
+# Region: extract from the terminal OCID or the hostname.
+if [ -n "${OCI_CS_TERMINAL_OCID:-}" ]; then
+  REGION=$(echo "$OCI_CS_TERMINAL_OCID" | grep -oE 'ap-[a-z]+-[0-9]+' | head -1)
 fi
-
-# Fall back to API queries if the config file didn't have them.
-if [ -z "$TENANCY" ] || [ "$TENANCY" = "None" ]; then
-  TENANCY=$(oci iam tenancy get --query 'data.id' --output text 2>/dev/null | tr -d '[:space:]')
+if [ -z "$REGION" ]; then
+  REGION=$(hostname 2>/dev/null | grep -oE 'ap-[a-z]+-[0-9]+' | head -1)
 fi
-if [ -z "$USER_OCID" ] || [ "$USER_OCID" = "None" ]; then
-  # Try matching the Cloud Shell login to an OCI user.
-  SHELL_USER="$(id -un)"
-  USER_OCID=$(oci iam user list --all --compartment-id "$TENANCY" \
-    --query "data[?\"name\"=='$SHELL_USER'].\"ocid\"" --output text 2>/dev/null | head -1 | tr -d '[:space:]')
-  if [ -z "$USER_OCID" ] || [ "$USER_OCID" = "None" ]; then
-    USER_OCID=$(oci iam user list --all --compartment-id "$TENANCY" --output text 2>/dev/null \
-      | awk '$2 ~ /^ocid1\.user/ {print $2; exit}')
+if [ -z "$REGION" ]; then
+  # Last resort: parse from the prompt or the OCI config if it exists.
+  if [ -f "$HOME/.oci/config" ]; then
+    REGION=$(grep -E '^region=' "$HOME/.oci/config" | head -1 | cut -d= -f2- | tr -d '[:space:]')
   fi
 fi
-if [ -z "$REGION" ] || [ "$REGION" = "None" ]; then
-  REGION=$(oci iam region-subscription list --tenancy-id "$TENANCY" \
-    --query 'data[0]."region-name"' --output text 2>/dev/null | head -1 | tr -d '[:space:]')
-fi
 
-[ -n "$TENANCY" ] && [ "$TENANCY" != "None" ] || TENANCY="PASTE_YOUR_TENANCY_OCID_HERE"
-[ -n "$USER_OCID" ] && [ "$USER_OCID" != "None" ] || USER_OCID="PASTE_YOUR_USER_OCID_HERE"
-[ -n "$REGION" ] && [ "$REGION" != "None" ] || REGION="PASTE_YOUR_REGION_HERE"
+[ -n "$TENANCY" ] || TENANCY="PASTE_YOUR_TENANCY_OCID_HERE"
+[ -n "$USER_OCID" ] || USER_OCID="PASTE_YOUR_USER_OCID_HERE"
+[ -n "$REGION" ] || REGION="PASTE_YOUR_REGION_HERE"
 
 say "  tenancy: $TENANCY"
 say "  user:    $USER_OCID"
@@ -83,7 +70,7 @@ say "  region:  $REGION"
 say "Adding the public key to your Oracle user…"
 ADDED=0
 
-# Newer CLI (3.9x): api-key commands live under "iam user api-key".
+# Try the newer CLI spelling first.
 if [ "$USER_OCID" != "PASTE_YOUR_USER_OCID_HERE" ]; then
   if oci iam user api-key upload \
         --user-id "$USER_OCID" \
@@ -92,7 +79,7 @@ if [ "$USER_OCID" != "PASTE_YOUR_USER_OCID_HERE" ]; then
   fi
 fi
 
-# Older CLI (and the one Cloud Shell usually bundles).
+# Try the older CLI spelling.
 if [ "$ADDED" -eq 0 ] && [ "$USER_OCID" != "PASTE_YOUR_USER_OCID_HERE" ]; then
   if oci iam api-key add \
         --user-id "$USER_OCID" \
@@ -104,13 +91,17 @@ fi
 
 if [ "$ADDED" -eq 0 ]; then
   warn "The CLI could not add the API key by itself."
+  warn "(The Cloud Shell authenticates as the instance, not as you, so it"
+  warn " may not have permission to add keys to your user.)"
+  warn ""
   warn "Do it by hand — it takes about a minute:"
   warn ""
-  warn "   Identity & Security -> Domains -> Users -> your user"
-  warn "   -> API Keys -> Add API Key -> Paste the public key"
+  warn "   1. Identity & Security -> Domains -> Users -> your user"
+  warn "   2. -> API Keys -> Add API Key"
+  warn "   3. Paste the contents of this file:"
+  warn "        $WORKDIR/opencode_api_key_public.pem"
   warn ""
-  warn "The public key is in: $WORKDIR/opencode_api_key_public.pem"
-  warn "Paste its contents into the console, or upload the file."
+  warn "   Or upload the file directly from the file browser."
   warn ""
 fi
 
@@ -123,7 +114,6 @@ if [ -z "$FINGERPRINT" ] || [ "$FINGERPRINT" = "None" ]; then
                 | openssl dgst -md5 2>/dev/null | sed 's/^.*= //; s/ //g')
 fi
 if [ -z "$FINGERPRINT" ] || [ "$FINGERPRINT" = "None" ]; then
-  # Last resort: openssl pkey (newer syntax).
   FINGERPRINT=$(openssl pkey -pubin -in opencode_api_key_public.pem -outform DER 2>/dev/null \
                 | openssl md5 2>/dev/null | sed 's/^.*= //; s/ //g')
 fi
@@ -164,9 +154,8 @@ say "   folder icon at the top-left of the Cloud Shell panel."
 say ""
 say "=========================================================================="
 say ""
-say "Every user in the tenancy, in case you need to pick a different OCID:"
-oci iam user list --all --compartment-id "$TENANCY" --output text 2>/dev/null | head -20 | sed 's/^/   /'
+say "The public key (in case you need to paste it by hand):"
+cat opencode_api_key_public.pem
 say ""
-say "Subscribed regions:"
-oci iam region-subscription list --tenancy-id "$TENANCY" --output text 2>/dev/null | head -10 | sed 's/^/   /'
+say "=========================================================================="
 say ""
