@@ -385,7 +385,6 @@
   </div>
 </div>
 
-<script src="https://meet.jit.si/external_api.js"></script>
 <script>
 (function () {
   'use strict';
@@ -420,6 +419,33 @@
   // The self-hosted server, if one is configured. The public server is the
   // default because it is what the session is verified against.
   var selfHosted = (new URLSearchParams(window.location.search).get('server') || SELF_HOSTED_URL).replace(/\/$/, '');
+
+  // The API script has to come from the same server as the room, so the
+  // origin is worked out once and used for both.
+  function apiOrigin() {
+    return selfHosted ? selfHosted : 'https://' + API_DOMAIN;
+  }
+
+  // The iframe API wants a bare host name, not a URL.
+  function apiHost() {
+    return selfHosted ? selfHosted.replace(/^https?:\/\//, '').replace(/\/.*$/, '') : API_DOMAIN;
+  }
+
+  // Loads external_api.js from whichever server is in use. The public
+  // server disables the iframe API, but the script still has to come
+  // from there for the plain-iframe fallback to work.
+  function loadExternalApi(origin) {
+    if (window.JitsiMeetExternalAPI && window.__apiOrigin === origin) {
+      return Promise.resolve();
+    }
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = origin + '/external_api.js';
+      s.onload = function () { window.__apiOrigin = origin; resolve(); };
+      s.onerror = function () { reject(new Error('external_api.js failed')); };
+      document.head.appendChild(s);
+    });
+  }
 
   var api = null;
   var isRecording = false;
@@ -464,7 +490,7 @@
   var ROOM = params.get('session') ? params.get('session') : roomBase;
 
   function roomUrl() {
-    return 'https://' + API_DOMAIN + '/' + ROOM;
+    return apiOrigin() + '/' + ROOM;
   }
 
   roomLabel.textContent = ROOM;
@@ -529,6 +555,21 @@
       return;
     }
 
+    loadExternalApi('https://' + API_DOMAIN).then(function () { joinPublicWithApi(); },
+      function () { joinPublicWithPlainFrame(); });
+  }
+
+  function joinPublicWithPlainFrame() {
+    var f = document.createElement('iframe');
+    f.src = roomUrl();
+    f.allow = 'camera; microphone; fullscreen; display-capture; autoplay';
+    f.allowFullscreen = true;
+    host.appendChild(f);
+    overlay.classList.add('overlay--hidden');
+    recStatus.textContent = 'Plain embed — use Full Window for recording';
+  }
+
+  function joinPublicWithApi() {
     api = new JitsiMeetExternalAPI(API_DOMAIN, {
       roomName: ROOM,
       parentNode: host,
@@ -562,7 +603,7 @@
   function probeSelfHosted(base) {
     var w = document.getElementById('embedWarnText');
     var ok = function () {
-      API_DOMAIN = base;
+      selfHosted = base;
       if (w) {
         w.innerHTML = '<strong>Our own server.</strong> No time limit, recording ' +
           'handled here, and the whole session runs inside this page.';
@@ -621,8 +662,14 @@
       }
     };
     if (jwt) opts.jwt = jwt;
-    api = new JitsiMeetExternalAPI(API_DOMAIN, opts);
-    wireApiEvents();
+    // The script must come from the server hosting the room.
+    loadExternalApi(apiOrigin()).then(function () {
+      api = new JitsiMeetExternalAPI(apiHost(), opts);
+      wireApiEvents();
+    }, function () {
+      recStatus.textContent = 'Could not reach the meeting server';
+      recDot.className = 'recbar__dot recbar__dot--warn';
+    });
   }
 
   function wireApiEvents() {
