@@ -36,38 +36,68 @@ openssl genrsa -out opencode_api_key.pem 2048 2>/dev/null || fail "openssl could
 chmod 600 opencode_api_key.pem
 openssl rsa -in opencode_api_key.pem -pubout -out opencode_api_key_public.pem 2>/dev/null || fail "could not extract the public key"
 
-# ── 2. find your user ──────────────────────────────────────────────────────
-say "Finding your Oracle user…"
-SHELL_USER="$(id -un)"
-USER_OCID=$(oci iam user list --all \
-  --query "data[?\"name\"=='$SHELL_USER'].\"ocid\"" --output text 2>/dev/null | head -1 | tr -d '[:space:]')
+# ── 2. read tenancy, user, region from the Cloud Shell's own config ───────
+# The Cloud Shell is pre-authenticated and has a ~/.oci/config file.
+# Reading it is more reliable than querying the API, which needs IDs we
+# don't have yet.
+say "Reading your tenancy, user and region from the Cloud Shell config…"
+OCI_CONFIG="$HOME/.oci/config"
+TENANCY=""
+USER_OCID=""
+REGION=""
 
-if [ -z "$USER_OCID" ] || [ "$USER_OCID" = "None" ]; then
-  # Fall back to the first user (the list is usually short).
-  USER_OCID=$(oci iam user list --all --output text 2>/dev/null \
-    | awk '$2 ~ /^ocid1\.user/ {print $2; exit}')
+if [ -f "$OCI_CONFIG" ]; then
+  TENANCY=$(grep -E '^tenancy=' "$OCI_CONFIG" | head -1 | cut -d= -f2- | tr -d '[:space:]')
+  USER_OCID=$(grep -E '^user=' "$OCI_CONFIG" | head -1 | cut -d= -f2- | tr -d '[:space:]')
+  REGION=$(grep -E '^region=' "$OCI_CONFIG" | head -1 | cut -d= -f2- | tr -d '[:space:]')
 fi
-[ -n "$USER_OCID" ] || USER_OCID="PASTE_YOUR_USER_OCID_HERE"
 
-say "  your user: $USER_OCID"
+# Fall back to API queries if the config file didn't have them.
+if [ -z "$TENANCY" ] || [ "$TENANCY" = "None" ]; then
+  TENANCY=$(oci iam tenancy get --query 'data.id' --output text 2>/dev/null | tr -d '[:space:]')
+fi
+if [ -z "$USER_OCID" ] || [ "$USER_OCID" = "None" ]; then
+  # Try matching the Cloud Shell login to an OCI user.
+  SHELL_USER="$(id -un)"
+  USER_OCID=$(oci iam user list --all --compartment-id "$TENANCY" \
+    --query "data[?\"name\"=='$SHELL_USER'].\"ocid\"" --output text 2>/dev/null | head -1 | tr -d '[:space:]')
+  if [ -z "$USER_OCID" ] || [ "$USER_OCID" = "None" ]; then
+    USER_OCID=$(oci iam user list --all --compartment-id "$TENANCY" --output text 2>/dev/null \
+      | awk '$2 ~ /^ocid1\.user/ {print $2; exit}')
+  fi
+fi
+if [ -z "$REGION" ] || [ "$REGION" = "None" ]; then
+  REGION=$(oci iam region-subscription list --tenancy-id "$TENANCY" \
+    --query 'data[0]."region-name"' --output text 2>/dev/null | head -1 | tr -d '[:space:]')
+fi
+
+[ -n "$TENANCY" ] && [ "$TENANCY" != "None" ] || TENANCY="PASTE_YOUR_TENANCY_OCID_HERE"
+[ -n "$USER_OCID" ] && [ "$USER_OCID" != "None" ] || USER_OCID="PASTE_YOUR_USER_OCID_HERE"
+[ -n "$REGION" ] && [ "$REGION" != "None" ] || REGION="PASTE_YOUR_REGION_HERE"
+
+say "  tenancy: $TENANCY"
+say "  user:    $USER_OCID"
+say "  region:  $REGION"
 
 # ── 3. add the public key to your user ─────────────────────────────────────
 say "Adding the public key to your Oracle user…"
 ADDED=0
 
 # Newer CLI (3.9x): api-key commands live under "iam user api-key".
-if oci iam user api-key upload \
-      --user-id "$USER_OCID" \
-      --key-file opencode_api_key_public.pem >/dev/null 2>&1; then
-  ADDED=1
+if [ "$USER_OCID" != "PASTE_YOUR_USER_OCID_HERE" ]; then
+  if oci iam user api-key upload \
+        --user-id "$USER_OCID" \
+        --key-file opencode_api_key_public.pem >/dev/null 2>&1; then
+    ADDED=1
+  fi
 fi
 
 # Older CLI (and the one Cloud Shell usually bundles).
-if [ "$ADDED" -eq 0 ]; then
+if [ "$ADDED" -eq 0 ] && [ "$USER_OCID" != "PASTE_YOUR_USER_OCID_HERE" ]; then
   if oci iam api-key add \
-        --key-name "opencode-ops-$(date +%Y%m%d)" \
+        --user-id "$USER_OCID" \
         --key-file opencode_api_key_public.pem \
-        --display-name "Council's assistant - temporary" >/dev/null 2>&1; then
+        --key-name "opencode-ops-$(date +%Y%m%d)" >/dev/null 2>&1; then
     ADDED=1
   fi
 fi
@@ -89,28 +119,17 @@ fi
 FINGERPRINT=$(openssl rsa -pubin -in opencode_api_key_public.pem -outform der 2>/dev/null \
               | openssl md5 2>/dev/null | sed 's/^.*= //; s/ //g')
 if [ -z "$FINGERPRINT" ] || [ "$FINGERPRINT" = "None" ]; then
-  # Some openssl versions format differently.
   FINGERPRINT=$(openssl rsa -pubin -in opencode_api_key_public.pem -outform der 2>/dev/null \
                 | openssl dgst -md5 2>/dev/null | sed 's/^.*= //; s/ //g')
 fi
+if [ -z "$FINGERPRINT" ] || [ "$FINGERPRINT" = "None" ]; then
+  # Last resort: openssl pkey (newer syntax).
+  FINGERPRINT=$(openssl pkey -pubin -in opencode_api_key_public.pem -outform DER 2>/dev/null \
+                | openssl md5 2>/dev/null | sed 's/^.*= //; s/ //g')
+fi
 [ -n "$FINGERPRINT" ] || FINGERPRINT="PASTE_YOUR_FINGERPRINT_HERE"
 
-# ── 5. tenancy and region ──────────────────────────────────────────────────
-say "Working out your tenancy and region…"
-TENANCY=$(oci iam tenancy get --query 'data.id' --output text 2>/dev/null)
-[ -n "$TENANCY" ] && [ "$TENANCY" != "None" ] || TENANCY="PASTE_YOUR_TENANCY_OCID_HERE"
-
-REGION=$(oci iam region-subscription list \
-  --query 'data[0]."region-name"' --output text 2>/dev/null | head -1 | tr -d '[:space:]')
-if [ -z "$REGION" ] || [ "$REGION" = "None" ]; then
-  REGION=$(curl -s --max-time 8 \
-    -H "Authorization: Bearer $OCI_PRIVKEY" \
-    http://169.254.169.254/opc/v2/instance/ 2>/dev/null \
-    | grep -o '"regionId":"[^"]*' | head -1 | cut -d'"' -f4)
-fi
-[ -n "$REGION" ] || REGION="PASTE_YOUR_REGION_HERE"
-
-# ── 6. the block to paste back ────────────────────────────────────────────
+# ── 5. the block to paste back ────────────────────────────────────────────
 say ""
 say "=========================================================================="
 say " PASTE THIS BACK TO THE ASSISTANT"
@@ -146,8 +165,8 @@ say ""
 say "=========================================================================="
 say ""
 say "Every user in the tenancy, in case you need to pick a different OCID:"
-oci iam user list --all --output text 2>/dev/null | head -20 | sed 's/^/   /'
+oci iam user list --all --compartment-id "$TENANCY" --output text 2>/dev/null | head -20 | sed 's/^/   /'
 say ""
 say "Subscribed regions:"
-oci iam region-subscription list --output text 2>/dev/null | head -10 | sed 's/^/   /'
+oci iam region-subscription list --tenancy-id "$TENANCY" --output text 2>/dev/null | head -10 | sed 's/^/   /'
 say ""
