@@ -107,15 +107,22 @@ fi
 
 # ── 4. fingerprint ─────────────────────────────────────────────────────────
 # The fingerprint is the md5 of the public key in DER form, with colons.
+# The fingerprint is the md5 of the public key in DER form, with colons.
+# Try openssl md5 -c first (outputs colons natively).
 FINGERPRINT=$(openssl rsa -pubin -in opencode_api_key_public.pem -outform der 2>/dev/null \
-              | openssl md5 2>/dev/null | sed 's/^.*= //; s/ //g')
+              | openssl md5 -c 2>/dev/null | sed 's/^.*= //')
 if [ -z "$FINGERPRINT" ] || [ "$FINGERPRINT" = "None" ]; then
+  # Some openssl versions need dgst.
   FINGERPRINT=$(openssl rsa -pubin -in opencode_api_key_public.pem -outform der 2>/dev/null \
-                | openssl dgst -md5 2>/dev/null | sed 's/^.*= //; s/ //g')
+                | openssl dgst -md5 -c 2>/dev/null | sed 's/^.*= //')
 fi
 if [ -z "$FINGERPRINT" ] || [ "$FINGERPRINT" = "None" ]; then
-  FINGERPRINT=$(openssl pkey -pubin -in opencode_api_key_public.pem -outform DER 2>/dev/null \
-                | openssl md5 2>/dev/null | sed 's/^.*= //; s/ //g')
+  # Last resort: compute without colons, then insert them.
+  RAW=$(openssl rsa -pubin -in opencode_api_key_public.pem -outform der 2>/dev/null \
+        | openssl md5 2>/dev/null | sed 's/^.*= //; s/ //g')
+  if [ -n "$RAW" ]; then
+    FINGERPRINT=$(echo "$RAW" | sed 's/../&:/g; s/:$//')
+  fi
 fi
 [ -n "$FINGERPRINT" ] || FINGERPRINT="PASTE_YOUR_FINGERPRINT_HERE"
 
