@@ -413,7 +413,13 @@
   //
   //   e.g. 'https://meet.charmingdivinations.com'
   //
+  // It can also be set per visit with ?server=… , so the two can be
+  // compared side by side without editing this file.
   var SELF_HOSTED_URL = '';
+
+  // The self-hosted server, if one is configured. The public server is the
+  // default because it is what the session is verified against.
+  var selfHosted = (new URLSearchParams(window.location.search).get('server') || SELF_HOSTED_URL).replace(/\/$/, '');
 
   var api = null;
   var isRecording = false;
@@ -481,7 +487,6 @@
   //   2. JaaS (via the Netlify token function)
   //   3. the public server, which caps embeds at 5 minutes
   function startJoin() {
-    var selfHosted = (SELF_HOSTED_URL || '').replace(/\/$/, '');
     if (selfHosted) {
       probeSelfHosted(selfHosted);
       return;
