@@ -30,9 +30,12 @@ say ""
 say "Preparing access for the Council's assistant…"
 say ""
 
-mkdir -p ~/.oci
-chmod 700 ~/.oci
-cd ~/.oci || fail "cannot write to ~/.oci"
+# A plain folder, not a dot-directory: the Cloud Shell file browser hides
+# dot-files, and the private key has to be easy to find to download.
+WORKDIR="$HOME/oracle-access"
+mkdir -p "$WORKDIR"
+chmod 700 "$WORKDIR"
+cd "$WORKDIR" || fail "cannot write to $WORKDIR"
 
 # ── 1. the key pair ───────────────────────────────────────────────────────
 rm -f opencode_api_key.pem opencode_api_key_public.pem
@@ -133,8 +136,8 @@ say "=========================================================================="
 say ""
 say "And download the private key:"
 say ""
-say "   1. In the Cloud Shell file browser on the left, open the 'opencode'"
-say "      folder inside ~/.oci/"
+say "   1. In the Cloud Shell file browser on the LEFT of the panel, open the"
+say "      'oracle-access' folder"
 say "   2. Right-click  opencode_api_key.pem  →  Download"
 say "   3. Move it to your Downloads folder on the Mac, and rename it to"
 say "        oracle_opencode_api_key.pem"
@@ -143,6 +146,9 @@ say "   Then tell the assistant it is at:"
 say "        ~/Downloads/oracle_opencode_api_key.pem"
 say ""
 say "The private key never needs to go through the chat."
+say ""
+say "   If the file browser is not showing, toggle it with the small"
+say "   folder icon at the top-left of the Cloud Shell panel."
 say ""
 say "=========================================================================="
 say ""
