@@ -795,10 +795,16 @@
   function toggleRecording() {
     if (!api) return;
     if (isRecording) {
-      api.executeCommand('stopRecording', { mode: 'local' });
+      api.executeCommand('stopRecording', { mode: selfHosted ? 'file' : 'local' });
+    } else if (selfHosted) {
+      // On our own server Jibri records the whole room — every voice,
+      // every face — and the file lands on the machine's own disk. That
+      // is what a Council wants: one recording of the whole session,
+      // not just the moderator's own stream.
+      api.executeCommand('startRecording', { mode: 'file' });
     } else {
-      // 'local' records this browser's own streams and downloads a file
-      // when it stops — it works inside the 5-minute embed.
+      // The public server has no recorder of its own, so this records
+      // this browser's own streams and downloads a file when it stops.
       api.executeCommand('startRecording', { mode: 'local', onlySelf: true });
     }
   }
