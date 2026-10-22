@@ -35,4 +35,10 @@
     # Only the features Chrome recognises. Listing unsupported ones
     # (attribution-reporting, private-aggregation, join-ad-interest-group,
     # run-ad-auction) makes the console noisy for no benefit.
-    Permissions-Policy = "camera=(self), microphone=(self), display-capture=(self), geolocation=()"
+    # The Council Console embeds the meeting server in an iframe. The
+    # browser applies this header to that iframe, so the meeting origin
+    # has to be allowed or it gets no microphone and no camera.
+    #
+    # The wildcard covers a quick tunnel, whose host name changes every
+    # time it restarts. The explicit host is there for a named tunnel.
+    Permissions-Policy = "camera=(self \"https://*.trycloudflare.com\" \"https://meet.charmingdivinations.com\"), microphone=(self \"https://*.trycloudflare.com\" \"https://meet.charmingdivinations.com\"), display-capture=(self \"https://*.trycloudflare.com\" \"https://meet.charmingdivinations.com\"), geolocation=()"

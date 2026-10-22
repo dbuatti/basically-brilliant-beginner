@@ -662,6 +662,9 @@
       }
     };
     if (jwt) opts.jwt = jwt;
+    // A display name lets the client join without the prejoin screen,
+    // so the meeting starts the moment the moderator presses Join.
+    if (!jwt) opts.userInfo = { displayName: 'Council' };
     // The script must come from the server hosting the room.
     loadExternalApi(apiOrigin()).then(function () {
       api = new JitsiMeetExternalAPI(apiHost(), opts);
