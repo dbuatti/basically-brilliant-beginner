@@ -818,9 +818,10 @@
       }
     };
     if (jwt) opts.jwt = jwt;
-    // A display name lets the client join without the prejoin screen,
-    // so the meeting starts the moment the moderator presses Join.
-    if (!jwt) opts.userInfo = { displayName: 'Council' };
+    // No userInfo here: passing a display name via the iframe API can
+    // prevent Jicofo from granting moderator to the first participant
+    // on anonymous (self-hosted) servers. Without it, the first joiner
+    // becomes moderator automatically.
     // The script must come from the server hosting the room.
     loadExternalApi(apiOrigin()).then(function () {
       api = new JitsiMeetExternalAPI(apiHost(), opts);
