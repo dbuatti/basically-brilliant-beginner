@@ -1242,10 +1242,12 @@
   var sfList = document.getElementById('sessionFlowList');
   var sfArrow = document.getElementById('sessionFlowArrow');
   if (sfToggle && sfList) {
+    try { if (localStorage.getItem('sfCollapsed') === 'true') { sfList.style.display = 'none'; if (sfArrow) sfArrow.style.transform = 'rotate(-90deg)'; } } catch (e) {}
     sfToggle.addEventListener('click', function () {
       var collapsed = sfList.style.display === 'none';
       sfList.style.display = collapsed ? '' : 'none';
       if (sfArrow) sfArrow.style.transform = collapsed ? '' : 'rotate(-90deg)';
+      try { localStorage.setItem('sfCollapsed', collapsed ? 'false' : 'true'); } catch (e) {}
     });
   }
 
