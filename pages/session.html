@@ -732,16 +732,13 @@
         .catch(function () { joinPublic(); });
     };
     // Probe by loading the external API script — more reliable than no-cors fetch.
-    console.log('probeSelfHosted: probing', base);
     loadExternalApi(base).then(function () {
-      console.log('probeSelfHosted: server is up');
       var dot = document.getElementById('serverDot');
       var label = document.getElementById('serverLabel');
       if (dot) { dot.style.background = 'var(--ok)'; }
       if (label) { label.textContent = 'self-hosted'; label.style.color = 'var(--ok)'; }
       ok();
     }).catch(function (e) {
-      console.log('probeSelfHosted: server unreachable:', e.message);
       var dot = document.getElementById('serverDot');
       var label = document.getElementById('serverLabel');
       if (dot) { dot.style.background = 'var(--danger)'; }
