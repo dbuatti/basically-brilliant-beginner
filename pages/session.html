@@ -163,6 +163,10 @@
         <span class="brand__tag" id="elementLabel">Council of the Root</span>
       </span>
     </a>
+    <span id="serverStatus" style="font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); display:flex; align-items:center; gap:.4rem;">
+      <span style="width:7px; height:7px; border-radius:50%; background:var(--text-faint);" id="serverDot"></span>
+      <span id="serverLabel">checking…</span>
+    </span>
     <div class="bar__actions">
       <button class="btn btn--ghost btn--sm" id="recToggle" type="button" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
@@ -557,6 +561,10 @@
   // (disableIframeAPI: true) and embedded calls stop at 5 minutes, so this
   // is a plain iframe — good for a short check-in, not the full session.
   function joinPublic() {
+    var dot = document.getElementById('serverDot');
+    var label = document.getElementById('serverLabel');
+    if (dot) { dot.style.background = 'var(--text-faint)'; }
+    if (label) { label.textContent = 'public server'; label.style.color = 'var(--text-faint)'; }
     if (typeof JitsiMeetExternalAPI === 'undefined') {
       var f = document.createElement('iframe');
       f.src = roomUrl();
@@ -632,10 +640,10 @@
     };
     var fail = function () {
       if (w) {
-        w.innerHTML = '<strong>This embedded view stops after 5 minutes</strong> — the ' +
-          'public Jitsi server disables embedding beyond a short demo. For the full ' +
-          'ninety minutes, use <strong>Open Full Window</strong> (top right), where you ' +
-          'can record from the \u22ee menu.';
+        w.innerHTML = '<strong>Could not reach the self-hosted server.</strong> ' +
+          'Falling back to the public server (5-minute embed limit). ' +
+          'Check that the tunnel is running, or use ' +
+          '<strong>Open Full Window</strong> for the full session.';
       }
       fetch('/.netlify/functions/jitsi-token?room=' + encodeURIComponent(ROOM))
         .then(function (r) { return r.ok ? r.json() : null; })
@@ -649,10 +657,31 @@
     console.log('probeSelfHosted: probing', base);
     loadExternalApi(base).then(function () {
       console.log('probeSelfHosted: server is up');
+      var dot = document.getElementById('serverDot');
+      var label = document.getElementById('serverLabel');
+      if (dot) { dot.style.background = 'var(--ok)'; }
+      if (label) { label.textContent = 'self-hosted'; label.style.color = 'var(--ok)'; }
       ok();
     }).catch(function (e) {
       console.log('probeSelfHosted: server unreachable:', e.message);
+      var dot = document.getElementById('serverDot');
+      var label = document.getElementById('serverLabel');
+      if (dot) { dot.style.background = 'var(--danger)'; }
+      if (label) { label.textContent = 'public server'; label.style.color = 'var(--danger)'; }
       fail();
+      // Show a retry button
+      var retryBtn = document.createElement('button');
+      retryBtn.className = 'btn btn--ghost btn--sm';
+      retryBtn.textContent = 'Retry connection';
+      retryBtn.style.marginTop = '.6rem';
+      retryBtn.onclick = function () {
+        retryBtn.remove();
+        joinBtn.disabled = false;
+        joinBtn.textContent = 'Enter the Council';
+        startJoin();
+      };
+      var w = document.getElementById('embedWarnText');
+      if (w) w.appendChild(retryBtn);
     });
   }
 
@@ -998,6 +1027,15 @@
 
   refreshBridge();
   setInterval(refreshBridge, 8000);
+
+  // Stop recording if the user leaves the page
+  window.addEventListener('beforeunload', function () {
+    if (api && isRecording) {
+      try {
+        api.executeCommand('stopRecording', { mode: selfHosted ? 'file' : 'local' });
+      } catch (e) {}
+    }
+  });
 })();
 </script>
 </body>
