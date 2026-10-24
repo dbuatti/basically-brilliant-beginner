@@ -375,7 +375,11 @@
       </div>
 
       <div class="block">
-        <h2 class="block__title">Transcription</h2>
+        <h2 class="block__title" id="transcribeToggle" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+          Transcription
+          <span id="transcribeArrow" style="font-size:.7rem; transition:transform .2s;">&#9660;</span>
+        </h2>
+        <div id="transcribeContent">
         <ul class="block__list">
           <li class="block__item"><b>▸</b><span>Press <strong style="color:var(--text)">Transcribe</strong> to run MacWhisper on the latest recording</span></li>
           <li class="block__item"><b>▸</b><span>Or turn on live captions in Jitsi (CC button)</span></li>
@@ -384,6 +388,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M12 18V9M9 12l3-3 3 3"/></svg>
           Transcribe latest
         </button>
+        </div>
       </div>
 
       <div class="block">
@@ -1132,6 +1137,18 @@
           showToast('Could not start transcription. Open in MacWhisper directly.', 'error');
         }
       });
+    });
+  }
+
+  // Collapsible Transcription
+  var trToggle = document.getElementById('transcribeToggle');
+  var trContent = document.getElementById('transcribeContent');
+  var trArrow = document.getElementById('transcribeArrow');
+  if (trToggle && trContent) {
+    trToggle.addEventListener('click', function () {
+      var collapsed = trContent.style.display === 'none';
+      trContent.style.display = collapsed ? '' : 'none';
+      if (trArrow) trArrow.style.transform = collapsed ? '' : 'rotate(-90deg)';
     });
   }
 
