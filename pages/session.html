@@ -996,10 +996,7 @@
   // Local audio capture runs in Hammerspoon on this Mac. The browser can't
   // reach it, so this explains the hotkey rather than pretending to work.
   localRecBtn.addEventListener('click', function () {
-    alert('Local audio recording runs in Hammerspoon on this Mac.\n\n' +
-          'Press ⌘⌥⌃M to start, and again to stop.\n' +
-          'Or use the 🚀 menu → 🎙️ Council → Toggle Recording.\n\n' +
-          'This gives you a separate, clean audio track of your Mac.');
+    showToast('Local audio runs in Hammerspoon. Press \u2318\u2325\u2313M to toggle recording.', 'info');
   });
 
   muteBtn.addEventListener('click', function () {
@@ -1049,6 +1046,20 @@
     if (recItemBrowser) recItemBrowser.classList.toggle('recItem--live', on);
   }
 
+  // Toast notification (replaces alert() for better UX)
+  function showToast(msg, type) {
+    var t = document.createElement('div');
+    t.style.cssText = 'position:fixed; bottom:80px; left:50%; transform:translateX(-50%); ' +
+      'background:rgba(8,11,24,.95); border:1px solid ' + (type === 'error' ? 'rgba(217,107,95,.5)' : 'var(--line)') + '; ' +
+      'color:var(--text); padding:.7rem 1.2rem; border-radius:8px; font-size:.82rem; ' +
+      'z-index:100; max-width:90vw; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,.4); ' +
+      'animation: fadeIn .2s ease;';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function () { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; }, 3500);
+    setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 4000);
+  }
+
   function refreshBridge() {
     return bridgeCall('/status').then(function (d) {
       if (d && d.ok) {
@@ -1091,9 +1102,7 @@
           setLocalState(d.recording ? 'live' : 'ready', d.recording ? 'recording' : 'ready');
           localRecBtn.textContent = d.recording ? '\u25a0 Stop Local Audio' : '\u25cf Local Audio';
         } else {
-          alert('The local bridge is not running.\n\n' +
-                'Press \u2318\u2325\u2313M to toggle the recording instead.\n' +
-                'Or use the \u27ef\u8ef8 menu \u2192 \ud83c\udf99\ufe0f Council \u2192 Toggle Recording.');
+          showToast('Local bridge not running. Press \u2318\u2325\u2313M to toggle recording.', 'error');
         }
       });
     });
@@ -1117,10 +1126,7 @@
           transcribeBtn.textContent = 'Transcribing\u2026';
           setTimeout(function () { transcribeBtn.textContent = 'Transcribe latest'; }, 4000);
         } else {
-          alert('Could not start the transcription.\n\n' +
-                (d && d.error ? d.error + '\n\n' : '') +
-                'Open the recording in MacWhisper directly, or use\n' +
-                'the \u27ef\u8ef8 menu \u2192 \ud83c\udf99\ufe0f Council \u2192 Transcribe Latest Recording.');
+          showToast('Could not start transcription. Open in MacWhisper directly.', 'error');
         }
       });
     });
