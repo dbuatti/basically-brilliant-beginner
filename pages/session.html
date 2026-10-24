@@ -775,7 +775,14 @@
       if (revealed) return;
       revealed = true;
       var f = host.querySelector('iframe');
-      if (f) f.addEventListener('load', revealStage, { once: true });
+      if (f) {
+        f.addEventListener('load', revealStage, { once: true });
+        f.addEventListener('error', function () {
+          recStatus.textContent = 'Failed to load meeting \u2014 check server';
+          var sp = document.getElementById('joinSpinner');
+          if (sp) sp.style.display = 'none';
+        }, { once: true });
+      }
       setTimeout(revealStage, 800);
     }
     if (typeof MutationObserver !== 'undefined') {
