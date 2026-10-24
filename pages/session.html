@@ -192,6 +192,7 @@
       </a>
       <a href="#" class="btn btn--primary btn--sm" id="openFull" target="_blank" rel="noopener">Open Full Window</a>
       <button class="btn btn--ghost btn--sm" id="copyLink" type="button" title="Copy room link to clipboard">Copy Link</button>
+      <button class="btn btn--ghost btn--sm" id="reconnectBtn" type="button" title="Reload the meeting" style="display:none;">Reconnect</button>
     </div>
   </div>
 
@@ -551,6 +552,30 @@
     startJoin();
   });
 
+  var reconnectBtn = document.getElementById('reconnectBtn');
+  if (reconnectBtn) {
+    reconnectBtn.addEventListener('click', function () {
+      var f = host.querySelector('iframe');
+      if (f) f.remove();
+      api = null;
+      joined = false;
+      isRecording = false;
+      recBtn.disabled = true;
+      recToggle.disabled = true;
+      muteBtn.disabled = true;
+      shareBtn.disabled = true;
+      recStatus.textContent = 'Reconnecting\u2026';
+      recDot.className = 'recbar__dot recbar__dot--hidden';
+      recBtnLabel.textContent = 'Start Recording';
+      recLabel.textContent = 'Record';
+      overlay.classList.remove('overlay--hidden');
+      startJoin();
+    });
+  }
+
+  // Show reconnect button when connection is lost
+  var _origConnFailed = false;
+
   var copyLinkBtn = document.getElementById('copyLink');
   if (copyLinkBtn) {
     copyLinkBtn.addEventListener('click', function () {
@@ -829,6 +854,7 @@
       var sp = document.getElementById('joinSpinner');
       if (sp) sp.style.display = 'none';
       overlay.classList.add('overlay--hidden');
+      if (reconnectBtn) reconnectBtn.style.display = 'none';
       recBtn.disabled = false;
       recToggle.disabled = false;
       muteBtn.disabled = false;
@@ -886,6 +912,7 @@
     api.addEventListener('connectionFailed', function () {
       recStatus.textContent = 'Connection lost \u2014 reconnecting\u2026';
       recDot.className = 'recbar__dot recbar__dot--hidden';
+      if (reconnectBtn) reconnectBtn.style.display = '';
     });
 
     api.addEventListener('videoConferenceLeft', function () {
