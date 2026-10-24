@@ -168,6 +168,7 @@
       </span>
     </a>
     <span id="participantCount" style="font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); display:none; align-items:center; gap:.4rem;"></span>
+    <span id="meetingTimer" style="font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); display:none; align-items:center; gap:.4rem; font-variant-numeric:tabular-nums;"></span>
     <span id="serverStatus" style="font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); display:flex; align-items:center; gap:.4rem;">
       <span style="width:7px; height:7px; border-radius:50%; background:var(--text-faint);" id="serverDot"></span>
       <span id="serverLabel">checking…</span>
@@ -896,6 +897,19 @@
       if (leaveBtn) leaveBtn.style.display = '';
       var pc = document.getElementById('participantCount');
       if (pc) { pc.style.display = 'flex'; updateParticipantCount(); }
+      // Start meeting timer
+      var timerEl = document.getElementById('meetingTimer');
+      if (timerEl) {
+        timerEl.style.display = 'flex';
+        var startTime = Date.now();
+        var timerInterval = setInterval(function () {
+          if (!joined) { clearInterval(timerInterval); return; }
+          var elapsed = Math.floor((Date.now() - startTime) / 1000);
+          var mins = Math.floor(elapsed / 60);
+          var secs = elapsed % 60;
+          timerEl.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }, 1000);
+      }
       recBtn.disabled = false;
       recToggle.disabled = false;
       muteBtn.disabled = false;
@@ -972,6 +986,8 @@
       if (leaveBtn) leaveBtn.style.display = 'none';
       var pc = document.getElementById('participantCount');
       if (pc) pc.style.display = 'none';
+      var mt = document.getElementById('meetingTimer');
+      if (mt) mt.style.display = 'none';
       recBtn.disabled = true;
       recToggle.disabled = true;
       muteBtn.disabled = true;
