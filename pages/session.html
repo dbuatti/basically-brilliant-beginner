@@ -62,9 +62,9 @@
   .bar__actions { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
 
   .body { flex: 1; display: flex; min-height: 0; overflow: hidden; }
-  .stage { flex: 1; position: relative; background: #000; min-height: 0; overflow: hidden; }
+  .stage { flex: 1; position: relative; background: #000; min-height: 400px; overflow: visible; }
   .stage__host { position: absolute; inset: 0; }
-  .stage__host iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .stage__host iframe { width: 100%; height: 100%; min-height: 100%; border: 0; display: block; }
 
   .overlay { position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: linear-gradient(160deg, rgba(15,16,32,.98), rgba(24,32,62,.97)); transition: opacity var(--ease), visibility var(--ease); overflow-y: auto; }
   .overlay--hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -98,7 +98,7 @@
   .panel__recList strong { color: var(--gold-light); font-weight: 600; }
   .panel__recNote { font-size: .74rem; color: var(--text-faint); margin-top: .7rem; padding-top: .6rem; border-top: 1px solid var(--line-soft); }
 
-  .sidebar { width: 320px; border-left: 1px solid var(--line); background: var(--navy-2); padding: 1.25rem 1.25rem 3.5rem; overflow-y: auto; flex-shrink: 0; min-height: 0; }
+  .sidebar { width: 320px; border-left: 1px solid var(--line); background: var(--navy-2); padding: 1.25rem 1.25rem 3.5rem; overflow-y: auto; flex-shrink: 0; min-height: 0; max-height: 100%; }
   @media (max-width: 1000px) { .sidebar { display: none; } }
   .block { margin-bottom: 1.5rem; }
   .block__title { font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: .7rem; }
@@ -720,13 +720,13 @@
     });
 
     api.addEventListener('recordingStatusChanged', function (event) {
+      console.log('recordingStatusChanged:', JSON.stringify(event));
       var on = event && event.on;
       isRecording = !!on;
       recBtnLabel.textContent = on ? 'Stop Recording' : 'Start Recording';
       recLabel.textContent = on ? 'Stop' : 'Record';
       recDot.className = 'recbar__dot' + (on ? ' recbar__dot--live' : ' recbar__dot--ok');
       recStatus.textContent = on ? 'Recording' : 'Ready to record';
-      if (typeof setBrowserState === 'function') setBrowserState(on);
       if (typeof setBrowserState === 'function') setBrowserState(on);
     });
 
@@ -796,6 +796,17 @@
     if (!api) return;
     if (isRecording) {
       api.executeCommand('stopRecording', { mode: selfHosted ? 'file' : 'local' });
+      // Fallback: if the recordingStatusChanged event doesn't fire, update UI after 3s
+      setTimeout(function () {
+        if (isRecording) {
+          isRecording = false;
+          recBtnLabel.textContent = 'Start Recording';
+          recLabel.textContent = 'Record';
+          recDot.className = 'recbar__dot recbar__dot--ok';
+          recStatus.textContent = 'Ready to record';
+          if (typeof setBrowserState === 'function') setBrowserState(false);
+        }
+      }, 3000);
     } else if (selfHosted) {
       // On our own server Jibri records the whole room — every voice,
       // every face — and the file lands on the machine's own disk. That
