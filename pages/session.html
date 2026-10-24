@@ -543,7 +543,9 @@
   // invite link and the console open different rooms. The prep page uses
   // 'council-<element>-<session date>'. Read the same values from the
   // shared session config rather than deriving them twice.
-  var roomBase = params.get('room') || SESSION.room;
+  // Use the session config room, or auto-generate from today's date for
+  // ad-hoc meetings. This keeps each day's session in a fresh room.
+  var roomBase = params.get('room') || SESSION.room || ('council-' + SESSION.element.toLowerCase() + '-' + todayStamp());
   var ROOM = params.get('session') ? params.get('session') : roomBase;
 
   function roomUrl() {
