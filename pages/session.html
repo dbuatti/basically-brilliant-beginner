@@ -206,10 +206,8 @@
           <div class="warn" id="embedWarn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
             <span id="embedWarnStatic">
-              <strong>This embedded view stops after 5 minutes</strong> — the public Jitsi
-              server disables embedding beyond a short demo. For the full ninety minutes,
-              use <strong>Open Full Window</strong> (top right), where you can record
-              from the ⋮ menu. This embed is for the opening and short check-ins.
+              Click <strong>Enter the Council</strong> to connect. If a self-hosted server
+              is configured, the full session runs here with no time limit.
             </span>
           </div>
 
@@ -420,6 +418,7 @@
   // The self-hosted server, if one is configured. The public server is the
   // default because it is what the session is verified against.
   var selfHosted = (new URLSearchParams(window.location.search).get('server') || SELF_HOSTED_URL).replace(/\/$/, '');
+  console.log('selfHosted =', JSON.stringify(selfHosted));
 
   // The API script has to come from the same server as the room, so the
   // origin is worked out once and used for both.
@@ -633,13 +632,15 @@
         })
         .catch(function () { joinPublic(); });
     };
-    // A short HEAD tells us whether our own server is up without joining it.
-    fetch(base + '/', { method: 'GET', mode: 'no-cors' })
-      .then(ok)
-      .catch(function () {
-        // no-cors hides the response but a failure means it is not there
-        fail();
-      });
+    // Probe by loading the external API script — more reliable than no-cors fetch.
+    console.log('probeSelfHosted: probing', base);
+    loadExternalApi(base).then(function () {
+      console.log('probeSelfHosted: server is up');
+      ok();
+    }).catch(function (e) {
+      console.log('probeSelfHosted: server unreachable:', e.message);
+      fail();
+    });
   }
 
   // JaaS path — the iframe API is fully supported here, so we can skip the
