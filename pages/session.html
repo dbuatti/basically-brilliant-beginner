@@ -52,7 +52,14 @@
   .focusExit svg { width: 14px; height: 14px; }
   .console--focus .focusExit { display: inline-flex; }
 
-  .bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 1.5rem; border-bottom: 1px solid var(--line); background: var(--navy-2); flex-wrap: wrap; }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .6rem 1rem; border-bottom: 1px solid var(--line); background: var(--navy-2); flex-wrap: wrap; }
+  @media (max-width: 768px) {
+    .bar { padding: .5rem .75rem; gap: .4rem; }
+    .bar__actions { gap: .3rem; }
+    .btn--sm { padding: .35rem .6rem; font-size: .62rem; }
+    .brand__title { font-size: .9rem; }
+    .brand__tag { display: none; }
+  }
   .brand { display: flex; align-items: center; gap: .8rem; transition: opacity var(--ease); }
   .brand:hover { opacity: .75; }
   .brand img { height: 34px; width: auto; }
@@ -505,6 +512,8 @@
 
   // ── Join (embed) ───────────────────────────────────────────────────────
   joinBtn.addEventListener('click', function () {
+    joinBtn.disabled = true;
+    joinBtn.textContent = 'Connecting…';
     startJoin();
   });
 
@@ -745,8 +754,12 @@
       }
     });
 
+    api.addEventListener('audioMuteStatusChanged', function (event) {
+      muteBtn.textContent = event.muted ? 'Unmute' : 'Mute';
+    });
+
     api.addEventListener('readyToClose', function () {
-      if (isRecording) api.executeCommand('stopRecording', { mode: 'local' });
+      if (isRecording) api.executeCommand('stopRecording', { mode: selfHosted ? 'file' : 'local' });
     });
   }
 
