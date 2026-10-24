@@ -920,6 +920,12 @@
       muteBtn.textContent = event.muted ? 'Unmute' : 'Mute';
     });
 
+    api.addEventListener('screenSharingStatusChanged', function (event) {
+      var on = event && event.on;
+      shareBtn.textContent = on ? 'Stop Sharing' : 'Share Screen';
+      if (on) recStatus.textContent = 'Sharing screen';
+    });
+
     api.addEventListener('readyToClose', function () {
       if (isRecording) api.executeCommand('stopRecording', { mode: selfHosted ? 'file' : 'local' });
     });
