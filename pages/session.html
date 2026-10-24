@@ -70,9 +70,9 @@
 
   .body { flex: 1; display: flex; min-height: 0; overflow: hidden; }
   .stage { flex: 1; position: relative; background: #000; min-height: 400px; overflow: hidden; }
-  .stage__host { position: absolute; inset: 0; bottom: 52px; }
+  .stage__host { position: absolute; inset: 0; bottom: 60px; }
   .stage__host iframe { width: 100%; height: 100%; border: 0; display: block; }
-  .recbar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 15; }
+  .recbar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 15; height: 60px; overflow: hidden; flex-wrap: nowrap; }
 
   .overlay { position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: linear-gradient(160deg, rgba(15,16,32,.98), rgba(24,32,62,.97)); transition: opacity var(--ease), visibility var(--ease); overflow-y: auto; }
   .overlay--hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -260,7 +260,10 @@
             </ul>
             <p class="panel__recNote">
               Whoever opens the room first becomes the moderator and can record.
-              Everyone else just types a name and joins.
+              Everyone else just types a name and joins.<br>
+              <strong>Save location:</strong> recordings are saved server-side to
+              <code style="font-size:.7rem;">~/jitsi/recordings/</code> and
+              pulled to Dropbox automatically.
             </p>
           </div>
         </div>
@@ -745,7 +748,16 @@
       recBtnLabel.textContent = on ? 'Stop Recording' : 'Start Recording';
       recLabel.textContent = on ? 'Stop' : 'Record';
       recDot.className = 'recbar__dot' + (on ? ' recbar__dot--live' : ' recbar__dot--ok');
-      recStatus.textContent = on ? 'Recording' : 'Ready to record';
+      if (on) {
+        recStatus.textContent = 'Recording \u2014 saving to server';
+        recDot.className = 'recbar__dot recbar__dot--live';
+      } else {
+        recStatus.textContent = 'Stopped \u2014 file saved to server';
+        recDot.className = 'recbar__dot recbar__dot--ok';
+        setTimeout(function () {
+          if (!isRecording) recStatus.textContent = 'Ready to record';
+        }, 4000);
+      }
       if (typeof setBrowserState === 'function') setBrowserState(on);
     });
 
@@ -818,6 +830,7 @@
   function toggleRecording() {
     if (!api) return;
     if (isRecording) {
+      recStatus.textContent = 'Stopping recording\u2026';
       api.executeCommand('stopRecording', { mode: selfHosted ? 'file' : 'local' });
       // Fallback: if the recordingStatusChanged event doesn't fire, update UI after 3s
       setTimeout(function () {
@@ -826,8 +839,11 @@
           recBtnLabel.textContent = 'Start Recording';
           recLabel.textContent = 'Record';
           recDot.className = 'recbar__dot recbar__dot--ok';
-          recStatus.textContent = 'Ready to record';
+          recStatus.textContent = 'Stopped \u2014 file saved to server';
           if (typeof setBrowserState === 'function') setBrowserState(false);
+          setTimeout(function () {
+            if (!isRecording) recStatus.textContent = 'Ready to record';
+          }, 3000);
         }
       }, 3000);
     } else if (selfHosted) {
@@ -835,6 +851,7 @@
       // every face — and the file lands on the machine's own disk. That
       // is what a Council wants: one recording of the whole session,
       // not just the moderator's own stream.
+      recStatus.textContent = 'Starting recording\u2026';
       api.executeCommand('startRecording', { mode: 'file' });
     } else {
       // The public server has no recorder of its own, so this records
