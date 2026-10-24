@@ -168,7 +168,7 @@
       <span id="serverLabel">checking…</span>
     </span>
     <div class="bar__actions">
-      <button class="btn btn--ghost btn--sm" id="recToggle" type="button" disabled>
+      <button class="btn btn--ghost btn--sm" id="recToggle" type="button" disabled aria-label="Toggle recording">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
         <span id="recLabel">Record</span>
       </button>
@@ -287,8 +287,8 @@
           <span id="recBtnLabel">Start Recording</span>
         </button>
         <button class="btn btn--ghost btn--sm" id="localRecBtn" type="button">Local Audio</button>
-        <button class="btn btn--ghost btn--sm" id="muteBtn" type="button" disabled>Mute</button>
-        <button class="btn btn--ghost btn--sm" id="shareBtn" type="button" disabled>Share Screen</button>
+        <button class="btn btn--ghost btn--sm" id="muteBtn" type="button" disabled aria-label="Toggle microphone">Mute</button>
+        <button class="btn btn--ghost btn--sm" id="shareBtn" type="button" disabled aria-label="Share screen">Share Screen</button>
         <a href="#" class="btn btn--ghost btn--sm" id="recFullLink" target="_blank" rel="noopener">Record in Full Window</a>
       </div>
     </div>
@@ -471,6 +471,11 @@
 
   var host = document.getElementById('jitsiHost');
   var overlay = document.getElementById('overlay');
+  if (overlay) {
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) overlay.classList.add('overlay--hidden');
+    });
+  }
   var joinBtn = document.getElementById('joinBtn');
   var recToggle = document.getElementById('recToggle');
   var recLabel = document.getElementById('recLabel');
