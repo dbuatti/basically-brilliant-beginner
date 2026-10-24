@@ -403,11 +403,16 @@
       </div>
 
       <div class="block">
-        <h2 class="block__title">How a Room Works Here</h2>
+        <h2 class="block__title" id="howToggle" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+          How a Room Works Here
+          <span id="howArrow" style="font-size:.7rem; transition:transform .2s;">&#9660;</span>
+        </h2>
+        <div id="howContent">
         <ul class="block__list">
           <li class="block__item"><b>•</b><span>The room name carries today's date, so each session gets a fresh room. On the public server, a name is blocked for a while after hitting its time limit — on your own server, reuse it freely.</span></li>
           <li class="block__item"><b>•</b><span>Ninety minutes fits inside the public server's ninety-five minute cap. Your own server has no cap.</span></li>
         </ul>
+        </div>
       </div>
     </aside>
   </div>
@@ -1137,6 +1142,18 @@
           showToast('Could not start transcription. Open in MacWhisper directly.', 'error');
         }
       });
+    });
+  }
+
+  // Collapsible "How a Room Works Here"
+  var howToggle = document.getElementById('howToggle');
+  var howContent = document.getElementById('howContent');
+  var howArrow = document.getElementById('howArrow');
+  if (howToggle && howContent) {
+    howToggle.addEventListener('click', function () {
+      var collapsed = howContent.style.display === 'none';
+      howContent.style.display = collapsed ? '' : 'none';
+      if (howArrow) howArrow.style.transform = collapsed ? '' : 'rotate(-90deg)';
     });
   }
 
