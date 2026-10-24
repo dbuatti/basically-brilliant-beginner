@@ -148,6 +148,7 @@
   .recbar__dot--live { background: var(--danger); animation: pulse 1.4s ease-in-out infinite; }
   .recbar__dot--ok { background: var(--ok); }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
   .recbar__dot--hidden { display: none; }
 </style>
 </head>
@@ -208,6 +209,7 @@
       <!-- Pre-join overlay -->
       <div class="overlay" id="overlay">
         <div class="panel">
+          <div id="joinSpinner" style="display:none; margin: 0 auto 1rem; width: 32px; height: 32px; border: 3px solid var(--line-soft); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
           <svg class="panel__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
             <circle cx="12" cy="12" r="9"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/>
           </svg>
@@ -531,6 +533,8 @@
   joinBtn.addEventListener('click', function () {
     joinBtn.disabled = true;
     joinBtn.textContent = 'Connecting…';
+    var sp = document.getElementById('joinSpinner');
+    if (sp) sp.style.display = 'block';
     startJoin();
   });
 
@@ -766,18 +770,28 @@
   }
 
   function watchFrame() {
-    var tries = 0;
-    var timer = setInterval(function () {
-      tries += 1;
+    var revealed = false;
+    function reveal() {
+      if (revealed) return;
+      revealed = true;
       var f = host.querySelector('iframe');
-      if (f) {
-        clearInterval(timer);
-        f.addEventListener('load', revealStage, { once: true });
-        setTimeout(revealStage, 1200);
-      } else if (tries > 60) {
-        clearInterval(timer);
-      }
-    }, 250);
+      if (f) f.addEventListener('load', revealStage, { once: true });
+      setTimeout(revealStage, 800);
+    }
+    if (typeof MutationObserver !== 'undefined') {
+      var obs = new MutationObserver(function () {
+        if (host.querySelector('iframe')) { obs.disconnect(); reveal(); }
+      });
+      obs.observe(host, { childList: true, subtree: true });
+      setTimeout(function () { obs.disconnect(); if (!revealed) reveal(); }, 5000);
+    } else {
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries += 1;
+        if (host.querySelector('iframe')) { clearInterval(timer); reveal(); }
+        else if (tries > 40) { clearInterval(timer); reveal(); }
+      }, 250);
+    }
   }
 
   function wireApiEvents() {
@@ -792,6 +806,8 @@
 
     api.addEventListener('videoConferenceJoined', function () {
       joined = true;
+      var sp = document.getElementById('joinSpinner');
+      if (sp) sp.style.display = 'none';
       overlay.classList.add('overlay--hidden');
       recBtn.disabled = false;
       recToggle.disabled = false;
