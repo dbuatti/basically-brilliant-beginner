@@ -299,8 +299,11 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="block">
-        <h2 class="block__title">Session Flow</h2>
-        <ul class="block__list">
+        <h2 class="block__title" id="sessionFlowToggle" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+          Session Flow
+          <span id="sessionFlowArrow" style="font-size:.7rem; transition:transform .2s;">&#9660;</span>
+        </h2>
+        <ul class="block__list" id="sessionFlowList">
           <li class="block__item"><b>•</b><span>Arrival &amp; opening blessing</span></li>
           <li class="block__item"><b>•</b><span>Crystal bowl &amp; breathwork</span></li>
           <li class="block__item"><b>•</b><span>Element teaching</span></li>
@@ -1129,6 +1132,18 @@
           showToast('Could not start transcription. Open in MacWhisper directly.', 'error');
         }
       });
+    });
+  }
+
+  // Collapsible Session Flow
+  var sfToggle = document.getElementById('sessionFlowToggle');
+  var sfList = document.getElementById('sessionFlowList');
+  var sfArrow = document.getElementById('sessionFlowArrow');
+  if (sfToggle && sfList) {
+    sfToggle.addEventListener('click', function () {
+      var collapsed = sfList.style.display === 'none';
+      sfList.style.display = collapsed ? '' : 'none';
+      if (sfArrow) sfArrow.style.transform = collapsed ? '' : 'rotate(-90deg)';
     });
   }
 
