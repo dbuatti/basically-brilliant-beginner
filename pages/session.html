@@ -597,7 +597,8 @@
   var copyLinkBtn = document.getElementById('copyLink');
   if (copyLinkBtn) {
     copyLinkBtn.addEventListener('click', function () {
-      var url = roomUrl();
+      // Copy the console URL (with server param if self-hosted) so others can join
+      var url = window.location.href;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(function () {
           copyLinkBtn.textContent = 'Copied!';
@@ -971,10 +972,18 @@
   // ── Sidebar toggle ────────────────────────────────────────────────────
   var sidebarToggle = document.getElementById('sidebarToggle');
   if (sidebarToggle) {
+    // Restore sidebar state from localStorage
+    try {
+      if (localStorage.getItem('sidebarHidden') === 'true') {
+        consoleRoot.classList.add('console--sidebar-hidden');
+        sidebarToggle.style.opacity = '0.5';
+      }
+    } catch (e) {}
     sidebarToggle.addEventListener('click', function () {
       consoleRoot.classList.toggle('console--sidebar-hidden');
       var hidden = consoleRoot.classList.contains('console--sidebar-hidden');
       sidebarToggle.style.opacity = hidden ? '0.5' : '1';
+      try { localStorage.setItem('sidebarHidden', hidden ? 'true' : 'false'); } catch (e) {}
     });
   }
 
