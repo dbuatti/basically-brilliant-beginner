@@ -226,7 +226,10 @@
           <div class="prep">
             <div class="prep__item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19v-6M8 13v-2a4 4 0 0 1 8 0v2"/></svg>
-              <span class="prep__text"><strong>Headphones</strong> if you have them</span>
+              <span class="prep__text"><strong>Headphones</strong> if you have them</span></div>
+    <div class="prep__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
+      <span class="prep__text"><strong>Shortcuts</strong> Space=mute, R=record, S=share, F=fullscreen</span>
             </div>
             <div class="prep__item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.7l5.7 5.6a8 8 0 1 1-11.3 0z"/></svg>
@@ -803,7 +806,42 @@
     api.addEventListener('readyToClose', function () {
       if (isRecording) api.executeCommand('stopRecording', { mode: selfHosted ? 'file' : 'local' });
     });
+
+    api.addEventListener('connectionFailed', function () {
+      recStatus.textContent = 'Connection lost \u2014 reconnecting\u2026';
+      recDot.className = 'recbar__dot recbar__dot--hidden';
+    });
+
+    api.addEventListener('videoConferenceLeft', function () {
+      joined = false;
+      recBtn.disabled = true;
+      recToggle.disabled = true;
+      muteBtn.disabled = true;
+      shareBtn.disabled = true;
+      recStatus.textContent = 'Left the meeting';
+      recDot.className = 'recbar__dot recbar__dot--hidden';
+    });
   }
+
+  // ── Keyboard shortcuts ────────────────────────────────────────────────
+  document.addEventListener('keydown', function (e) {
+    if (!api || !joined) return;
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.code === 'Space' && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      api.executeCommand('toggleAudio');
+    } else if (e.key === 'r' && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      toggleRecording();
+    } else if (e.key === 's' && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      api.executeCommand('toggleShareScreen');
+    } else if (e.key === 'f' && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (consoleRoot.requestFullscreen) consoleRoot.requestFullscreen();
+    }
+  });
 
   // ── Focus mode & fullscreen ───────────────────────────────────────────
   // "Focus" hides the bar and sidebar so the video fills the window.
