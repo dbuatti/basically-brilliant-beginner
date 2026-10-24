@@ -459,7 +459,6 @@
   // The self-hosted server, if one is configured. The public server is the
   // default because it is what the session is verified against.
   var selfHosted = (new URLSearchParams(window.location.search).get('server') || SELF_HOSTED_URL).replace(/\/$/, '');
-  console.log('selfHosted =', JSON.stringify(selfHosted));
 
   // The API script has to come from the same server as the room, so the
   // origin is worked out once and used for both.
@@ -882,7 +881,6 @@
     });
 
     api.addEventListener('recordingStatusChanged', function (event) {
-      console.log('recordingStatusChanged:', JSON.stringify(event));
       var on = event && event.on;
       isRecording = !!on;
       recBtnLabel.textContent = on ? 'Stop Recording' : 'Start Recording';
