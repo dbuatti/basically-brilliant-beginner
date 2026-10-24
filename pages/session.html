@@ -190,6 +190,7 @@
         Home
       </a>
       <a href="#" class="btn btn--primary btn--sm" id="openFull" target="_blank" rel="noopener">Open Full Window</a>
+      <button class="btn btn--ghost btn--sm" id="copyLink" type="button" title="Copy room link to clipboard">Copy Link</button>
     </div>
   </div>
 
@@ -533,6 +534,28 @@
     startJoin();
   });
 
+  var copyLinkBtn = document.getElementById('copyLink');
+  if (copyLinkBtn) {
+    copyLinkBtn.addEventListener('click', function () {
+      var url = roomUrl();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function () {
+          copyLinkBtn.textContent = 'Copied!';
+          setTimeout(function () { copyLinkBtn.textContent = 'Copy Link'; }, 2000);
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = url;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        copyLinkBtn.textContent = 'Copied!';
+        setTimeout(function () { copyLinkBtn.textContent = 'Copy Link'; }, 2000);
+      }
+    });
+  }
+
   // Try, in order:
   //   1. a self-hosted Jitsi (SELF_HOSTED_URL in the page config)
   //   2. JaaS (via the Netlify token function)
@@ -776,6 +799,18 @@
       shareBtn.disabled = false;
       recStatus.textContent = 'Joined — you can record now';
       recDot.className = 'recbar__dot recbar__dot--ok';
+    });
+
+    api.addEventListener('connectionQualityChanged', function (event) {
+      var q = event && event.connectionQuality;
+      if (q !== undefined) {
+        var dot = document.getElementById('serverDot');
+        if (dot) {
+          if (q >= 70) dot.style.background = 'var(--ok)';
+          else if (q >= 40) dot.style.background = 'var(--gold)';
+          else dot.style.background = 'var(--danger)';
+        }
+      }
     });
 
     api.addEventListener('recordingStatusChanged', function (event) {
