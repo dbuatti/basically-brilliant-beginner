@@ -167,6 +167,7 @@
         <span class="brand__tag" id="elementLabel">Council of the Root</span>
       </span>
     </a>
+    <span id="participantCount" style="font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); display:none; align-items:center; gap:.4rem;"></span>
     <span id="serverStatus" style="font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); display:flex; align-items:center; gap:.4rem;">
       <span style="width:7px; height:7px; border-radius:50%; background:var(--text-faint);" id="serverDot"></span>
       <span id="serverLabel">checking…</span>
@@ -863,6 +864,15 @@
     }
   }
 
+  function updateParticipantCount() {
+    if (!api) return;
+    try {
+      var count = api.getNumberOfParticipants();
+      var el = document.getElementById('participantCount');
+      if (el) el.textContent = count + ' in room';
+    } catch (e) {}
+  }
+
   function wireApiEvents() {
     watchFrame();
     // Ensure the iframe can access camera/mic (Jitsi API sometimes omits allow)
@@ -880,6 +890,8 @@
       overlay.classList.add('overlay--hidden');
       if (reconnectBtn) reconnectBtn.style.display = 'none';
       if (leaveBtn) leaveBtn.style.display = '';
+      var pc = document.getElementById('participantCount');
+      if (pc) { pc.style.display = 'flex'; updateParticipantCount(); }
       recBtn.disabled = false;
       recToggle.disabled = false;
       muteBtn.disabled = false;
@@ -925,6 +937,9 @@
       }
     });
 
+    api.addEventListener('participantJoined', function () { updateParticipantCount(); });
+    api.addEventListener('participantLeft', function () { updateParticipantCount(); });
+
     api.addEventListener('audioMuteStatusChanged', function (event) {
       muteBtn.textContent = event.muted ? 'Unmute' : 'Mute';
     });
@@ -948,6 +963,8 @@
     api.addEventListener('videoConferenceLeft', function () {
       joined = false;
       if (leaveBtn) leaveBtn.style.display = 'none';
+      var pc = document.getElementById('participantCount');
+      if (pc) pc.style.display = 'none';
       recBtn.disabled = true;
       recToggle.disabled = true;
       muteBtn.disabled = true;
