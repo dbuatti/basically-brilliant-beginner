@@ -802,6 +802,9 @@
   // JaaS path — the iframe API is fully supported here, so we can skip the
   // prejoin, set ourselves moderator, and drive recording from the page.
   function joinWithApi(jwt, roomName) {
+    // Clear public-server flag so recording works normally
+    recBtn.dataset.publicServer = '';
+    recToggle.dataset.publicServer = '';
     var opts = {
       roomName: roomName,
       parentNode: host,
