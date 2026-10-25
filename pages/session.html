@@ -673,6 +673,15 @@
     var label = document.getElementById('serverLabel');
     if (dot) { dot.style.background = 'var(--text-faint)'; }
     if (label) { label.textContent = 'public server'; label.style.color = 'var(--text-faint)'; }
+    // On public server, recording is via the full window, not the button
+    recBtn.disabled = false;
+    recToggle.disabled = false;
+    recBtnLabel.textContent = 'Record in Full Window';
+    recLabel.textContent = 'Record';
+    recStatus.textContent = 'Joined \u2014 record via Full Window';
+    // Flag so toggleRecording opens full window instead of trying to record
+    recBtn.dataset.publicServer = 'true';
+    recToggle.dataset.publicServer = 'true';
     if (typeof JitsiMeetExternalAPI === 'undefined') {
       var f = document.createElement('iframe');
       f.src = roomUrl();
@@ -1088,6 +1097,10 @@
 
   // ── Recording controls ────────────────────────────────────────────────
   function toggleRecording() {
+    if (recBtn.dataset.publicServer === 'true') {
+      window.open(roomUrl(), '_blank');
+      return;
+    }
     if (!api) return;
     if (isRecording) {
       recStatus.textContent = 'Stopping recording\u2026';
