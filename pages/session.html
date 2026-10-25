@@ -850,6 +850,15 @@
   // the right-hand panel stay, which is where the moderator works.
   function revealStage() {
     overlay.classList.add('overlay--hidden');
+    // Enable buttons when stage is revealed
+    recBtn.disabled = false;
+    recToggle.disabled = false;
+    muteBtn.disabled = false;
+    shareBtn.disabled = false;
+    if (recStatus.textContent === 'Join the Council to start recording') {
+      recStatus.textContent = 'Joined — you can record now';
+      recDot.className = 'recbar__dot recbar__dot--ok';
+    }
   }
 
   function watchFrame() {
@@ -932,6 +941,17 @@
       recStatus.textContent = 'Joined — you can record now';
       recDot.className = 'recbar__dot recbar__dot--ok';
     });
+
+    // Fallback: enable buttons when iframe loads (in case videoConferenceJoined doesn't fire)
+    var _btnEnableTimer = setTimeout(function () {
+      if (api && !recBtn.disabled) return; // already enabled
+      recBtn.disabled = false;
+      recToggle.disabled = false;
+      muteBtn.disabled = false;
+      shareBtn.disabled = false;
+      recStatus.textContent = 'Joined — you can record now';
+      recDot.className = 'recbar__dot recbar__dot--ok';
+    }, 5000);
 
     api.addEventListener('connectionQualityChanged', function (event) {
       var q = event && event.connectionQuality;
