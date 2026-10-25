@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Galactic astrology & starseeds — Julia Balaz on Wisdom from North. Video reference, key points, tools, and how to read your own chart for star connections.">
+  <title>Galactic Astrology · Julia Balaz | Basically Brilliant Beginner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .page-hero { min-height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: var(--header-height); position: relative; overflow: hidden; }
+    .page-hero__bg { position: absolute; inset: 0; z-index: -1; }
+    .page-hero__orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; }
+    .page-hero__orb--1 { width: 300px; height: 300px; background: var(--color-accent); top: -50px; right: -50px; }
+    .page-hero__orb--2 { width: 200px; height: 200px; background: var(--color-air); bottom: 0; left: -50px; }
+
+    .section-block { margin-bottom: var(--space-16); }
+    .section-block__header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); }
+    .section-block__icon { width: 30px; height: 30px; color: var(--color-accent); flex-shrink: 0; }
+    .section-block__title { font-size: var(--font-size-2xl); }
+    .section-block__count { margin-left: auto; font-size: var(--font-size-sm); color: var(--color-text-subtle); }
+
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .card h3 { color: var(--color-accent); margin-top: 0; margin-bottom: var(--space-2); font-size: var(--font-size-lg); }
+    .card h4 { color: var(--color-accent-light); margin-top: var(--space-4); margin-bottom: var(--space-2); font-size: var(--font-size-base); }
+    .card p { color: var(--color-text-muted); line-height: 1.7; }
+    .card ul, .card ol { color: var(--color-text-muted); }
+    .card li { margin: .35rem 0; line-height: 1.6; }
+
+    .video-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      margin: var(--space-4) 0;
+    }
+    .video-wrap iframe {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; border: 0;
+    }
+
+    .ref-table { width: 100%; border-collapse: collapse; margin-top: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+    .ref-table th { background: var(--color-bg-elevated); padding: var(--space-3) var(--space-4); text-align: left; font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent); border-bottom: 1px solid var(--color-border); }
+    .ref-table td { padding: var(--space-3) var(--space-4); font-size: var(--font-size-sm); color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); vertical-align: top; }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table td:first-child { color: var(--color-text); font-weight: 500; white-space: nowrap; }
+    .table-wrap { overflow-x: auto; }
+
+    .quote {
+      border-left: 3px solid var(--color-accent);
+      padding: var(--space-3) var(--space-5);
+      margin: var(--space-4) 0;
+      color: var(--color-text-muted);
+      font-style: italic;
+      background: rgba(212, 165, 116, 0.04);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+
+    .star-row { display: grid; grid-template-columns: 160px 1fr; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+    .star-row:last-child { border-bottom: none; }
+    .star-row__name { font-weight: 600; color: var(--color-accent-light); }
+    .star-row__desc { color: var(--color-text-muted); font-size: var(--font-size-sm); line-height: 1.6; }
+
+    .tool-link { display: inline-block; margin: .25rem .5rem .25rem 0; padding: .35rem .75rem; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-full); font-size: var(--font-size-sm); color: var(--color-accent); transition: all var(--transition-fast); }
+    .tool-link:hover { border-color: var(--color-accent); background: var(--color-surface-hover); text-decoration: none; }
+
+    .note { font-size: var(--font-size-sm); color: var(--color-text-subtle); margin-top: var(--space-3); }
+    code { background: var(--color-bg); padding: .1rem .35rem; border-radius: 4px; font-size: .9rem; color: var(--color-accent-light); }
+  </style>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav__container">
+      <a href="../" class="nav__logo" aria-label="Basically Brilliant Beginner Home">
+        <svg class="nav__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+        <span class="nav__logo-text">Charming Divinations</span>
+      </a>
+      <div class="nav__links">
+        <a href="../pages/music.html" class="nav__link">Music Hub</a>
+        <a href="../pages/insight-timer.html" class="nav__link">Insight Timer</a>
+        <a href="../pages/media.html" class="nav__link">Listen &amp; Watch</a>
+        <a href="../pages/resources.html" class="nav__link nav__link--active">Resources</a>
+        <a href="../pages/council.html" class="nav__link">Council Sessions</a>
+        <a href="/pages/session" class="nav__link nav__link--cta">Join Council</a>
+      </div>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle menu">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-hero__bg" aria-hidden="true">
+      <div class="page-hero__orb page-hero__orb--1"></div>
+      <div class="page-hero__orb page-hero__orb--2"></div>
+    </div>
+    <div class="container">
+      <p class="hero__badge">Resources Library</p>
+      <h1 class="hero__title" style="font-size: var(--font-size-3xl); max-width: 820px; margin: 0 auto var(--space-4);">
+        Galactic Astrology <span class="hero__title--accent">&amp; Starseeds</span>
+      </h1>
+      <p class="hero__subtitle" style="max-width: 640px; margin: 0 auto;">
+        Julia Balaz on Wisdom from North — how QHHT regressions worldwide revealed
+        the same starseed pattern, and how to read your own chart for star connections.
+      </p>
+      <p style="margin-top: var(--space-4);">
+        <a href="resources.html" style="color: var(--color-accent); font-size: var(--font-size-sm);">← Back to Resources</a>
+      </p>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+
+      <!-- YouTube reference -->
+      <section class="section-block" aria-labelledby="video-heading">
+        <div class="section-block__header">
+          <svg class="section-block__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.06 12c0-4 3.3-7 7.4-7h5.08c4.1 0 7.4 3 7.4 7s-3.3 7-7.4 7H9.46c-4.1 0-7.4-3-7.4-7z"/><polygon points="10,9 16,12 10,15"/></svg>
+          <h2 id="video-heading" class="section-block__title">YouTube Reference</h2>
+        </div>
+        <div class="card">
+          <div class="video-wrap">
+            <iframe src="https://www.youtube.com/embed/NI9fsIqDhBs" title="EPIC Discovery! Regressions WORLDWIDE Reveal The SAME" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="table-wrap">
+            <table class="ref-table">
+              <tr><th>Title</th><td>EPIC Discovery! Regressions WORLDWIDE Reveal The SAME: Millions Came From The Stars To SAVE EARTH!</td></tr>
+              <tr><th>Channel</th><td>Wisdom from North — host: Annika</td></tr>
+              <tr><th>Guest</th><td>Julia Balaz — QHHT practitioner (Dolores Cannon method); galactic astrology / quantum soul guidance; developer of galacticastrochart.com</td></tr>
+              <tr><th>Duration</th><td>1:08:14</td></tr>
+              <tr><th>Watch URL</th><td><a href="https://www.youtube.com/watch?v=NI9fsIqDhBs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=NI9fsIqDhBs</a></td></tr>
+              <tr><th>Short URL</th><td><a href="https://youtu.be/NI9fsIqDhBs" target="_blank" rel="noopener">https://youtu.be/NI9fsIqDhBs</a></td></tr>
+            </table>
+          </div>
+          <p class="note">The link you supplied used <code>&feature=youtu.be</code> — same video (ID <code>NI9fsIqDhBs</code>).</p>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section class="section-block" aria-labelledby="about-heading">
+        <div class="section-block__header">
+          <svg class="section-block__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <h2 id="about-heading" class="section-block__title">About the talk</h2>
+        </div>
+        <div class="card">
+          <p>Julia Balaz spent 7 years facilitating QHHT (Quantum Healing Hypnosis Technique, Dolores Cannon's method) past-life regressions for roughly 2,000 people. Over time she noticed a pattern: clients weren't just remembering earthly lives — many regressed to lives in other star systems (different-coloured skies, multiple moons, different numbers of fingers). When she cross-referenced these regressions with their astrological birth charts, she found strong correlations: the star systems people remembered matched fixed-star conjunctions in their natal charts.</p>
+          <p>She developed this into a modality called <strong>galactic astrology / quantum soul guidance</strong>, and built a free software tool (<a href="https://galacticastrochart.com" target="_blank" rel="noopener">galacticastrochart.com</a>) that overlays fixed stars and ancient-Earth asteroids onto a standard natal chart.</p>
+          <div class="quote">"I believe at this point that the birth chart works like an infinite map that is almost a live mechanism that responds to the level of our consciousness and it can reveal to us information that we are ready to receive."</div>
+        </div>
+      </section>
+
+      <!-- Common message -->
+      <section class="section-block" aria-labelledby="msg-heading">
+        <div class="section-block__header">
+          <svg class="section-block__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <h2 id="msg-heading" class="section-block__title">Common message for humanity (from the regressions)</h2>
+        </div>
+        <div class="card">
+          <ul>
+            <li>Earth was in a kind of quarantine / disconnect from the rest of the cosmos.</li>
+            <li>After the 1945 atomic bomb, Earth sent a call out into the universe for souls to come and anchor more light and love.</li>
+            <li>Millions of souls answered and incarnated here to help Earth through her ascension/awakening.</li>
+            <li>These souls are "code keepers" / "rememberers" — able to perceive multi-dimensionally — through whom Earth is reaching back out to her cosmic family.</li>
+            <li>Every human body on Earth has a genetic link to beings from the stars (many races visited and seeded Earth).</li>
+            <li>The future on Earth (even ~100 years out) was repeatedly seen in regressions as globally peaceful.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Star systems -->
+      <section class="section-block" aria-labelledby="stars-heading">
+        <div class="section-block__header">
+          <svg class="section-block__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <h2 id="stars-heading" class="section-block__title">Star systems mentioned and their qualities</h2>
+        </div>
+        <div class="card">
+          <div class="star-row"><div class="star-row__name">Pleiades</div><div class="star-row__desc">Visionaries for a better future; highly idealistic; see the best in others; give multiple second chances; people's best cheerleaders. Early-degrees Gemini placement → fast communicators. High-degrees Taurus → work with Earth grid/energy. Lesson: grounding, avoiding spiritual bypass ("light and love" naivety).</div></div>
+          <div class="star-row"><div class="star-row__name">Arcturus (+ Spica)</div><div class="star-row__desc">Arcturians (masculine/outward) + Spicans (feminine/embodied) work together. Restore balance and harmony through analysis, science, technology. Help humanity evolve sciences toward harmony with Earth and universal laws. Spica side: embody love, infinite creativity, often overlooked but beautiful aura. Arcturus ~24° Libra, Spica ~24° Virgo.</div></div>
+          <div class="star-row"><div class="star-row__name">Sirius</div><div class="star-row__desc">Sirian starseeds feel an unfinished mission; soul memory goes back to ancient Atlantis and ancient Egypt; remember the descent of human consciousness when sacred knowledge was hidden; now back helping us remember. Drawn to spiritual technologies (yoga, meditation, holistic therapies).</div></div>
+          <div class="star-row"><div class="star-row__name">Lyra</div><div class="star-row__desc">Lyran souls carry a deep sense of grief and a lifelong search for "home" (echo of the ancient Lyran wars/evacuations). "Code keepers." Their role: recreate the original beautiful existence wherever they are. Many moved 30–40 times in one incarnation. The Lyran story is the refugee diaspora that seeded DNA across many systems (Beta Centauri, Sirius, Pleiades, Orion, Earth).</div></div>
+          <div class="star-row"><div class="star-row__name">Orion</div><div class="star-row__desc">Connected with integrating/healing polarity games. Orion Nebula placement → angelic, pure, innocent frequency. Often conjunct ascendant.</div></div>
+          <div class="star-row"><div class="star-row__name">Beta Centauri</div><div class="star-row__desc">Unconditional love; utopian human civilization; Beta Centauri souls anchor unconditional love. Early years are hard (looking for what they remember as "normal"); by activation they realize what they sought outside is inside. Whole 1980s generation has Beta Centauri conjunct Uranus.</div></div>
+          <div class="star-row"><div class="star-row__name">Hyperborea</div><div class="star-row__desc">Nordic/Thule location; the very first humans on Earth — ethereal "shapeshifters" still dropping into physical density; carried the original blueprints/design/plan for what Earth can be. Long lifespans, special powers, "gods" of Nordic myth. Associated with the north and blue-ray frequency.</div></div>
+          <div class="star-row"><div class="star-row__name">Atlantis / Lemuria</div><div class="star-row__desc">Ancient Earth civilizations. Atlantis (last ~12–15k years) and Lemuria (previous precessional cycle). Souls with markers here are "ancient memory code keepers."</div></div>
+        </div>
+        <p class="note">Also mentioned: Andromeda (as an origin people can have), and the "soul ray colors" (blue = protectors/upholders of divine plan; purple = teachers/sages; yellow = joyful communicators; red = builders; orange = artist/creative/sensual), which map to the chakras.</p>
+      </section>
+
+      <!-- How to work out your astrology -->
+      <section class="section-block" aria-labelledby="how-heading">
+        <div class="section-block__header">
+          <svg class="section-block__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <h2 id="how-heading" class="section-block__title">How to work out your astrology (per this video)</h2>
+        </div>
+        <div class="card">
+          <p>Julia's method: treat the natal chart as a "live map" that reveals soul origins and unresolved karma. She reads it in a specific order and uses both fixed stars and asteroids.</p>
+          <ol>
+            <li><strong>Get your natal chart.</strong> You need birth date, exact birth time, and birth location (city). Free at <a href="https://www.astro.com" target="_blank" rel="noopener">astro.com</a> (Astrodienst) → "Free Horoscopes → Extended Chart Selection".</li>
+            <li><strong>Start from the outer planets (Pluto, Neptune, Uranus).</strong> These are generational and represent the most ancient, distant soul memories. Look for conjunctions/oppositions/squares to fixed stars (especially Lyra, Orion, Pleiades, Arcturus/Spica, Sirius, Beta Centauri). Hard aspects to Lyra (e.g. square) often indicate the ancient Lyran refugee/evacuation story.</li>
+            <li><strong>Move inward to personal planets and angles.</strong> Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Ascendant, Midheaven. Galactic connections here feel "more recent" and more fully expressed in this life. E.g. Pleiades on the Ascendant, Mercury conjunct Pleiades.</li>
+            <li><strong>Check the lunar nodes.</strong> South Node = experiences mastered (or over-focused on) in past incarnations; North Node = where you're heading this life to balance. The south node sign often correlates with remembered past lives.</li>
+            <li><strong>Find fixed-star conjunctions.</strong> Use a tool that lists which fixed stars are conjunct your planets (within ~1–2°). Key stars from the talk: Pleiades (Alcyone, ~29–30° Taurus), Arcturus (~24° Libra), Spica (~24° Virgo), Sirius (~14° Cancer), Regulus (~29° Leo), Altair (~1° Aquarius), Beta Centauri (~21° Scorpio), Orion Nebula (~23° Gemini), Lyra/Vega (~15° Capricorn).</li>
+            <li><strong>Look at asteroids for Earth-side ancient lives.</strong> In Julia's tool, asteroids named Atlantis, Lemuria, Hyperborea, plus Egyptian deities (Hathor, Isis, etc.) and others. When an asteroid is conjunct a planet or activated by a transit on the day you "remembered," that's a confirmation. She also references a spirit/asteroid called Memoria.</li>
+            <li><strong>Check transits.</strong> When a transiting planet crosses one of these fixed stars/asteroids on a day you had a spontaneous memory or download, that's validation.</li>
+            <li><strong>Identify your "soul ray color."</strong> Ask yourself (or in meditation) what the most dominant color of your soul frequency is — blue (protector/upholder of divine plan), purple (teacher/sage), yellow (joyful communicator), red (builder), orange (artist/creative/sensual). This maps to chakras and informs your theme across incarnations.</li>
+          </ol>
+          <div class="quote">"Having awareness of all these ancient connections of who you were, how far you've been, means nothing if you are not expressing your light and love in the present moment with people who are next to you physically right now."</div>
+        </div>
+      </section>
+
+      <!-- Tools -->
+      <section class="section-block" aria-labelledby="tools-heading">
+        <div class="section-block__header">
+          <svg class="section-block__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <h2 id="tools-heading" class="section-block__title">Tools relevant to the talk</h2>
+        </div>
+        <div class="card">
+          <h3>Julia's own tool (free)</h3>
+          <p><a class="tool-link" href="https://galacticastrochart.com" target="_blank" rel="noopener">galacticastrochart.com</a> — register with email + name to unlock fixed stars and ancient-Earth asteroids (Atlantis, Lemuria, Hyperborea, Egyptian deities, Memoria, etc.) overlaid on your natal chart. This is the tool she built and recommends in the video.</p>
+
+          <h3>Free natal chart generators</h3>
+          <p>
+            <a class="tool-link" href="https://www.astro.com" target="_blank" rel="noopener">astro.com (Astrodienst)</a>
+            <a class="tool-link" href="https://www.astro-seek.com" target="_blank" rel="noopener">astro-seek.com</a>
+            <a class="tool-link" href="https://cafeastrology.com" target="_blank" rel="noopener">cafeastrology.com</a>
+          </p>
+          <p class="note">astro.com is the gold standard; use "Extended Chart Selection" to add fixed stars. astro-seek has a dedicated "Fixed Stars in Natal Chart" tool and transit search.</p>
+
+          <h3>Fixed-star reference data</h3>
+          <p>
+            <a class="tool-link" href="https://en.wikipedia.org/wiki/List_of_fixed_stars" target="_blank" rel="noopener">Wikipedia: List of fixed stars</a>
+            <a class="tool-link" href="https://www.constellation-guide.com/fixed-stars/" target="_blank" rel="noopener">Constellation Guide — Fixed Stars</a>
+          </p>
+
+          <h3>Other learning resources mentioned</h3>
+          <p>
+            <a class="tool-link" href="https://www.juliabalaz.com" target="_blank" rel="noopener">juliabalaz.com</a>
+            <a class="tool-link" href="https://www.youtube.com/@JuliaBalaz" target="_blank" rel="noopener">Julia Balaz on YouTube (Lyra starseed video, etc.)</a>
+          </p>
+          <p class="note">Dolores Cannon's books (QHHT method, "The Three Waves of Volunteers", "The Convoluted Universe" series) are the regression framework Julia uses.</p>
+        </div>
+      </section>
+
+      <!-- Fixed star longitudes -->
+      <section class="section-block" aria-labelledby="long-heading">
+        <div class="section-block__header">
+          <svg class="section-block__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+          <h2 id="long-heading" class="section-block__title">Quick reference: fixed-star longitudes (tropical, ~2026)</h2>
+        </div>
+        <div class="card">
+          <p class="note" style="margin-top:0;">Use these to check conjunctions in your natal chart (allow ~1–2° orb). Longitudes shift slowly over centuries due to precession.</p>
+          <div class="table-wrap">
+            <table class="ref-table">
+              <tr><th>Star</th><th>Longitude</th><th>Constellation</th></tr>
+              <tr><td>Pleiades (Alcyone)</td><td>~0° Gemini (29–30° Taurus)</td><td>Taurus</td></tr>
+              <tr><td>Arcturus</td><td>~24° Libra</td><td>Boötes</td></tr>
+              <tr><td>Spica</td><td>~24° Virgo</td><td>Virgo</td></tr>
+              <tr><td>Sirius</td><td>~14° Cancer</td><td>Canis Major</td></tr>
+              <tr><td>Regulus</td><td>~29–30° Leo</td><td>Leo</td></tr>
+              <tr><td>Altair</td><td>~1–2° Aquarius</td><td>Aquila</td></tr>
+              <tr><td>Beta Centauri</td><td>~21° Scorpio</td><td>Centaurus</td></tr>
+              <tr><td>Orion Nebula (M42)</td><td>~23° Gemini</td><td>Orion</td></tr>
+              <tr><td>Vega (Lyra)</td><td>~15° Capricorn</td><td>Lyra</td></tr>
+              <tr><td>Antares</td><td>~9–10° Sagittarius</td><td>Scorpius</td></tr>
+              <tr><td>Aldebaran</td><td>~9–10° Gemini</td><td>Taurus</td></tr>
+              <tr><td>Fomalhaut</td><td>~3–4° Pisces</td><td>Piscis Austrinus</td></tr>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Caveats -->
+      <section class="section-block" aria-labelledby="caveats-heading">
+        <div class="section-block__header">
+          <svg class="section-block__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <h2 id="caveats-heading" class="section-block__title">Important caveats (from the talk itself)</h2>
+        </div>
+        <div class="card">
+          <ul>
+            <li>Julia explicitly says galactic astrology is <strong>not for everyone</strong> — it's for people who are already experiencing spontaneous memories/recalls and becoming "activated."</li>
+            <li>She warns against using star origins as an <strong>ego label to feel superior</strong>. The purpose is healing and remembering, not hierarchy.</li>
+            <li>She stresses returning to the <strong>present moment and your physical body</strong> — the ancient awareness means nothing if you don't express love/light with the people next to you now.</li>
+            <li>Earth was described as being in quarantine; the goal is reconnection with the cosmic family, not leaving Earth. "It's the best place to be at this time."</li>
+            <li>She does not want this to be a distraction from everyday life and relationships.</li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="../" class="footer__logo">
+            <svg class="footer__logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>Basically Brilliant Beginner</span>
+          </a>
+        </div>
+        <nav class="footer__nav" aria-label="Footer navigation">
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Council</h4>
+            <ul>
+              <li><a href="../pages/council.html">Session Notes</a></li>
+              <li><a href="/pages/session">Join the Council</a></li>
+              <li><a href="../pages/prep.html">Session prep &amp; invite</a></li>
+            </ul>
+          </div>
+          <div class="footer__nav-col">
+            <h4 class="footer__nav-title">Hubs</h4>
+            <ul>
+              <li><a href="../pages/music.html">Music Hub</a></li>
+              <li><a href="../pages/insight-timer.html">Insight Timer</a></li>
+              <li><a href="../pages/resources.html">Resources</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copyright">© 2026 Charming Divinations. Created with intention.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
