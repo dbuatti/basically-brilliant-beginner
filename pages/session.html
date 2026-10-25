@@ -230,8 +230,9 @@
           <div class="warn" id="embedWarn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
             <span id="embedWarnStatic">
-              Click <strong>Enter the Council</strong> to connect. If a self-hosted server
-              is configured, the full session runs here with no time limit.
+              Opens the meeting in a new tab. For the full session, use
+              <strong>Open Full Window</strong>. Recording is via the
+              \u22ee menu inside the meeting.
             </span>
           </div>
 
@@ -562,13 +563,9 @@
                               params.get('element').slice(1) + ' Element';
   }
 
-  // ── Join (embed) ───────────────────────────────────────────────────────
+  // ── Join (opens meeting in a new tab) ──────────────────────────────
   joinBtn.addEventListener('click', function () {
-    joinBtn.disabled = true;
-    joinBtn.textContent = 'Connecting…';
-    var sp = document.getElementById('joinSpinner');
-    if (sp) sp.style.display = 'block';
-    startJoin();
+    window.open(roomUrl(), '_blank', 'noopener');
   });
 
   var reconnectBtn = document.getElementById('reconnectBtn');
